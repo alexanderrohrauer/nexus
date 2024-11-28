@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vega Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5/build/vega-core.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
+</head>
+<body>
+<div id="view"></div>
+
+<script type="application/javascript">
+    const spec = {
+            "$schema": "https://vega.github.io/schema/vega/v5.json",
+            "width": 800,
+            "height": 800,
+            "padding": 0,
+            "autosize": "none",
+            "data": [
+                {
+                    "name": "tree",
+                    "values": [
+                        {"id": 0,"name": "Root", "size": 1},
+                        {"id": 1,"name": "Model driven engineering", "parent": 0, "size": 1000},
+                        {"id": 2,"name": "A", "parent": 0, "size": 1000},
+                        {"id": 3, "name": "Child A1", "parent": 1, "size": 10},
+                        {"id": 4,"name": "Child A2", "parent": 1, "size": 100},
+                        {"id": 5,"name": "Child B1", "parent": 2, "size": 100},
+                        {"id": 6,"name": "Child B2","parent": 2, "size": 100},
+                        {"id": 7,"name": "Child B3","parent": 2, "size": 100},
+                    ],
+                    "transform": [
+                        {
+                            "type": "stratify",
+                            "key": "id",
+                            "parentKey": "parent"
+                        },
+                        {
+                            "type": "pack",
+                            "field": "size",
+                            "sort": {"field": "value"},
+                            "size": [{"signal": "width"}, {"signal": "height"}]
+                        }
+                    ]
+                }
+            ],
+            "scales": [
+                {
+                    "name": "color",
+                    "type": "ordinal",
+                    "domain": {"data": "tree", "field": "depth"},
+                    "range": {"scheme": "category20"}
+                }
+            ],
+
+            "signals": [
+                {
+                    "name": "currentNode",
+                    "value": {"id": 0},
+                    "on": [
+                        {
+                            "events": "symbol:click",
+                            "update": "datum"
+                        }
+                    ]
+                },
+                {
+                    "name": "zoom",
+                    "value": {"x": 400, "y": 400, "k": 1},
+                    "on": [
+                        {
+                            "events": {"signal": "currentNode"},
+                            "update": "currentNode ? {x: currentNode.x, y: currentNode.y, k: width / (2 * currentNode.r)} : {x: 400, y: 400, k: 1}"
+                        }
+                    ]
+                },
+                {
+                    "name": "fntSize",
+                    "value": 20,
+                    "bind": {
+                        "input": "range",
+                        "min": 10,
+                        "max": 50,
+                        "step": 1
+                    },
+                    "react": true
+                }
+            ],
+
+            "marks": [
+                {
+                    "type": "symbol",
+                    "from": {"data": "tree"},
+                    "encode": {
+                        "enter": {
+                            "shape": {"value": "circle"},
+                            "fill": {"scale": "color", "field": "depth"},
+                            "tooltip": {"signal": "datum.name"}
+                        },
+                        "update": {
+                            "x": {"signal": "(datum.x - zoom.x) * zoom.k + width / 2"},
+                            "y": {"signal": "(datum.y - zoom.y) * zoom.k + height / 2"},
+                            "size": {"signal": "4 * datum.r * datum.r * zoom.k * zoom.k"},
+                            "stroke": {"value": "white"},
+                            "strokeWidth": {"value": 0.5}
+                        },
+                        "hover": {
+                            "stroke": {"value": "red"},
+                            "strokeWidth": {"value": 2}
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "from": {"data": "tree"},
+                    "encode": {
+                        "enter": {
+                            "text": {"signal": "datum.name"},
+                            "align": {"value": "center"},
+                            "baseline": {"value": "middle"},
+                            "fontSize": {"signal": "fntSize"},
+                            "fill": {"value": "black"}
+                        },
+                        "update": {
+                            "x": {"signal": "(datum.x - zoom.x) * zoom.k + width / 2"},
+                            "y": {"signal": "(datum.y - zoom.y) * zoom.k + height / 2"},
+                            "text": {
+                                "signal": "currentNode && currentNode.id === datum.parent ? datum.name : ''"
+                            }
+                        }
+                    }
+                }
+            ]
+        };
+    const specLite ={
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "description": "A bar chart with highlighting on hover and selecting on click. (Inspired by Tableau's interaction style.)",
+        "data": {
+            "values": [
+                {"a": "A", "b": 28}, {"a": "B", "b": 55}, {"a": "C", "b": 43},
+                {"a": "D", "b": 91}, {"a": "E", "b": 81}, {"a": "F", "b": 53},
+                {"a": "G", "b": 19}, {"a": "H", "b": 87}, {"a": "I", "b": 52}
+            ]
+        },
+        "params": [
+            {
+                "name": "highlight",
+                "select": {"type": "point", "on": "pointerover"}
+            },
+            {"name": "select", "select": "point"}
+        ],
+        "mark": {
+            "type": "bar",
+            "fill": "#4C78A8",
+            "stroke": "black",
+            "cursor": "pointer"
+        },
+        "encoding": {
+            "x": {"field": "a", "type": "ordinal"},
+            "y": {"field": "b", "type": "quantitative"},
+            "fillOpacity": {
+                "condition": {"param": "select", "value": 1},
+                "value": 0.3
+            },
+            "strokeWidth": {
+                "condition": [
+                    {
+                        "param": "select",
+                        "empty": false,
+                        "value": 2
+                    },
+                    {
+                        "param": "highlight",
+                        "empty": false,
+                        "value": 1
+                    }
+                ],
+                "value": 0
+            },
+            tooltip: {field: "b"}
+        },
+        "config": {
+            "scale": {
+                "bandPaddingInner": 0.2
+            }
+        }
+    }
+    let view;
+    // vegaEmbed('#view', specLite).then(({view})=>view.addSignalListener("select", (name, d)=>{
+    //     console.log(d)
+    // }));
+
+
+    window.onload = () => {
+        view = new vega.View(vega.parse(spec), {
+            renderer: "canvas",
+            container: "#view",
+            hover: true
+        })
+
+        view.addEventListener("click", (name, item)=>{
+            console.log(item.datum)
+        })
+        return view.runAsync()
+    }
+</script>
+</body>
+</html>

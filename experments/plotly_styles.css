@@ -1,0 +1,129 @@
+/* General Body Styling */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8fafc; /* Neutral background similar to ShadCN */
+    color: #1e293b; /* Dark text for readability */
+    line-height: 1.6;
+}
+
+/* Dash Container */
+.dash-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ffffff; /* White background for containers */
+    border-radius: 12px; /* Smooth corners */
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1); /* Subtle shadow */
+}
+
+/* Header Styling */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    color: #0f172a; /* Heading color */
+    margin: 0;
+    padding: 0.5rem 0;
+}
+
+/* Buttons */
+button {
+    font-family: 'Inter', sans-serif;
+    background-color: #4f46e5; /* Indigo primary button color */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #4338ca; /* Slightly darker indigo on hover */
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+
+button:disabled {
+    background-color: #e5e7eb; /* Disabled button */
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Input Fields */
+input[type="text"], input[type="number"], textarea, select {
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #1e293b;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+/* Graphs */
+.graph-container {
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f9fafb; /* Light neutral background for graphs */
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background-color: #ffffff;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.1);
+}
+
+table th, table td {
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+table th {
+    background-color: #f1f5f9; /* Light gray for table headers */
+    color: #1e293b;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9fafb; /* Zebra-striping */
+}
+
+/* Dropdown Menus */
+.dash-dropdown {
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.dash-dropdown:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Toast Notifications */
+.toast {
+    font-family: 'Inter', sans-serif;
+    background-color: #4f46e5; /* Indigo */
+    color: #ffffff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+    margin: 1rem 0;
+}
+/*app = Dash(__name__, external_stylesheets=['plotly_styles.css'])*/
