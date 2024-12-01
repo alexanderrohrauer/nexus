@@ -6,7 +6,7 @@ from app.db.models import Document
 
 
 class Visualization(BaseModel):
-    uuid: UUID = Field(default=uuid4())
+    uuid: UUID = Field(default_factory=uuid4)
     title: str = Field(min_length=1)
     # TODO max 12
     rows: int = Field(gt=1)

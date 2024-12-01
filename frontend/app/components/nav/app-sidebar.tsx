@@ -3,13 +3,11 @@
 import * as React from "react";
 import {
   Blocks,
-  Calendar,
   Landmark,
   Library,
   MessageCircleQuestion,
   Search,
   Settings2,
-  Trash2,
   Users,
 } from "lucide-react";
 
@@ -50,24 +48,14 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Calendar",
-      url: "#",
-      icon: Calendar,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-    },
-    {
       title: "Templates",
       url: "#",
       icon: Blocks,
     },
     {
-      title: "Trash",
+      title: "Settings",
       url: "#",
-      icon: Trash2,
+      icon: Settings2,
     },
     {
       title: "Help",

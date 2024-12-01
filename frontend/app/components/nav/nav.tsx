@@ -14,7 +14,7 @@ import {
 import { useDashboard } from "~/components/context/dashboard-context";
 import { useMemo } from "react";
 import { Button } from "~/components/ui/button";
-import { Trash } from "lucide-react";
+import { Edit } from "lucide-react";
 import { AddVisualizationDialog } from "~/components/molecules/add-visualization-dialog";
 
 export function Nav(props: React.PropsWithChildren) {
@@ -43,12 +43,14 @@ export function Nav(props: React.PropsWithChildren) {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className="flex space-x-3">
-            <Button variant="destructive" size="icon">
-              <Trash />
-            </Button>
-            {dashboard && <AddVisualizationDialog dashboard={dashboard} />}
-          </div>
+          {dashboard && (
+            <div className="flex space-x-3">
+              <Button variant="outline" size="icon">
+                <Edit />
+              </Button>
+              <AddVisualizationDialog dashboard={dashboard} />
+            </div>
+          )}
         </header>
         {props.children}
       </SidebarInset>

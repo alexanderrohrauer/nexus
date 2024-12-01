@@ -29,7 +29,8 @@ export default function Dashboard(props: DashboardProps) {
 
   return (
     <div className="flex space-x-3 pb-3">
-      <div className="grid grid-rows-12 grid-cols-12 h-[calc(100vh-68px)] gap-3 flex-1">
+      {/*TODO eventually make scrollable*/}
+      <div className="grid grid-rows-12 grid-cols-12 min-h-[calc(100vh-68px)] gap-3 flex-1 overflow-auto">
         {dashboard.visualizations.map((visualization) => (
           <Visualization
             key={"vis-" + visualization.uuid}

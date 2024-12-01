@@ -57,7 +57,7 @@ export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
       }),
     onSuccess: () => {
       revalidator.revalidate();
-      toast.success("Visualization successfully created");
+      toast.success("Visualization successfully added");
       setTimeout(() => btnRef.current?.click(), 200);
     },
   });

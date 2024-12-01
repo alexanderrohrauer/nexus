@@ -5,4 +5,4 @@ from pydantic import Field
 
 
 class Document(beanie.Document):
-    uuid: UUID = Field(default=uuid4())
+    uuid: UUID = Field(default_factory=uuid4)

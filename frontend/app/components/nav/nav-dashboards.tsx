@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ArrowUpRight,
-  Edit,
-  Link,
-  MoreHorizontal,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { ArrowUpRight, Edit, Link, MoreHorizontal, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -34,6 +27,7 @@ import { mapParams } from "~/lib/links";
 import { Routes } from "~/routes";
 import { useLocation } from "react-router";
 import { SchemaDashboardMinimal } from "~/lib/api/types";
+import { AddDashboardDialog } from "~/components/molecules/add-dashboard-dialog";
 
 export function NavDashboards() {
   const { isMobile } = useSidebar();
@@ -102,10 +96,7 @@ export function NavDashboards() {
             </SidebarMenuItem>
           ))}
           <SidebarMenuItem>
-            <SidebarMenuButton className="text-sidebar-foreground/70">
-              <Plus />
-              <span>Add dashboard</span>
-            </SidebarMenuButton>
+            <AddDashboardDialog />
           </SidebarMenuItem>
         </SidebarMenu>
       ) : (
