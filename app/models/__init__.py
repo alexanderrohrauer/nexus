@@ -1,3 +1,3 @@
-from app.models.test_models import Product, Post
+from app.models.visualizations import Visualization, Dashboard
 
-models = [Product, Post]
+models = [Dashboard]

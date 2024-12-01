@@ -7,4 +7,4 @@ client = AsyncIOMotorClient("mongodb://localhost:27017")
 
 
 async def init():
-    await init_beanie(database=client["sample_training"], document_models=models)
+    await init_beanie(database=client["nexus_dev"], document_models=models)

@@ -1,7 +1,8 @@
 import json
-from typing import Optional
+from typing import Optional, Any
 
 import pymongo
+from pydantic import BaseModel
 
 
 class SearchAndFilterParams:
@@ -25,3 +26,13 @@ class SearchAndFilterParams:
                     else:
                         result.append((sort, pymongo.ASCENDING))
         return result
+
+
+class ResponseModel(BaseModel):
+    @classmethod
+    def from_model(cls, model: Any):
+        raise NotImplemented()
+
+    @classmethod
+    def from_model_list(cls, models: list):
+        return [cls.from_model(m) for m in models]
