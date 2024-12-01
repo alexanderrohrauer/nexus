@@ -56,7 +56,7 @@ export function NavDashboards() {
       {!error && dashboards ? (
         <SidebarMenu>
           {dashboards.map((item) => (
-            <SidebarMenuItem key={item.title}>
+            <SidebarMenuItem key={"dashboard-" + item.uuid}>
               <SidebarMenuButton asChild isActive={isActive(item)}>
                 <NavLink to={mapParams(Routes.Dashboard, { uuid: item.uuid })}>
                   {item.title}

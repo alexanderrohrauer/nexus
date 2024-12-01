@@ -15,6 +15,7 @@ import { ErrorBoundary } from "~/ErrorBoundary";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Nav } from "~/components/nav/nav";
+import { DashboardProvider } from "~/components/context/dashboard-context";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -45,11 +46,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <ErrorBoundary />
-          <Nav>{children}</Nav>
-          <ScrollRestoration />
-          <Toaster />
-          <Scripts />
+          <DashboardProvider>
+            <ErrorBoundary />
+            <Nav>{children}</Nav>
+            <ScrollRestoration />
+            <Toaster />
+            <Scripts />
+          </DashboardProvider>
         </QueryClientProvider>
       </body>
     </html>

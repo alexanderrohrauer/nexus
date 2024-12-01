@@ -8,6 +8,7 @@ from app.db.models import Document
 class Visualization(BaseModel):
     uuid: UUID = Field(default=uuid4())
     title: str = Field(min_length=1)
+    # TODO max 12
     rows: int = Field(gt=1)
     columns: int = Field(gt=1)
     visualization: str = Field(min_length=1)
