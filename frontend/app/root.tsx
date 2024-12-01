@@ -14,6 +14,7 @@ import { Toaster } from "~/components/ui/sonner";
 import { ErrorBoundary } from "~/ErrorBoundary";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { Nav } from "~/components/nav/nav";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -45,7 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <QueryClientProvider client={queryClient}>
           <ErrorBoundary />
-          {children}
+          <Nav>{children}</Nav>
           <ScrollRestoration />
           <Toaster />
           <Scripts />

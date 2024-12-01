@@ -4,18 +4,72 @@
  */
 
 export interface paths {
-    "/": {
+    "/dashboards": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Root */
-        get: operations["root__get"];
+        /** Get Dashboards */
+        get: operations["get_dashboards_dashboards_get"];
+        put?: never;
+        /** Create Dashboard */
+        post: operations["create_dashboard_dashboards_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboards/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Dashboard */
+        get: operations["get_dashboard_dashboards__uuid__get"];
         put?: never;
         post?: never;
+        /** Delete Dashboard */
+        delete: operations["delete_dashboard_dashboards__uuid__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboards/{uuid}/visualizations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add Visualization */
+        post: operations["add_visualization_dashboards__uuid__visualizations_post"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboards/{uuid}/visualizations/{visualization_uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Visualization */
+        put: operations["update_visualization_dashboards__uuid__visualizations__visualization_uuid__put"];
+        post?: never;
+        /** Remove Visualization */
+        delete: operations["remove_visualization_dashboards__uuid__visualizations__visualization_uuid__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -25,39 +79,72 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** Category */
-        Category: {
-            /** Name */
-            name: string;
-            /** Description */
-            description: string;
+        /** CreateDashboardRequest */
+        CreateDashboardRequest: {
+            /** Title */
+            title: string;
+            /** Visualizations */
+            visualizations: components["schemas"]["CreateVisualizationRequest"][];
+        };
+        /** CreateVisualizationRequest */
+        CreateVisualizationRequest: {
+            /** Title */
+            title: string;
+            /** Rows */
+            rows: number;
+            /** Columns */
+            columns: number;
+            /** Default Query */
+            default_query: unknown[] | Record<string, never>;
+            /** Visualization */
+            visualization: string;
+        };
+        /** Dashboard */
+        Dashboard: {
+            /**
+             *  Id
+             * @description MongoDB document ObjectID
+             */
+            _id?: string | null;
+            /**
+             * Uuid
+             * Format: uuid
+             * @default 4de2e531-cdc6-4a1d-98f4-912a43b94db4
+             */
+            uuid: string;
+            /** Title */
+            title: string;
+            /**
+             * Visualizations
+             * @default []
+             */
+            visualizations: components["schemas"]["Visualization"][];
+        };
+        /** DashboardMinimal */
+        DashboardMinimal: {
+            /**
+             * Uuid
+             * Format: uuid
+             */
+            uuid: string;
+            /** Title */
+            title: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
-        /** Product */
-        Product: {
-            /**
-             *  Id
-             * @description MongoDB document ObjectID
-             */
-            _id?: string | null;
-            /** Name */
-            name: string;
-            /** Description */
-            description: string | null;
-            /** Price */
-            price: number;
-            category: components["schemas"]["Category"];
-            /** Post */
-            post: {
-                /** Id */
-                id: string;
-                /** Collection */
-                collection: string;
-            } | null;
+        /** UpdateVisualizationRequest */
+        UpdateVisualizationRequest: {
+            /** Title */
+            title: string;
+            /** Rows */
+            rows: number;
+            /** Columns */
+            columns: number;
+            /** Default Query */
+            default_query: unknown[] | Record<string, never>;
         };
         /** ValidationError */
         ValidationError: {
@@ -68,6 +155,28 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /** Visualization */
+        Visualization: {
+            /**
+             * Uuid
+             * Format: uuid
+             * @default e64b5fb1-72b4-4dba-8df0-44bf4cd95e9e
+             */
+            uuid: string;
+            /** Title */
+            title: string;
+            /** Rows */
+            rows: number;
+            /** Columns */
+            columns: number;
+            /** Visualization */
+            visualization: string;
+            /**
+             * Default Query
+             * @default {}
+             */
+            default_query: unknown[] | Record<string, never>;
+        };
     };
     responses: never;
     parameters: never;
@@ -75,18 +184,19 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-export type SchemaCategory = components['schemas']['Category'];
+export type SchemaCreateDashboardRequest = components['schemas']['CreateDashboardRequest'];
+export type SchemaCreateVisualizationRequest = components['schemas']['CreateVisualizationRequest'];
+export type SchemaDashboard = components['schemas']['Dashboard'];
+export type SchemaDashboardMinimal = components['schemas']['DashboardMinimal'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
-export type SchemaProduct = components['schemas']['Product'];
+export type SchemaUpdateVisualizationRequest = components['schemas']['UpdateVisualizationRequest'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
+export type SchemaVisualization = components['schemas']['Visualization'];
 export type $defs = Record<string, never>;
 export interface operations {
-    root__get: {
+    get_dashboards_dashboards_get: {
         parameters: {
-            query?: {
-                query?: string;
-                sort?: string;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -99,7 +209,196 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Product"][];
+                    "application/json": components["schemas"]["DashboardMinimal"][];
+                };
+            };
+        };
+    };
+    create_dashboard_dashboards_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDashboardRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Dashboard"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_dashboard_dashboards__uuid__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Dashboard"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_dashboard_dashboards__uuid__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_visualization_dashboards__uuid__visualizations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateVisualizationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_visualization_dashboards__uuid__visualizations__visualization_uuid__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+                visualization_uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateVisualizationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Visualization"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_visualization_dashboards__uuid__visualizations__visualization_uuid__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+                visualization_uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Dashboard"];
                 };
             };
             /** @description Validation Error */
