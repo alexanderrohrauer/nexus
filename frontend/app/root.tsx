@@ -45,12 +45,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        <Toaster />
         <QueryClientProvider client={queryClient}>
           <DashboardProvider>
             <ErrorBoundary />
             <Nav>{children}</Nav>
             <ScrollRestoration />
-            <Toaster />
             <Scripts />
           </DashboardProvider>
         </QueryClientProvider>

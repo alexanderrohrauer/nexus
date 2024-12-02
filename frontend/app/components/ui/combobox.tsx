@@ -58,7 +58,6 @@ export function Combobox(props: ComboboxProps) {
         </PopoverTrigger>
         <PopoverContent className="p-0">
           <Command>
-            {/*  TODO implement search*/}
             <CommandInput placeholder="Search" />
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
@@ -67,6 +66,7 @@ export function Combobox(props: ComboboxProps) {
                   <CommandItem
                     key={option.value}
                     value={option.value}
+                    keywords={[option.label]}
                     onSelect={() => {
                       props.onValueChange?.(option.value);
                       setOpen(false);

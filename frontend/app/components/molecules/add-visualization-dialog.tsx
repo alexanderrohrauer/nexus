@@ -39,9 +39,10 @@ const initialValues: SchemaCreateVisualizationRequest = {
 
 // TODO extract this to endpoint
 const visualizationOptions: ComboboxOption[] = [
-  { label: "Visualization 1", value: "vis-1" },
-  { label: "Visualization 2", value: "vis-2" },
-  { label: "Visualization 3", value: "vis-3" },
+  { label: "Researcher map", value: "vis-1" },
+  { label: "Researcher table", value: "vis-2" },
+  { label: "Mixed map", value: "vis-3" },
+  { label: "Time based research activity", value: "vis-4" },
 ];
 
 export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
@@ -64,9 +65,11 @@ export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
   return (
     <Dialog>
       <DialogTrigger>
-        <Button ref={btnRef}>
-          <Plus />
-          Visualization
+        <Button ref={btnRef} asChild>
+          <div>
+            <Plus />
+            Visualization
+          </div>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

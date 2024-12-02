@@ -51,9 +51,11 @@ export function AddDashboardDialog(props: AddDashboardDialogProps) {
   return (
     <Dialog>
       <DialogTrigger className="w-full" ref={btnRef}>
-        <SidebarMenuButton className="text-sidebar-foreground/70">
-          <Plus />
-          <span>Create dashboard</span>
+        <SidebarMenuButton className="text-sidebar-foreground/70" asChild>
+          <div>
+            <Plus />
+            <span>Create dashboard</span>
+          </div>
         </SidebarMenuButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
