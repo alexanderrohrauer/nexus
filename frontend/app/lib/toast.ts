@@ -7,5 +7,7 @@ export const useToast = () => {
       toast.success(message, { richColors: true, ...data }),
     error: (message: ReactNode, data?: ExternalToast) =>
       toast.error(message, { richColors: true, ...data }),
+    info: (message: ReactNode, data?: ExternalToast) =>
+      toast.info(message, { richColors: true, ...data }),
   };
 };

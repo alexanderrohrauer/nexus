@@ -69,6 +69,13 @@ export function NavDashboards() {
     return location.pathname === navUrl;
   };
 
+  const copy = async (dashboard: SchemaDashboardMinimal) => {
+    const url = new URL(window.location.href);
+    url.pathname = mapParams(Routes.Dashboard, { uuid: dashboard.uuid });
+    await navigator.clipboard.writeText(url.toString());
+    toast.info("Link copied!", { duration: 2000 });
+  };
+
   // TODO fix error/loading handling
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -94,7 +101,7 @@ export function NavDashboards() {
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => copy(item)}>
                     <Link className="text-muted-foreground" />
                     <span>Copy Link</span>
                   </DropdownMenuItem>

@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import { NavLink } from "@remix-run/react";
+import { NavLink, useMatches } from "@remix-run/react";
 
 export function NavMain({
   items,
@@ -16,14 +16,20 @@ export function NavMain({
     title: string;
     url: string;
     icon: LucideIcon;
-    isActive?: boolean;
+    idPrefix: string;
   }[];
 }) {
+  const matches = useMatches();
   return (
     <SidebarMenu>
       {items.map((item) => (
         <SidebarMenuItem key={item.title}>
-          <SidebarMenuButton asChild isActive={item.isActive}>
+          <SidebarMenuButton
+            asChild
+            isActive={matches.some((match) =>
+              match.id.startsWith("routes/" + item.idPrefix),
+            )}
+          >
             <NavLink to={item.url}>
               <item.icon />
               <span>{item.title}</span>

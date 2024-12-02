@@ -3,7 +3,7 @@ import { client } from "~/lib/api/api-client";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Visualization } from "~/components/molecules/visualization";
-import { useDashboard } from "~/components/context/dashboard-context";
+import { useNav } from "~/components/context/nav-context";
 
 interface DashboardProps {}
 
@@ -20,10 +20,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 export default function Dashboard(props: DashboardProps) {
   const { dashboard } = useLoaderData<typeof loader>();
-  const { setDashboard } = useDashboard();
+  const { setDashboard, setPageName } = useNav();
 
   useEffect(() => {
     setDashboard(dashboard);
+    setPageName(dashboard.title);
   }, [dashboard]);
 
   return (

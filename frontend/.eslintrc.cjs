@@ -12,8 +12,10 @@ module.exports = {
     "no-unused-vars": "off"
   },
   parserOptions: {
+    "parser": "@typescript-eslint/parser",
     ecmaVersion: "latest",
     sourceType: "module",
+    extraFileExtensions: [".tsx"],
     ecmaFeatures: {
       jsx: true,
     },

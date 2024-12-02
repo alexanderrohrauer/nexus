@@ -3,10 +3,10 @@
 import * as React from "react";
 import {
   Blocks,
+  HomeIcon,
   Landmark,
   Library,
   MessageCircleQuestion,
-  Search,
   Settings2,
   Users,
 } from "lucide-react";
@@ -25,25 +25,29 @@ import { Routes } from "~/routes";
 const data = {
   navMain: [
     {
-      title: "Search",
-      url: "#",
-      icon: Search,
+      title: "Home",
+      url: Routes.Home,
+      icon: HomeIcon,
+      idPrefix: "_index",
     },
     {
       title: "Researchers",
       url: Routes.Researchers,
       icon: Users,
+      idPrefix: "researchers",
     },
     {
       title: "Works",
       url: Routes.Works,
       icon: Library,
+      idPrefix: "works",
     },
     {
       title: "Institutions",
       url: "#",
       icon: Landmark,
       badge: "10",
+      idPrefix: "institutions",
     },
   ],
   navSecondary: [

@@ -11,19 +11,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
-import { useDashboard } from "~/components/context/dashboard-context";
-import { useMemo } from "react";
+import { useNav } from "~/components/context/nav-context";
 import { Button } from "~/components/ui/button";
 import { Edit } from "lucide-react";
 import { AddVisualizationDialog } from "~/components/molecules/add-visualization-dialog";
 
 export function Nav(props: React.PropsWithChildren) {
-  const { dashboard } = useDashboard();
-
-  const title = useMemo(
-    () => (dashboard ? dashboard.title : "Page"),
-    [dashboard],
-  );
+  const { dashboard, pageName } = useNav();
 
   return (
     <SidebarProvider>
@@ -37,7 +31,7 @@ export function Nav(props: React.PropsWithChildren) {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbPage className="line-clamp-1">
-                    {title}
+                    {pageName}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>

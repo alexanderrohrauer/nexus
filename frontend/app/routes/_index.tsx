@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useNav } from "~/components/context/nav-context";
+import { useEffect } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -9,7 +10,9 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const d = useLoaderData();
-  console.log(d);
+  const { setPageName } = useNav();
+  useEffect(() => {
+    setPageName("Home");
+  }, []);
   return <div>Index page</div>;
 }
