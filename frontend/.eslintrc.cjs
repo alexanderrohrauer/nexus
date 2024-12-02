@@ -6,27 +6,9 @@
 
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
-  root: true,
+  extends: "@remix-run/eslint-config",
   rules: {
-    "@typescript-eslint/ban-ts-commen": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
     "no-unused-vars": "off"
   },
-  parserOptions: {
-    "parser": "@typescript-eslint/parser",
-    ecmaVersion: "latest",
-    sourceType: "module",
-    extraFileExtensions: [".tsx"],
-    ecmaFeatures: {
-      jsx: true,
-    },
-  },
-  env: {
-    browser: true,
-    commonjs: true,
-    es6: true,
-  },
-  ignorePatterns: ["!**/.server", "!**/.client"],
-
-  // Base config
-  extends: ["eslint:recommended"],
 };
