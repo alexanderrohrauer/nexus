@@ -10,7 +10,7 @@ import {
 } from "~/components/ui/dialog";
 import { InputField } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import {
+import type {
   SchemaCreateVisualizationRequest,
   SchemaDashboard,
 } from "~/lib/api/types";
@@ -19,8 +19,9 @@ import { useMutation } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
 import { Form, Formik } from "formik";
 import { useRevalidator } from "react-router";
-import { TextTooltip } from "~/components/molecules/TextTooltip";
-import { ComboboxField, ComboboxOption } from "~/components/ui/combobox";
+import { TextTooltip } from "~/components/molecules/text-tooltip";
+import type { ComboboxOption } from "~/components/ui/combobox";
+import { ComboboxField } from "~/components/ui/combobox";
 import { useToast } from "~/lib/toast";
 import { useRef } from "react";
 
@@ -54,7 +55,7 @@ export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
     mutationFn: (data: SchemaCreateVisualizationRequest) =>
       client.POST("/dashboards/{uuid}/visualizations", {
         body: data,
-        params: { path: { uuid: props.dashboard.uuid } },
+        params: { path: { uuid: props.dashboard.uuid! } },
       }),
     onSuccess: () => {
       revalidator.revalidate();
@@ -112,7 +113,6 @@ export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
                   type="number"
                   name="rows"
                   min={2}
-                  max={12}
                   placeholder="Rows"
                 />
                 <X size={40} />
@@ -120,7 +120,6 @@ export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
                   type="number"
                   name="columns"
                   min={2}
-                  max={12}
                   placeholder="Columns"
                 />
               </div>

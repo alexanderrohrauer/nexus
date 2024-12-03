@@ -1,11 +1,15 @@
-import React, { MouseEvent, useEffect, useRef, useState } from "react";
-import { SchemaVisualization } from "~/lib/api/types";
-import { Skeleton } from "~/components/ui/skeleton";
+import type { MouseEvent } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import type { SchemaDashboard, SchemaVisualization } from "~/lib/api/types";
 import { Popover, PopoverContent } from "~/components/ui/popover";
 import { isElementInViewport } from "~/lib/use-in-viewport";
+import { useQuery } from "@tanstack/react-query";
+import { client } from "~/lib/api/api-client";
+import { HighchartsVisualization } from "~/components/molecules/highcharts-visualization.client";
 
 interface VisualizationProps {
   visualization: SchemaVisualization;
+  dashboard: SchemaDashboard;
 }
 
 export function Visualization(props: VisualizationProps) {
@@ -40,15 +44,54 @@ export function Visualization(props: VisualizationProps) {
 
   const [open, setOpen] = useState(false);
 
+  const { data } = useQuery({
+    queryKey: ["visualization_data", props.visualization.uuid],
+    queryFn: () =>
+      client.GET(
+        "/dashboards/{uuid}/visualizations/{visualization_uuid}/data",
+        {
+          params: {
+            path: {
+              uuid: props.dashboard.uuid!,
+              visualization_uuid: props.visualization.uuid!,
+            },
+          },
+        },
+      ),
+  });
+
   return (
     <>
-      <Skeleton
+      {/*<Skeleton*/}
+      {/*  style={{*/}
+      {/*    gridRow: `span ${props.visualization.rows}`,*/}
+      {/*    gridColumn: `span ${props.visualization.columns}`,*/}
+      {/*  }}*/}
+      {/*  onClick={onClick}*/}
+      {/*/>*/}
+      <div
+        className="bg-[hsl(220_14.3%_95.9%)] rounded-lg"
         style={{
-          gridRow: `span ${props.visualization.rows} / span ${props.visualization.rows}`,
-          gridColumn: `span ${props.visualization.columns} / span ${props.visualization.columns}`,
+          gridRow: `span ${props.visualization.rows}`,
+          gridColumn: `span ${props.visualization.columns}`,
         }}
-        onClick={onClick}
-      />
+      >
+        {/*{data && (*/}
+        {/*  <VegaVisualization*/}
+        {/*    spec={data.data!.spec}*/}
+        {/*    data={data.data!.data}*/}
+        {/*    visualization={props.visualization}*/}
+        {/*  />*/}
+        {/*)}*/}
+        {data && (
+          <HighchartsVisualization
+            spec={data.data!.spec}
+            data={{}}
+            visualization={props.visualization}
+          />
+        )}
+      </div>
+
       <Popover open={open}>
         <PopoverContent
           className="w-80 fixed"

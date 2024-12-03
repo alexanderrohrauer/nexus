@@ -17,7 +17,7 @@ class Visualization(BaseModel):
 
 class Dashboard(Document):
     title: str = Field(min_length=1)
-    visualizations: list[Visualization] = Field(default=[])
+    visualizations: list[Visualization] = Field()
 
     class Settings:
         validate_on_save = True

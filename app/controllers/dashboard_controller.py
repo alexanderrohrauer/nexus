@@ -6,7 +6,7 @@ from fastapi import APIRouter
 from app.dtos.dashboard import CreateDashboardRequest, DashboardMinimal, CreateVisualizationRequest, \
     UpdateVisualizationRequest
 from app.models import Dashboard, Visualization
-from app.services import dashboard_service
+from app.services import dashboard_service, visualization_service
 
 router = APIRouter(
     prefix="/dashboards",
@@ -33,6 +33,10 @@ async def get_dashboard(uuid: UUID) -> Dashboard:
 async def delete_dashboard(uuid: UUID) -> None:
     await dashboard_service.delete_by_uuid(uuid)
 
+@router.get("/{uuid}/visualizations/{visualization_uuid}/data")
+async def get_visualization_data(uuid: UUID, visualization_uuid: UUID):
+    dashboard = await dashboard_service.find_by_uuid(uuid)
+    return await visualization_service.get_visualization_data(dashboard, visualization_uuid)
 
 @router.post("/{uuid}/visualizations")
 async def add_visualization(uuid: UUID, visualization: CreateVisualizationRequest):

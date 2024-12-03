@@ -40,6 +40,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/dashboards/{uuid}/visualizations/{visualization_uuid}/data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Visualization Data */
+        get: operations["get_visualization_data_dashboards__uuid__visualizations__visualization_uuid__data_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/dashboards/{uuid}/visualizations": {
         parameters: {
             query?: never;
@@ -109,15 +126,11 @@ export interface components {
             /**
              * Uuid
              * Format: uuid
-             * @default 4de2e531-cdc6-4a1d-98f4-912a43b94db4
              */
-            uuid: string;
+            uuid?: string;
             /** Title */
             title: string;
-            /**
-             * Visualizations
-             * @default []
-             */
+            /** Visualizations */
             visualizations: components["schemas"]["Visualization"][];
         };
         /** DashboardMinimal */
@@ -133,7 +146,7 @@ export interface components {
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
-            detail?: components["schemas"]["ValidationError"][];
+            detail: components["schemas"]["ValidationError"][];
         };
         /** UpdateVisualizationRequest */
         UpdateVisualizationRequest: {
@@ -160,9 +173,8 @@ export interface components {
             /**
              * Uuid
              * Format: uuid
-             * @default e64b5fb1-72b4-4dba-8df0-44bf4cd95e9e
              */
-            uuid: string;
+            uuid?: string;
             /** Title */
             title: string;
             /** Rows */
@@ -284,6 +296,38 @@ export interface operations {
             header?: never;
             path: {
                 uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_visualization_data_dashboards__uuid__visualizations__visualization_uuid__data_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+                visualization_uuid: string;
             };
             cookie?: never;
         };
