@@ -3,9 +3,12 @@ import { VisualizationFrame } from "~/components/molecules/visualization-frame";
 import type { SchemaVisualization } from "~/lib/api/types";
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
+// TODO lazy loading
 import "highcharts/highcharts-more";
 import "highcharts/modules/mouse-wheel-zoom";
 import "highcharts/modules/networkgraph";
+import "highcharts/modules/venn";
+import "highcharts/modules/wordcloud";
 
 interface VegaVisualizationProps {
   spec: any;

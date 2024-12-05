@@ -1,166 +1,346 @@
 const data = {
-    chart: {
-        type: 'networkgraph',
-        height: '100%'
-    },
-    title: {
-        text: 'The Indo-European Language Tree',
-        align: 'left'
-    },
-    subtitle: {
-        text: 'A Force-Directed Network Graph in Highcharts',
-        align: 'left'
-    },
-    plotOptions: {
-        networkgraph: {
-            keys: ['from', 'to'],
-            layoutAlgorithm: {
-                enableSimulation: true,
-                friction: -0.9
-            }
+    accessibility: {
+        screenReaderSection: {
+            beforeChartFormat: '<h5>{chartTitle}</h5>' +
+                '<div>{chartSubtitle}</div>' +
+                '<div>{chartLongdesc}</div>' +
+                '<div>{viewTableButton}</div>'
         }
     },
     series: [{
-        accessibility: {
-            enabled: false
-        },
-        dataLabels: {
-            enabled: true,
-            linkFormat: '',
-            style: {
-                fontSize: '0.8em',
-                fontWeight: 'normal'
-            }
-        },
-        id: 'lang-tree',
+        type: 'wordcloud',
         data: [
-            ['Proto Indo-European', 'Balto-Slavic'],
-            ['Proto Indo-European', 'Germanic'],
-            ['Proto Indo-European', 'Celtic'],
-            ['Proto Indo-European', 'Italic'],
-            ['Proto Indo-European', 'Hellenic'],
-            ['Proto Indo-European', 'Anatolian'],
-            ['Proto Indo-European', 'Indo-Iranian'],
-            ['Proto Indo-European', 'Tocharian'],
-            ['Indo-Iranian', 'Dardic'],
-            ['Indo-Iranian', 'Indic'],
-            ['Indo-Iranian', 'Iranian'],
-            ['Iranian', 'Old Persian'],
-            ['Old Persian', 'Middle Persian'],
-            ['Indic', 'Sanskrit'],
-            ['Italic', 'Osco-Umbrian'],
-            ['Italic', 'Latino-Faliscan'],
-            ['Latino-Faliscan', 'Latin'],
-            ['Celtic', 'Brythonic'],
-            ['Celtic', 'Goidelic'],
-            ['Germanic', 'North Germanic'],
-            ['Germanic', 'West Germanic'],
-            ['Germanic', 'East Germanic'],
-            ['North Germanic', 'Old Norse'],
-            ['North Germanic', 'Old Swedish'],
-            ['North Germanic', 'Old Danish'],
-            ['West Germanic', 'Old English'],
-            ['West Germanic', 'Old Frisian'],
-            ['West Germanic', 'Old Dutch'],
-            ['West Germanic', 'Old Low German'],
-            ['West Germanic', 'Old High German'],
-            ['Old Norse', 'Old Icelandic'],
-            ['Old Norse', 'Old Norwegian'],
-            ['Old Norwegian', 'Middle Norwegian'],
-            ['Old Swedish', 'Middle Swedish'],
-            ['Old Danish', 'Middle Danish'],
-            ['Old English', 'Middle English'],
-            ['Old Dutch', 'Middle Dutch'],
-            ['Old Low German', 'Middle Low German'],
-            ['Old High German', 'Middle High German'],
-            ['Balto-Slavic', 'Baltic'],
-            ['Balto-Slavic', 'Slavic'],
-            ['Slavic', 'East Slavic'],
-            ['Slavic', 'West Slavic'],
-            ['Slavic', 'South Slavic'],
-            // Leaves:
-            ['Proto Indo-European', 'Phrygian'],
-            ['Proto Indo-European', 'Armenian'],
-            ['Proto Indo-European', 'Albanian'],
-            ['Proto Indo-European', 'Thracian'],
-            ['Tocharian', 'Tocharian A'],
-            ['Tocharian', 'Tocharian B'],
-            ['Anatolian', 'Hittite'],
-            ['Anatolian', 'Palaic'],
-            ['Anatolian', 'Luwic'],
-            ['Anatolian', 'Lydian'],
-            ['Iranian', 'Balochi'],
-            ['Iranian', 'Kurdish'],
-            ['Iranian', 'Pashto'],
-            ['Iranian', 'Sogdian'],
-            ['Old Persian', 'Pahlavi'],
-            ['Middle Persian', 'Persian'],
-            ['Hellenic', 'Greek'],
-            ['Dardic', 'Dard'],
-            ['Sanskrit', 'Sindhi'],
-            ['Sanskrit', 'Romani'],
-            ['Sanskrit', 'Urdu'],
-            ['Sanskrit', 'Hindi'],
-            ['Sanskrit', 'Bihari'],
-            ['Sanskrit', 'Assamese'],
-            ['Sanskrit', 'Bengali'],
-            ['Sanskrit', 'Marathi'],
-            ['Sanskrit', 'Gujarati'],
-            ['Sanskrit', 'Punjabi'],
-            ['Sanskrit', 'Sinhalese'],
-            ['Osco-Umbrian', 'Umbrian'],
-            ['Osco-Umbrian', 'Oscan'],
-            ['Latino-Faliscan', 'Faliscan'],
-            ['Latin', 'Portugese'],
-            ['Latin', 'Spanish'],
-            ['Latin', 'French'],
-            ['Latin', 'Romanian'],
-            ['Latin', 'Italian'],
-            ['Latin', 'Catalan'],
-            ['Latin', 'Franco-Provençal'],
-            ['Latin', 'Rhaeto-Romance'],
-            ['Brythonic', 'Welsh'],
-            ['Brythonic', 'Breton'],
-            ['Brythonic', 'Cornish'],
-            ['Brythonic', 'Cuymbric'],
-            ['Goidelic', 'Modern Irish'],
-            ['Goidelic', 'Scottish Gaelic'],
-            ['Goidelic', 'Manx'],
-            ['East Germanic', 'Gothic'],
-            ['Middle Low German', 'Low German'],
-            ['Middle High German', '(High) German'],
-            ['Middle High German', 'Yiddish'],
-            ['Middle English', 'English'],
-            ['Middle Dutch', 'Hollandic'],
-            ['Middle Dutch', 'Flemish'],
-            ['Middle Dutch', 'Dutch'],
-            ['Middle Dutch', 'Limburgish'],
-            ['Middle Dutch', 'Brabantian'],
-            ['Middle Dutch', 'Rhinelandic'],
-            ['Old Frisian', 'Frisian'],
-            ['Middle Danish', 'Danish'],
-            ['Middle Swedish', 'Swedish'],
-            ['Middle Norwegian', 'Norwegian'],
-            ['Old Norse', 'Faroese'],
-            ['Old Icelandic', 'Icelandic'],
-            ['Baltic', 'Old Prussian'],
-            ['Baltic', 'Lithuanian'],
-            ['Baltic', 'Latvian'],
-            ['West Slavic', 'Polish'],
-            ['West Slavic', 'Slovak'],
-            ['West Slavic', 'Czech'],
-            ['West Slavic', 'Wendish'],
-            ['East Slavic', 'Bulgarian'],
-            ['East Slavic', 'Old Church Slavonic'],
-            ['East Slavic', 'Macedonian'],
-            ['East Slavic', 'Serbo-Croatian'],
-            ['East Slavic', 'Slovene'],
-            ['South Slavic', 'Russian'],
-            ['South Slavic', 'Ukrainian'],
-            ['South Slavic', 'Belarusian'],
-            ['South Slavic', 'Rusyn']
-        ]
-    }]
+            {
+                "name": "Chapter",
+                "weight": 1
+            },
+            {
+                "name": "Down",
+                "weight": 1
+            },
+            {
+                "name": "the",
+                "weight": 8
+            },
+            {
+                "name": "Rabbit-Hole",
+                "weight": 1
+            },
+            {
+                "name": "Alice",
+                "weight": 2
+            },
+            {
+                "name": "was",
+                "weight": 3
+            },
+            {
+                "name": "beginning",
+                "weight": 1
+            },
+            {
+                "name": "to",
+                "weight": 2
+            },
+            {
+                "name": "get",
+                "weight": 1
+            },
+            {
+                "name": "very",
+                "weight": 2
+            },
+            {
+                "name": "tired",
+                "weight": 1
+            },
+            {
+                "name": "of",
+                "weight": 5
+            },
+            {
+                "name": "sitting",
+                "weight": 1
+            },
+            {
+                "name": "by",
+                "weight": 2
+            },
+            {
+                "name": "her",
+                "weight": 5
+            },
+            {
+                "name": "sister",
+                "weight": 2
+            },
+            {
+                "name": "on",
+                "weight": 1
+            },
+            {
+                "name": "bank",
+                "weight": 1
+            },
+            {
+                "name": "and",
+                "weight": 4
+            },
+            {
+                "name": "having",
+                "weight": 1
+            },
+            {
+                "name": "nothing",
+                "weight": 1
+            },
+            {
+                "name": "do",
+                "weight": 1
+            },
+            {
+                "name": "once",
+                "weight": 1
+            },
+            {
+                "name": "or",
+                "weight": 3
+            },
+            {
+                "name": "twice",
+                "weight": 1
+            },
+            {
+                "name": "she",
+                "weight": 3
+            },
+            {
+                "name": "had",
+                "weight": 2
+            },
+            {
+                "name": "peeped",
+                "weight": 1
+            },
+            {
+                "name": "into",
+                "weight": 1
+            },
+            {
+                "name": "book",
+                "weight": 2
+            },
+            {
+                "name": "reading",
+                "weight": 1
+            },
+            {
+                "name": "but",
+                "weight": 1
+            },
+            {
+                "name": "it",
+                "weight": 2
+            },
+            {
+                "name": "no",
+                "weight": 1
+            },
+            {
+                "name": "pictures",
+                "weight": 2
+            },
+            {
+                "name": "conversations",
+                "weight": 1
+            },
+            {
+                "name": "in",
+                "weight": 2
+            },
+            {
+                "name": "what",
+                "weight": 1
+            },
+            {
+                "name": "is",
+                "weight": 1
+            },
+            {
+                "name": "use",
+                "weight": 1
+            },
+            {
+                "name": "a",
+                "weight": 3
+            },
+            {
+                "name": "thought",
+                "weight": 1
+            },
+            {
+                "name": "without",
+                "weight": 1
+            },
+            {
+                "name": "conversationSo",
+                "weight": 1
+            },
+            {
+                "name": "considering",
+                "weight": 1
+            },
+            {
+                "name": "own",
+                "weight": 1
+            },
+            {
+                "name": "mind",
+                "weight": 1
+            },
+            {
+                "name": "as",
+                "weight": 2
+            },
+            {
+                "name": "well",
+                "weight": 1
+            },
+            {
+                "name": "could",
+                "weight": 1
+            },
+            {
+                "name": "for",
+                "weight": 1
+            },
+            {
+                "name": "hot",
+                "weight": 1
+            },
+            {
+                "name": "day",
+                "weight": 1
+            },
+            {
+                "name": "made",
+                "weight": 1
+            },
+            {
+                "name": "feel",
+                "weight": 1
+            },
+            {
+                "name": "sleepy",
+                "weight": 1
+            },
+            {
+                "name": "stupid",
+                "weight": 1
+            },
+            {
+                "name": "whether",
+                "weight": 1
+            },
+            {
+                "name": "pleasure",
+                "weight": 1
+            },
+            {
+                "name": "making",
+                "weight": 1
+            },
+            {
+                "name": "daisy-chain",
+                "weight": 1
+            },
+            {
+                "name": "would",
+                "weight": 1
+            },
+            {
+                "name": "be",
+                "weight": 1
+            },
+            {
+                "name": "worth",
+                "weight": 1
+            },
+            {
+                "name": "trouble",
+                "weight": 1
+            },
+            {
+                "name": "getting",
+                "weight": 1
+            },
+            {
+                "name": "up",
+                "weight": 1
+            },
+            {
+                "name": "picking",
+                "weight": 1
+            },
+            {
+                "name": "daisies",
+                "weight": 1
+            },
+            {
+                "name": "when",
+                "weight": 1
+            },
+            {
+                "name": "suddenly",
+                "weight": 1
+            },
+            {
+                "name": "White",
+                "weight": 1
+            },
+            {
+                "name": "Rabbit",
+                "weight": 1
+            },
+            {
+                "name": "with",
+                "weight": 1
+            },
+            {
+                "name": "pink",
+                "weight": 1
+            },
+            {
+                "name": "eyes",
+                "weight": 1
+            },
+            {
+                "name": "ran",
+                "weight": 1
+            },
+            {
+                "name": "close",
+                "weight": 1
+            },
+            {
+                "name": "",
+                "weight": 1
+            }
+        ],
+        name: 'Occurrences'
+    }],
+    title: {
+        text: 'Wordcloud of Alice\'s Adventures in Wonderland',
+        align: 'left'
+    },
+    subtitle: {
+        text: 'An excerpt from chapter 1: Down the Rabbit-Hole',
+        align: 'left'
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size: 16px"><b>{point.name}</b>' +
+            '</span><br>'
+    }
 }
 
 console.log(JSON.stringify(data, null, 4))

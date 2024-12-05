@@ -70,7 +70,7 @@ export function Visualization(props: VisualizationProps) {
       {/*  onClick={onClick}*/}
       {/*/>*/}
       <div
-        className="bg-[hsl(220_14.3%_95.9%)] rounded-lg"
+        className="bg-muted rounded-lg"
         style={{
           gridRow: `span ${props.visualization.rows}`,
           gridColumn: `span ${props.visualization.columns}`,

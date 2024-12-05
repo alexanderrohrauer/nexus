@@ -36,13 +36,15 @@ export function VegaVisualization(props: VegaVisualizationProps) {
   const ref = useRef(null);
   return (
     <VisualizationFrame visualization={props.visualization}>
-      <Vega
-        spec={props.spec}
-        data={props.data}
-        renderer="svg"
-        className="vega-wrapper z-10"
-        ref={ref}
-      />
+      <div className="bg-[hsl(220_14.3%_95.9%)]">
+        <Vega
+          spec={props.spec}
+          data={props.data}
+          renderer="svg"
+          className="vega-wrapper z-10"
+          ref={ref}
+        />
+      </div>
     </VisualizationFrame>
   );
 }
