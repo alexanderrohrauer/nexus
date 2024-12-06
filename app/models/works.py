@@ -34,5 +34,3 @@ class Work(EditableDocument):
     openalex_meta: Optional[dict] = Field(default={})
     orcid_meta: Optional[dict] = Field(default={})
     dblp_meta: Optional[dict] = Field(default={})
-    imported_at: datetime = Field(default_factory=datetime.now)
-    manually_updated_at: Optional[datetime]
