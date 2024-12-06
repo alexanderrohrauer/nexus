@@ -7,7 +7,9 @@ from fastapi import APIRouter, HTTPException
 from app.dtos.import_task import ImportJob, ImportTask, CreateImportTaskRequest, UpdateImportTaskRequest, \
     ResetCursorsRequest
 from app.models.import_config import ImportCursor
-from app.scheduled.scheduler import scheduler, ImportJobId, import_job_map
+from app.scheduled.import_jobs import import_job_map
+from app.scheduled.models import ImportJobId
+from app.scheduled.scheduler import scheduler
 
 router = APIRouter(
     prefix="/import-task",
@@ -32,10 +34,7 @@ def get_import_task():
 
 
 def find_job_by_id(id: ImportJobId):
-    try:
-        return scheduler.get_job(id.value)
-    except StopIteration:
-        return None
+    return scheduler.get_job(id.value)
 
 
 @router.post("")
@@ -85,7 +84,7 @@ def reset_cursors(dto: ResetCursorsRequest):
     for job_id in dto.jobs:
         found_job = find_job_by_id(job_id)
         found_job.kwargs["cursor"] = ImportCursor().model_dump()
-        found_job.modify(kwargs=found_job.kwargs["cursor"])
+        found_job.modify(kwargs=found_job.kwargs)
 
 
 @router.post("/run")

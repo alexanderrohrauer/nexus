@@ -2,7 +2,7 @@ from pydantic import Field, BaseModel
 from pydantic.dataclasses import dataclass
 
 from app.models.import_config import ImportCursor
-from app.scheduled.scheduler import ImportJobId
+from app.scheduled.models import ImportJobId
 
 
 @dataclass
@@ -31,6 +31,7 @@ class CreateImportTaskRequest(BaseModel):
     cron_expr: str
     n_batches: int = Field(gt=0, lt=501)
     keywords: list[str]
+
 
 class ResetCursorsRequest(BaseModel):
     jobs: list[ImportJobId]

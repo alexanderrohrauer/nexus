@@ -1,3 +1,5 @@
+from app.models.researchers import Researcher
 from app.models.visualizations import Visualization, Dashboard
+from app.models.works import Work
 
-models = [Dashboard]
+models = [Dashboard, Work, Researcher]
