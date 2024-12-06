@@ -12,4 +12,4 @@ class Document(beanie.Document):
 
 class EditableDocument(Document):
     imported_at: datetime = Field(default_factory=datetime.now)
-    manually_updated_at: Optional[datetime]
+    manually_updated_at: Optional[datetime] = None

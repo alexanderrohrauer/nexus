@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import Optional
 
 from beanie import Link
@@ -9,28 +9,29 @@ from app.models.researchers import Researcher
 
 
 class ExternalId(BaseModel):
-    openalex: Optional[str]
-    orcid: Optional[str]
-    dblp: Optional[str]
-    doi: Optional[str]
+    openalex: Optional[str] = None
+    orcid: Optional[str] = None
+    dblp: Optional[str] = None
+    doi: Optional[str] = None
 
 
 class WorkType(BaseModel):
-    openalex: Optional[str]
-    orcid: Optional[str]
-    dblp: Optional[str]
+    openalex: Optional[str] = None
+    orcid: Optional[str] = None
+    dblp: Optional[str] = None
 
 
+# TODO maybe cite information (and take the newer/higher one)
 class Work(EditableDocument):
     external_id: ExternalId
     title: str
     type: WorkType
     publication_year: int
-    publication_date: Optional[datetime]
+    publication_date: Optional[date] = None
     keywords: list[str]
     authors: list[Link[Researcher]]
-    language: Optional[str]
-    open_access: Optional[bool]
+    language: Optional[str] = None
+    open_access: Optional[bool] = None
     openalex_meta: Optional[dict] = Field(default={})
     orcid_meta: Optional[dict] = Field(default={})
     dblp_meta: Optional[dict] = Field(default={})

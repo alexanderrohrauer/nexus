@@ -5,6 +5,8 @@ from app.utils.text_utils import parse_openalex_id
 OPENALEX_URL = "https://api.openalex.org"
 
 
+# TODO maybe use https://pypi.org/project/cacheproxy/
+
 async def fetch_topic_ids(keywords: list[str]):
     result = []
     for keyword in keywords:
