@@ -329,11 +329,6 @@ mock_data = {
                             "property": "y",
                             "operator": ">",
                             "value": 250
-                        },
-                        "style": {
-                            "color": "black",
-                            "textOutline": "none",
-                            "fontWeight": "normal"
                         }
                     }
                 }
@@ -344,8 +339,7 @@ mock_data = {
                     "data": [
                         {
                             "name": "Germany",
-                            "value": 673.6,
-                            "id": 1
+                            "value": 673.6
                         },
                         {
                             "name": "Croatia",

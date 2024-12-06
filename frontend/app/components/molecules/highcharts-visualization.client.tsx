@@ -6,6 +6,8 @@ import Highcharts from "highcharts";
 // TODO lazy loading
 import "highcharts/highcharts-more";
 import "highcharts/modules/mouse-wheel-zoom";
+import "highcharts/modules/accessibility";
+import "highcharts/modules/exporting";
 import "highcharts/modules/networkgraph";
 import "highcharts/modules/venn";
 import "highcharts/modules/wordcloud";
@@ -25,6 +27,7 @@ export function HighchartsVisualization(props: VegaVisualizationProps) {
           ...props.spec,
           chart: {
             ...props.spec.chart,
+            // styledMode: true,
             zooming: {
               type: "x",
               mouseWheel: { enabled: true },
