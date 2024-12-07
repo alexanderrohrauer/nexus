@@ -1,8 +1,7 @@
 from pydantic import Field, BaseModel
 from pydantic.dataclasses import dataclass
 
-from app.models.import_config import ImportCursor
-from app.scheduled.models import ImportJobId
+from app.scheduled.models import ImportJobId, ImportCursor
 
 
 @dataclass

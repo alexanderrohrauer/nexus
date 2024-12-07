@@ -12,4 +12,5 @@ class Document(beanie.Document):
 
 class EditableDocument(Document):
     imported_at: datetime = Field(default_factory=datetime.now)
+    # TODO set at manual write
     manually_updated_at: Optional[datetime] = None

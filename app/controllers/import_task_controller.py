@@ -6,9 +6,8 @@ from fastapi import APIRouter, HTTPException
 
 from app.dtos.import_task import ImportJob, ImportTask, CreateImportTaskRequest, UpdateImportTaskRequest, \
     ResetCursorsRequest
-from app.models.import_config import ImportCursor
 from app.scheduled.import_jobs import import_job_map
-from app.scheduled.models import ImportJobId
+from app.scheduled.models import ImportJobId, ImportCursor
 from app.scheduled.scheduler import scheduler
 
 router = APIRouter(

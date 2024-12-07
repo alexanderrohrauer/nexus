@@ -21,7 +21,7 @@ class WorkType(BaseModel):
     dblp: Optional[str] = None
 
 
-# TODO maybe cite information (and take the newer/higher one)
+# TODO maybe cite information (and take the newer/higher one), doi on root level, related works
 class Work(EditableDocument):
     external_id: ExternalId
     title: str
@@ -35,3 +35,6 @@ class Work(EditableDocument):
     openalex_meta: Optional[dict] = Field(default={})
     orcid_meta: Optional[dict] = Field(default={})
     dblp_meta: Optional[dict] = Field(default={})
+
+    class Settings:
+        validate_on_save = True
