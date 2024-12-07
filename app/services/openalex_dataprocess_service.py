@@ -2,7 +2,7 @@ from datetime import date
 
 from app.models import Work, Researcher
 from app.models.researchers import ResearcherExternalId
-from app.models.works import ExternalId, WorkType
+from app.models.works import WorkExternalId, WorkType
 from app.utils.text_utils import parse_openalex_id
 
 
@@ -16,7 +16,7 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
             author_id = parse_openalex_id(author["author"]["id"])
             author_links.append(next(a for a in authors if a.external_id.openalex == author_id).id)
         parsed = Work(
-            external_id=ExternalId(openalex=parse_openalex_id(work["id"])),
+            external_id=WorkExternalId(openalex=parse_openalex_id(work["id"])),
             title=work["title"],
             type=WorkType(openalex=work["type"]),
             publication_year=int(work["publication_year"]),

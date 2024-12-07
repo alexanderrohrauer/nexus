@@ -8,7 +8,7 @@ from app.db.models import EditableDocument
 from app.models.researchers import Researcher
 
 
-class ExternalId(BaseModel):
+class WorkExternalId(BaseModel):
     openalex: Optional[str] = None
     orcid: Optional[str] = None
     dblp: Optional[str] = None
@@ -23,7 +23,7 @@ class WorkType(BaseModel):
 
 # TODO maybe cite information (and take the newer/higher one), doi on root level, related works
 class Work(EditableDocument):
-    external_id: ExternalId
+    external_id: WorkExternalId
     title: str
     type: WorkType
     publication_year: int
