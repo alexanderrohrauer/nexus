@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import HTTPException
 
-from app.models import Dashboard
+from app.models import Dashboard, Work
 
 # TODO remove
 # mock_data =  {
@@ -858,7 +858,12 @@ mock_data = {
                     ],
                     "layoutAlgorithm": {
                         "enableSimulation": True,
-                        "friction": -0.9
+                        "friction": -0.9,
+                        "repulsion": 200,
+                        "linkLength": 20
+                    },
+                    "marker": {
+                        "radius": 8
                     }
                 }
             },
@@ -1928,8 +1933,16 @@ mock_data = {
 async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID):
     try:
         visualization = next(v for v in dashboard.visualizations if v.uuid == visualization_uuid)
+        spec = mock_data[visualization.visualization][0]
+        if visualization.visualization == "vis-4":
+            works = await Work.find_all(fetch_links=True, limit=30).to_list()
+            base = works[0].authors[0]
+            data = []
+            for w in works:
+                data = data + [[base.full_name, a.full_name] for a in filter(lambda x: x.id != base.id, w.authors)]
+            spec["series"][0]["data"] = data
         return {
-            "spec": mock_data[visualization.visualization][0],
+            "spec": spec,
             "data": mock_data[visualization.visualization][1]
         }
     except StopIteration:

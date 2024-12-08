@@ -24,6 +24,7 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
                 logger.error(f"Author with id " + author_id + " not found in work " + work["id"])
                 continue
         parsed = Work(
+            # TODO add doi here
             external_id=WorkExternalId(openalex=parse_openalex_id(work["id"])),
             title=work["title"],
             type=WorkType(openalex=work["type"]),
@@ -57,6 +58,7 @@ def restructure_authors(authors: list[dict], institutions: list[Institution]):
             institution_id = parse_openalex_id(author["last_known_institutions"][0]["id"])
             institution = next(i for i in institutions if i.external_id.openalex == institution_id)
         parsed = Researcher(
+            # TODO add ORCID here
             external_id=ResearcherExternalId(openalex=parse_openalex_id(author["id"])),
             full_name=author["display_name"],
             alternative_names=author["display_name_alternatives"],
@@ -73,6 +75,7 @@ def restructure_institutions(institutions: list[dict]):
     result = []
     for institution in institutions:
         parsed = Institution(
+            # TODO add ROR etc here
             external_id=InstitutionExternalId(openalex=parse_openalex_id(institution["id"])),
             name=institution["display_name"],
             acronyms=institution["display_name_acronyms"],
