@@ -22,6 +22,7 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
                 author_links.append(next(a for a in authors if a.external_id.openalex == author_id).id)
             except StopIteration:
                 logger.error(f"Author with id " + author_id + " not found in work " + work["id"])
+                continue
         parsed = Work(
             external_id=WorkExternalId(openalex=parse_openalex_id(work["id"])),
             title=work["title"],
@@ -51,6 +52,7 @@ def restructure_authors(authors: list[dict], institutions: list[Institution]):
                 affiliations.append(Affiliation(years=affiliation["years"], type=i_type, institution=institution.id))
             except StopIteration:
                 logger.error(f"Institution with id " + institution_id + " not found in author " + author["id"])
+                continue
         if len(author["last_known_institutions"]) > 0:
             institution_id = parse_openalex_id(author["last_known_institutions"][0]["id"])
             institution = next(i for i in institutions if i.external_id.openalex == institution_id)
