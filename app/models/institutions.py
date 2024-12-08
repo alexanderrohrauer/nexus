@@ -15,6 +15,7 @@ class InstitutionExternalId(BaseModel):
     wikipedia: Optional[str] = None
     wikidata: Optional[str] = None
 
+
 class Institution(EditableDocument):
     external_id: InstitutionExternalId
     name: str
@@ -24,7 +25,8 @@ class Institution(EditableDocument):
     city: Optional[str] = None
     region: Optional[str] = None
     country: Optional[str] = Field(description="Is the country code", default=None)
-    location: Annotated[Optional[Tuple[float, float]], Indexed(index_type=pymongo.GEO2D)] = Field(default=None, description="Long-Lat")
+    location: Annotated[Optional[Tuple[float, float]], Indexed(index_type=pymongo.GEOSPHERE)] = Field(default=None,
+                                                                                                      description="Long-Lat")
     homepage_url: Optional[HttpUrl] = None
     image_url: Optional[HttpUrl] = None
     # TODO maybe do UUIDs some day:
@@ -34,7 +36,6 @@ class Institution(EditableDocument):
     openalex_meta: Optional[dict] = Field(default={})
     orcid_meta: Optional[dict] = Field(default={})
     dblp_meta: Optional[dict] = Field(default={})
-
 
     class Settings:
         validate_on_save = True

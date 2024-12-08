@@ -18,8 +18,8 @@ class ResearcherExternalId(BaseModel):
 
 
 class AffiliationType(Enum):
-    EDUCATION: str
-    EMPLOYMENT: str
+    EDUCATION = "EDUCATION"
+    EMPLOYMENT = "EMPLOYMENT"
 
 
 class Affiliation(BaseModel):
