@@ -5,3 +5,4 @@ frontend/.cache
 frontend/build
 frontend/.env
 /data/
+/openalex_cache.sqlite

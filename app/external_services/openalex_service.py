@@ -1,7 +1,7 @@
 import logging
 
-import aiohttp
 import pydash as _
+from aiohttp_client_cache import CachedSession, SQLiteBackend
 
 from app.utils.text_utils import parse_openalex_id
 
@@ -13,30 +13,36 @@ logger = logging.getLogger("uvicorn.error")
 
 
 # TODO maybe use https://pypi.org/project/cacheproxy/
+# TODO config (1day)
+class OpenAlexSession(CachedSession):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs, headers={"User-Agent": "mailto:k12105578@students.jku.at"},
+                         cache=SQLiteBackend('openalex_cache', expire_after=60 * 60 * 24))
+
 
 async def fetch_topic_ids(keywords: list[str]):
     result = []
     for keyword in keywords:
         params = {"filter": f"default.search:{keyword}", "per-page": 1}
-        session: aiohttp.ClientSession
-        async with aiohttp.ClientSession() as session:
+        async with OpenAlexSession() as session:
             logging.debug("Fetching topics...")
-            async with session.get(f"{OPENALEX_URL}/topics", params=params) as response:
-                result.append(parse_openalex_id((await response.json())["results"][0]["id"]))
+            response = await session.get(f"{OPENALEX_URL}/topics", params=params)
+            body = await response.json()
+            topic = body["results"][0]
+            logger.info(f"Adding topic {topic['display_name']}")
+            result.append(parse_openalex_id(topic["id"]))
     return result
 
 
-# TODO add user agent everywhere
 async def fetch_works(topic_ids: list[str], page: int, page_size: int):
     topic_expr = "|".join(topic_ids)
     params = {"filter": f"topics.id:{topic_expr}", "page": page, "per-page": page_size,
               "sort": "publication_year:desc"}
-    session: aiohttp.ClientSession
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f"{OPENALEX_URL}/works", params=params) as response:
-            logging.debug("Fetching works...")
-            body = await response.json()
-            result = body["results"]
+    async with OpenAlexSession() as session:
+        response = await session.get(f"{OPENALEX_URL}/works", params=params)
+        logging.debug("Fetching works...")
+        body = await response.json()
+        result = body["results"]
     return result
 
 
@@ -49,11 +55,10 @@ async def fetch_authors_for_works(works: list[dict]) -> list[dict]:
     for chunk in author_id_chunks:
         chunk_expr = "|".join(chunk)
         params = {"filter": f"ids.openalex:{chunk_expr}", "per-page": OPENALEX_AUTHOR_BATCH_SIZE}
-        session: aiohttp.ClientSession
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"{OPENALEX_URL}/authors", params=params) as response:
-                logging.debug("Fetching authors...")
-                body = await response.json()
+        async with OpenAlexSession() as session:
+            response = await session.get(f"{OPENALEX_URL}/authors", params=params)
+            logging.debug("Fetching authors...")
+            body = await response.json()
         authors = authors + body["results"]
     return authors
 
@@ -69,10 +74,9 @@ async def fetch_institutions_for_authors(authors: list[dict]) -> list[dict]:
     for chunk in institution_id_chunks:
         chunk_expr = "|".join(chunk)
         params = {"filter": f"ids.openalex:{chunk_expr}", "per-page": OPENALEX_AUTHOR_BATCH_SIZE}
-        session: aiohttp.ClientSession
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"{OPENALEX_URL}/institutions", params=params) as response:
-                logging.debug("Fetching institution...")
-                body = await response.json()
+        async with OpenAlexSession() as session:
+            response = await session.get(f"{OPENALEX_URL}/institutions", params=params)
+            logging.debug("Fetching institution...")
+            body = await response.json()
         institutions = institutions + body["results"]
     return institutions
