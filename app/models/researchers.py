@@ -31,14 +31,14 @@ class Affiliation(BaseModel):
 class Researcher(EditableDocument):
     external_id: ResearcherExternalId
     full_name: str
-    alternative_names: list[str]
-    affiliations: list[Affiliation]
+    alternative_names: Optional[list[str]] = None
+    affiliations: Optional[list[Affiliation]] = None
     institution: Optional[Link[Institution]] = None
     country: Optional[str] = None
-    topic_keywords: list[str]
-    openalex_meta: Optional[dict] = Field(default={})
-    orcid_meta: Optional[dict] = Field(default={})
-    dblp_meta: Optional[dict] = Field(default={})
+    topic_keywords: Optional[list[str]] = None
+    openalex_meta: Optional[dict] = Field(default=None)
+    orcid_meta: Optional[dict] = Field(default=None)
+    dblp_meta: Optional[dict] = Field(default=None)
 
     class Settings:
         validate_on_save = True

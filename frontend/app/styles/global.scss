@@ -3,3 +3,13 @@
 //:root {
 //  --highcharts-background-color: theme("colors.muted.DEFAULT");
 //}
+
+.glass {
+ background: white;
+  color: black;
+}
+
+.glass::selection {
+  background: Highlight !important;
+  color: inherit !important;
+}

@@ -33,9 +33,9 @@ class Institution(EditableDocument):
     parent_institutions_ids: list[str]
     type: str
     topic_keywords: list[str]
-    openalex_meta: Optional[dict] = Field(default={})
-    orcid_meta: Optional[dict] = Field(default={})
-    dblp_meta: Optional[dict] = Field(default={})
+    openalex_meta: Optional[dict] = Field(default=None)
+    orcid_meta: Optional[dict] = Field(default=None)
+    dblp_meta: Optional[dict] = Field(default=None)
 
     class Settings:
         validate_on_save = True
