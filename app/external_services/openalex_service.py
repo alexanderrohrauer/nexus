@@ -13,11 +13,11 @@ logger = logging.getLogger("uvicorn.error")
 
 
 # TODO maybe use https://pypi.org/project/cacheproxy/
-# TODO config (1day)
+# TODO config (1day * 7)
 class OpenAlexSession(CachedSession):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs, headers={"User-Agent": "mailto:k12105578@students.jku.at"},
-                         cache=SQLiteBackend('openalex_cache', expire_after=60 * 60 * 24))
+                         cache=SQLiteBackend('openalex_cache', expire_after=60 * 60 * 24 * 7))
 
 
 async def fetch_topic_ids(keywords: list[str]):

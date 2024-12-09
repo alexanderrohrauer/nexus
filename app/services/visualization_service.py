@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import HTTPException
 
-from app.models import Dashboard, Work
+from app.models import Dashboard, Work, Institution
 
 # TODO remove
 # mock_data =  {
@@ -1926,6 +1926,9 @@ mock_data = {
             }
         },
         []
+    ],
+    "vis-7": [
+        {},[]
     ]
 }
 
@@ -1934,6 +1937,7 @@ async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID)
     try:
         visualization = next(v for v in dashboard.visualizations if v.uuid == visualization_uuid)
         spec = mock_data[visualization.visualization][0]
+        data = mock_data[visualization.visualization][1]
         if visualization.visualization == "vis-4":
             works = await Work.find_all(fetch_links=True, limit=30).to_list()
             base = works[0].authors[0]
@@ -1941,9 +1945,13 @@ async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID)
             for w in works:
                 data = data + [[base.full_name, a.full_name] for a in filter(lambda x: x.id != base.id, w.authors)]
             spec["series"][0]["data"] = data
+        if visualization.visualization == "vis-7":
+            institutions = await Institution.find_all().to_list()
+            data = [{"type": "marker", "data": [{"id": i.uuid, "name": i.name, "position": i.location} for i in institutions]}]
         return {
             "spec": spec,
-            "data": mock_data[visualization.visualization][1]
+            "data": data,
+            "type": "Highcharts" if visualization.visualization != "vis-7" else "Leaflet"
         }
     except StopIteration:
         raise HTTPException(status_code=404, detail="Visualization not found")

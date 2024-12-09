@@ -6,6 +6,7 @@ import { isElementInViewport } from "~/lib/use-in-viewport";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
 import { HighchartsVisualization } from "~/components/molecules/highcharts-visualization.client";
+import { LeafletVisualization } from "~/components/molecules/leaflet-visualization.client";
 
 interface VisualizationProps {
   visualization: SchemaVisualization;
@@ -83,10 +84,18 @@ export function Visualization(props: VisualizationProps) {
         {/*    visualization={props.visualization}*/}
         {/*  />*/}
         {/*)}*/}
-        {data && (
+        {data && data.data!.type === "Highcharts" && (
           <HighchartsVisualization
             spec={data.data!.spec}
             data={{}}
+            visualization={props.visualization}
+          />
+        )}
+
+        {data && data.data!.type === "Leaflet" && (
+          <LeafletVisualization
+            spec={data.data!.spec}
+            data={data.data!.data}
             visualization={props.visualization}
           />
         )}

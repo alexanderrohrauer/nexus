@@ -46,6 +46,7 @@ const visualizationOptions: ComboboxOption[] = [
   { label: "Time based research activity", value: "vis-4" },
   { label: "Vis 5", value: "vis-5" },
   { label: "Vis 6", value: "vis-6" },
+  { label: "Leaflet Researcher Map", value: "vis-7" },
 ];
 
 export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
