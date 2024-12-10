@@ -10,3 +10,7 @@ async def upsert_many(institutions: list[Institution]):
             await Institution.insert_one(institution)
         else:
             institutions[i] = found_institution
+
+
+async def find_by_openalex(openalex_id: str):
+    return await Institution.find_one(Institution.external_id.openalex == openalex_id)

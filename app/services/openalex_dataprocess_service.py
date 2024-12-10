@@ -5,7 +5,8 @@ from app.models import Work, Researcher, Institution
 from app.models.institutions import InstitutionExternalId
 from app.models.researchers import ResearcherExternalId, Affiliation, AffiliationType
 from app.models.works import WorkExternalId, WorkType
-from app.utils.text_utils import parse_openalex_id
+from app.utils.text_utils import parse_openalex_id, parse_doi, parse_orcid, parse_ror, compute_work_snm_key, \
+    compute_researcher_snm_key, compute_institution_snm_key
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -23,9 +24,11 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
             except StopIteration:
                 logger.error(f"Author with id " + author_id + " not found in work " + work["id"])
                 continue
+        ids = work["ids"].copy()
+        ids["openalex"] = parse_openalex_id(work["id"])
+        ids["doi"] = parse_doi(work["doi"])
         parsed = Work(
-            # TODO add doi here
-            external_id=WorkExternalId(openalex=parse_openalex_id(work["id"])),
+            external_id=WorkExternalId(**ids),
             title=work["title"],
             type=WorkType(openalex=work["type"]),
             publication_year=int(work["publication_year"]),
@@ -36,6 +39,7 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
             open_access=work["open_access"]["is_oa"],
             openalex_meta=work
         )
+        parsed.snm_key = compute_work_snm_key(parsed)
         result.append(parsed)
     return result
 
@@ -57,9 +61,11 @@ def restructure_authors(authors: list[dict], institutions: list[Institution]):
         if len(author["last_known_institutions"]) > 0:
             institution_id = parse_openalex_id(author["last_known_institutions"][0]["id"])
             institution = next(i for i in institutions if i.external_id.openalex == institution_id)
+        ids = author["ids"].copy()
+        ids["openalex"] = parse_openalex_id(author["id"])
+        ids["orcid"] = parse_orcid(author["orcid"])
         parsed = Researcher(
-            # TODO add ORCID here
-            external_id=ResearcherExternalId(openalex=parse_openalex_id(author["id"])),
+            external_id=ResearcherExternalId(**ids),
             full_name=author["display_name"],
             alternative_names=author["display_name_alternatives"],
             affiliations=affiliations,
@@ -67,6 +73,7 @@ def restructure_authors(authors: list[dict], institutions: list[Institution]):
             topic_keywords=[t["display_name"] for t in author["topics"]],
             openalex_meta=author
         )
+        parsed.snm_key = compute_researcher_snm_key(parsed)
         result.append(parsed)
     return result
 
@@ -74,9 +81,11 @@ def restructure_authors(authors: list[dict], institutions: list[Institution]):
 def restructure_institutions(institutions: list[dict]):
     result = []
     for institution in institutions:
+        ids = institution["ids"].copy()
+        ids["openalex"] = parse_openalex_id(institution["id"])
+        ids["ror"] = parse_ror(institution["ids"]["ror"])
         parsed = Institution(
-            # TODO add ROR etc here
-            external_id=InstitutionExternalId(openalex=parse_openalex_id(institution["id"])),
+            external_id=InstitutionExternalId(**ids),
             name=institution["display_name"],
             acronyms=institution["display_name_acronyms"],
             alternative_names=institution["display_name_alternatives"],
@@ -95,5 +104,6 @@ def restructure_institutions(institutions: list[dict]):
             topic_keywords=[t["display_name"] for t in institution["topics"]],
             openalex_meta=institution
         )
+        parsed.snm_key = compute_institution_snm_key(parsed)
         result.append(parsed)
     return result

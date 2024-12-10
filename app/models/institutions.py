@@ -4,7 +4,7 @@ import pymongo
 from beanie import Indexed
 from pydantic import Field, HttpUrl, BaseModel
 
-from app.db.models import EditableDocument
+from app.db.models import EditableDocument, SNMEntity
 
 
 class InstitutionExternalId(BaseModel):
@@ -16,7 +16,8 @@ class InstitutionExternalId(BaseModel):
     wikidata: Optional[str] = None
 
 
-class Institution(EditableDocument):
+# TODO maybe do here also Optional everywhere...
+class Institution(EditableDocument, SNMEntity):
     external_id: InstitutionExternalId
     name: str
     acronyms: list[str]

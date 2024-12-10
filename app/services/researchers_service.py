@@ -2,7 +2,7 @@ from app.models import Researcher
 
 
 async def upsert_many_openalex(researchers: list[Researcher]):
-    # TODO do find logic here for upsert
+    # TODO do find logic here for upsert (extract find process to fetch)
     for i, researcher in enumerate(researchers):
         found_researcher = await Researcher.find_one(Researcher.external_id.openalex == researcher.external_id.openalex)
         if found_researcher is None:

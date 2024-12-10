@@ -4,7 +4,7 @@ from beanie import Link
 from pydantic import Field, BaseModel
 from typing_extensions import Optional
 
-from app.db.models import EditableDocument
+from app.db.models import EditableDocument, SNMEntity
 from app.models import Institution
 
 
@@ -28,7 +28,7 @@ class Affiliation(BaseModel):
     institution: Link[Institution]
 
 
-class Researcher(EditableDocument):
+class Researcher(EditableDocument, SNMEntity):
     external_id: ResearcherExternalId
     full_name: str
     alternative_names: Optional[list[str]] = None

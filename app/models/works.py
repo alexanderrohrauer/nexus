@@ -4,15 +4,17 @@ from typing import Optional
 from beanie import Link
 from pydantic import BaseModel, Field
 
-from app.db.models import EditableDocument
+from app.db.models import EditableDocument, SNMEntity
 from app.models.researchers import Researcher
 
 
 class WorkExternalId(BaseModel):
     openalex: Optional[str] = None
-    orcid: Optional[str] = None
+    mag: Optional[str] = None
     dblp: Optional[str] = None
     doi: Optional[str] = None
+    pmid: Optional[str] = None
+    pmcid: Optional[str] = None
 
 
 class WorkType(BaseModel):
@@ -22,7 +24,7 @@ class WorkType(BaseModel):
 
 
 # TODO maybe cite information (and take the newer/higher one), doi on root level, related works
-class Work(EditableDocument):
+class Work(EditableDocument, SNMEntity):
     external_id: WorkExternalId
     title: str
     type: WorkType

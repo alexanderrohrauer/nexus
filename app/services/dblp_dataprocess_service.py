@@ -3,6 +3,7 @@ import logging
 from app.models import Work, Researcher
 from app.models.researchers import ResearcherExternalId
 from app.models.works import WorkExternalId, WorkType
+from app.utils.text_utils import parse_doi, compute_work_snm_key, compute_researcher_snm_key
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -23,8 +24,7 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
                 logger.error(f"Author with id " + author_id + " not found in work " + work["@id"])
                 continue
         parsed = Work(
-            # TODO add doi here
-            external_id=WorkExternalId(dblp=work["@id"]),
+            external_id=WorkExternalId(dblp=work["@id"], doi=parse_doi(info["doi"] if "doi" in info else None)),
             title=info["title"],
             type=WorkType(dblp=info["type"]),
             publication_year=int(info["year"]),
@@ -32,6 +32,7 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
             open_access=info["access"] == "open" if "access" in info else None,
             dblp_meta=work
         )
+        parsed.snm_key = compute_work_snm_key(parsed)
         result.append(parsed)
     return result
 
@@ -44,5 +45,6 @@ def restructure_authors(authors: list[dict]):
             full_name=author["text"],
             dblp_meta=author
         )
+        parsed.snm_key = compute_researcher_snm_key(parsed)
         result.append(parsed)
     return result

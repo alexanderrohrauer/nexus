@@ -1,19 +1,23 @@
+import logging
 from datetime import datetime
 
 from apscheduler.job import Job
 from apscheduler.triggers.cron import CronTrigger
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 
 from app.dtos.import_task import ImportJob, ImportTask, CreateImportTaskRequest, UpdateImportTaskRequest, \
     ResetCursorsRequest
 from app.scheduled.import_jobs import import_job_map
 from app.scheduled.models import ImportJobId, ImportCursor
 from app.scheduled.scheduler import scheduler
+from app.services import deduplication_service
 
 router = APIRouter(
     prefix="/import-task",
     tags=["import-task"]
 )
+
+logger = logging.getLogger("uvicorn.error")
 
 
 # TODO refactor into services
@@ -101,3 +105,18 @@ def delete_import_task():
         job_id_enum = ImportJobId(job_id)
         found_job = find_job_by_id(job_id_enum)
         found_job.remove()
+
+
+async def deduplication():
+    logger.info("Starting deduplication.")
+    await deduplication_service.deduplicate_works()
+    await deduplication_service.deduplicate_researchers()
+    await deduplication_service.deduplicate_institutions()
+
+    logger.info("Deduplication finished.")
+
+
+# TODO maybe extract to job too
+@router.post("/run-deduplication")
+async def run_deduplication(background_tasks: BackgroundTasks):
+    background_tasks.add_task(deduplication)
