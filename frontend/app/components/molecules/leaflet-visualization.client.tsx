@@ -34,6 +34,7 @@ export function LeafletVisualization(props: VegaVisualizationProps) {
         style={{
           height: props.visualization.rows * 10,
           width: props.visualization.columns * 10,
+          zIndex: 0,
         }}
       >
         <LeafletSearch />
