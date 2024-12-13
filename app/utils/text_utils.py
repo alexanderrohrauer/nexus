@@ -39,6 +39,6 @@ def compute_researcher_snm_key(researcher: Researcher):
 
 def compute_institution_snm_key(institution: Institution):
     name = re.sub(CONSONANTS_REGEX, "", institution.name)
-    city = re.sub(CONSONANTS_REGEX, "", institution.city)
-    country = institution.country
+    city = re.sub(CONSONANTS_REGEX, "", institution.city) if institution.city is not None else ""
+    country = institution.country or ""
     return f"{name}{city}{country}"

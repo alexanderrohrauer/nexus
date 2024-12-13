@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from beanie.odm.operators.find.logical import Not
 from fastapi import HTTPException
 
 from app.models import Dashboard, Work, Institution
@@ -1928,7 +1929,7 @@ mock_data = {
         []
     ],
     "vis-7": [
-        {},[]
+        {}, []
     ]
 }
 
@@ -1946,8 +1947,9 @@ async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID)
                 data = data + [[base.full_name, a.full_name] for a in filter(lambda x: x.id != base.id, w.authors)]
             spec["series"][0]["data"] = data
         if visualization.visualization == "vis-7":
-            institutions = await Institution.find_all().to_list()
-            data = [{"type": "marker", "data": [{"id": i.uuid, "name": i.name, "position": i.location} for i in institutions]}]
+            institutions = await Institution.find(Not(Institution.location == None)).to_list()
+            data = [{"type": "marker",
+                     "data": [{"id": i.uuid, "name": i.name, "position": i.location} for i in institutions]}]
         return {
             "spec": spec,
             "data": data,

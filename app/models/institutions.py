@@ -32,7 +32,7 @@ class Institution(EditableDocument, SNMEntity):
     image_url: Optional[HttpUrl] = None
     # TODO maybe do UUIDs some day:
     parent_institutions_ids: list[str]
-    type: str
+    type: Optional[str] = None
     topic_keywords: list[str]
     openalex_meta: Optional[dict] = Field(default=None)
     orcid_meta: Optional[dict] = Field(default=None)

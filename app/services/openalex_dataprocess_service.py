@@ -83,7 +83,7 @@ def restructure_institutions(institutions: list[dict]):
     for institution in institutions:
         ids = institution["ids"].copy()
         ids["openalex"] = parse_openalex_id(institution["id"])
-        ids["ror"] = parse_ror(institution["ids"]["ror"])
+        ids["ror"] = parse_ror(institution["ids"]["ror"]) if "ror" in ids else None
         parsed = Institution(
             external_id=InstitutionExternalId(**ids),
             name=institution["display_name"],
