@@ -24,7 +24,8 @@ async def fetch_works(keywords: list[str], page: int, page_size: int):
             response = await session.get(f"{DBLP_URL}/search/publ/api", params=params)
             logging.debug("Fetching DBLP works...")
             body = await response.json()
-            result = result + body["result"]["hits"]["hit"]
+            hits = body["result"]["hits"]["hit"] if "hit" in body["result"]["hits"] else []
+            result = result + hits
 
     return result
 

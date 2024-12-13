@@ -11,8 +11,8 @@ def parse_doi(url: str | None):
     if url is None:
         return None
     if url.startswith("10"):
-        return url
-    return re.search(r"/10.+", url).group()[1:]
+        return url.lower()
+    return re.search(r"/10.+", url).group()[1:].lower()
 
 
 def parse_orcid(url: str | None):

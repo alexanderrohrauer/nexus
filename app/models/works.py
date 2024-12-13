@@ -23,7 +23,7 @@ class WorkType(BaseModel):
     dblp: Optional[str] = None
 
 
-# TODO maybe cite information (and take the newer/higher one), doi on root level, related works
+# TODO maybe related works...
 class Work(EditableDocument, SNMEntity):
     external_id: WorkExternalId
     title: str
@@ -37,6 +37,15 @@ class Work(EditableDocument, SNMEntity):
     openalex_meta: Optional[dict] = Field(default=None)
     orcid_meta: Optional[dict] = Field(default=None)
     dblp_meta: Optional[dict] = Field(default=None)
+
+    def replace_author(self, researcher: Researcher, replacement: Researcher):
+        if self.authors is not None:
+            try:
+                found_author_link = next(filter(lambda a: a.ref.id == researcher.id, self.authors))
+                index: int = self.authors.index(found_author_link)
+                self.authors[index] = replacement
+            except StopIteration:
+                raise Exception(f"Researcher {researcher.id} was not found in work {self.id}")
 
     class Settings:
         validate_on_save = True

@@ -3,6 +3,7 @@ from uuid import uuid4
 import pydash as _
 
 from app.models import Work, Researcher, Institution
+from app.services import merge_service
 
 w_works = 4
 w_researchers = 4
@@ -26,6 +27,9 @@ async def deduplicate_works():
                             f"Duplicate work found: {prev_work.title} and {current_work.title} ({prev_work.uuid}, {current_work.uuid})")
                         await prev_work.set({Work.duplication_key: duplication_key})
                         await current_work.set({Work.duplication_key: duplication_key})
+                    if prev_work.external_id.doi is not None and prev_work.external_id.doi == current_work.external_id.doi:
+
+                        await merge_service.merge_works(prev_work, current_work)
                 else:
                     break
         page = page + 1
@@ -53,6 +57,7 @@ async def deduplicate_researchers():
                                 f"Duplicate researcher found: {prev_researcher.full_name} and {current_researcher.full_name} ({prev_researcher.uuid}, {current_researcher.uuid})")
                             await prev_researcher.set({Researcher.duplication_key: duplication_key})
                             await current_researcher.set({Researcher.duplication_key: duplication_key})
+                    # TODO we could run here a merge-logic based on orcid some day
                 else:
                     break
         page = page + 1
@@ -74,6 +79,8 @@ async def deduplicate_institutions():
                             f"Duplicate institution found: {prev_institution.name} and {current_institution.name} ({prev_institution.uuid}, {current_institution.uuid})")
                         await prev_institution.set({Institution.duplication_key: duplication_key})
                         await current_institution.set({Institution.duplication_key: duplication_key})
+                    if prev_institution.external_id.ror is not None and prev_institution.external_id.ror == current_institution.external_id.ror:
+                        await merge_service.merge_institutions(prev_institution, current_institution)
                 else:
                     break
         page = page + 1

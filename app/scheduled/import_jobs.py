@@ -14,8 +14,7 @@ logger = logging.getLogger("uvicorn.error")
 
 async def openalex_import_job(n_batches: int, keywords: list[str], cursor: Cursor, cron_expr: str):
     print(f"run openalex job with {n_batches} and {keywords} and {cursor}")
-    topic_ids = await openalex_service.fetch_topic_ids(keywords)
-    # TODO batch from here, do upsert...
+    topic_ids = await openalex_service.fetch_topics(keywords)
     # TODO here stop fetching when no results are returned (or latest items are already inserted)
     page = cursor["batch_id"] + 1
     page_size = cursor["batch_size"]
@@ -30,9 +29,9 @@ async def openalex_import_job(n_batches: int, keywords: list[str], cursor: Curso
         async with lock:
             await researchers_service.upsert_many_openalex(researchers)
         works = openalex_dataprocess_service.restructure_works(works, researchers)
-        # TODO do cleansing and calculate SNM key here
+        # TODO do cleansing
         async with lock:
-            await works_service.insert_many(works)
+            await works_service.insert_and_link(works)
         page = page + 1
 
     logger.info("OpenAlex import finished")
@@ -41,12 +40,13 @@ async def openalex_import_job(n_batches: int, keywords: list[str], cursor: Curso
 
 def orcid_import_job(n_batches: int, keywords: list[str], cursor: Cursor, cron_expr: str):
     print(f"run orcid job with {n_batches} and {keywords} and {cursor}")
+    # TODO eventually...
     increase_cursor(ImportJobId.ORCID_IMPORT_JOB)
 
 
 async def dblp_import_job(n_batches: int, keywords: list[str], cursor: Cursor, cron_expr: str):
     print(f"run dblp job with {n_batches} and {keywords} and {cursor}")
-    page = cursor["batch_id"] + 1
+    page = cursor["batch_id"]
     page_size = cursor["batch_size"]
     for i in range(n_batches):
         works = await dblp_service.fetch_works(keywords, page, page_size)
@@ -57,7 +57,7 @@ async def dblp_import_job(n_batches: int, keywords: list[str], cursor: Cursor, c
         works = dblp_dataprocess_service.restructure_works(works, researchers)
         # TODO do cleansing and calculate SNM key here
         async with lock:
-            await works_service.insert_many(works)
+            await works_service.insert_and_link(works)
         page = page + 1
 
     logger.info("DBLP import finished")

@@ -40,5 +40,13 @@ class Researcher(EditableDocument, SNMEntity):
     orcid_meta: Optional[dict] = Field(default=None)
     dblp_meta: Optional[dict] = Field(default=None)
 
+    def replace_affiliation(self, institution: Institution, replacement: Institution):
+        if self.affiliations is not None:
+            try:
+                found_affiliation = next(filter(lambda a: a.institution.ref.id == institution.id, self.affiliations))
+                found_affiliation.institution = replacement
+            except StopIteration:
+                raise Exception(f"Affiliation with institution {institution.id} was not found in researcher {self.id}")
+
     class Settings:
         validate_on_save = True

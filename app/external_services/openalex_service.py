@@ -12,7 +12,6 @@ OPENALEX_INSTITUTION_BATCH_SIZE = 20
 logger = logging.getLogger("uvicorn.error")
 
 
-# TODO maybe use https://pypi.org/project/cacheproxy/
 # TODO config (1day * 7)
 class OpenAlexSession(CachedSession):
     def __init__(self, *args, **kwargs):
@@ -20,7 +19,7 @@ class OpenAlexSession(CachedSession):
                          cache=SQLiteBackend('openalex_cache', expire_after=60 * 60 * 24 * 7))
 
 
-async def fetch_topic_ids(keywords: list[str]):
+async def fetch_topics(keywords: list[str]):
     result = []
     for keyword in keywords:
         params = {"filter": f"default.search:{keyword}", "per-page": 1}
@@ -28,21 +27,43 @@ async def fetch_topic_ids(keywords: list[str]):
             logging.debug("Fetching topics...")
             response = await session.get(f"{OPENALEX_URL}/topics", params=params)
             body = await response.json()
-            topic = body["results"][0]
-            logger.info(f"Adding topic {topic['display_name']}")
-            result.append(parse_openalex_id(topic["id"]))
+            if len(body["results"]) > 0:
+                topic = body["results"][0]
+                logger.info(f"Adding topic {topic['display_name']}")
+                result.append(topic)
+            else:
+                result.append(keyword)
     return result
 
 
-async def fetch_works(topic_ids: list[str], page: int, page_size: int):
-    topic_expr = "|".join(topic_ids)
-    params = {"filter": f"topics.id:{topic_expr}", "page": page, "per-page": page_size,
-              "sort": "publication_year:desc"}
-    async with OpenAlexSession() as session:
-        response = await session.get(f"{OPENALEX_URL}/works", params=params)
-        logging.debug("Fetching works...")
-        body = await response.json()
-        result = body["results"]
+async def fetch_works(topic_ids_or_kws: list[dict | str], page: int, page_size: int):
+    result = []
+    topic_ids = []
+    keywords = []
+    for topic_or_kw in topic_ids_or_kws:
+        if isinstance(topic_or_kw, str):
+            keywords.append(topic_or_kw)
+        else:
+            topic_ids.append(parse_openalex_id(topic_or_kw["id"]))
+
+    if len(topic_ids) > 0:
+        topic_expr = "|".join(topic_ids)
+        params = {"filter": f"topics.id:{topic_expr}", "page": page, "per-page": page_size,
+                  "sort": "publication_year:desc"}
+        async with OpenAlexSession() as session:
+            response = await session.get(f"{OPENALEX_URL}/works", params=params)
+            logging.debug("Fetching topic works...")
+            body = await response.json()
+            result = body["results"]
+
+    for keyword in keywords:
+        params = {"filter": f"title_and_abstract.search:{keyword}", "page": page, "per-page": page_size,
+                  "sort": "publication_year:desc"}
+        async with OpenAlexSession() as session:
+            response = await session.get(f"{OPENALEX_URL}/works", params=params)
+            logging.debug("Fetching keyword works...")
+            body = await response.json()
+            result = result + body["results"]
     return result
 
 
