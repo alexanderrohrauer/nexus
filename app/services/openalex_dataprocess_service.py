@@ -1,5 +1,6 @@
 import logging
 from datetime import date
+from string import digits
 
 from app.models import Work, Researcher, Institution
 from app.models.institutions import InstitutionExternalId
@@ -29,7 +30,7 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
         ids["doi"] = parse_doi(work["doi"])
         parsed = Work(
             external_id=WorkExternalId(**ids),
-            title=work["title"],
+            title=work["title"].strip(),
             type=WorkType(openalex=work["type"]),
             publication_year=int(work["publication_year"]),
             publication_date=date.fromisoformat(work["publication_date"]),
@@ -66,7 +67,7 @@ def restructure_authors(authors: list[dict], institutions: list[Institution]):
         ids["orcid"] = parse_orcid(author["orcid"])
         parsed = Researcher(
             external_id=ResearcherExternalId(**ids),
-            full_name=author["display_name"],
+            full_name=author["display_name"].strip().translate(str.maketrans('', '', digits)),
             alternative_names=author["display_name_alternatives"],
             affiliations=affiliations,
             institution=institution.id if institution is not None else None,
@@ -86,7 +87,7 @@ def restructure_institutions(institutions: list[dict]):
         ids["ror"] = parse_ror(institution["ids"]["ror"]) if "ror" in ids else None
         parsed = Institution(
             external_id=InstitutionExternalId(**ids),
-            name=institution["display_name"],
+            name=institution["display_name"].strip(),
             acronyms=institution["display_name_acronyms"],
             alternative_names=institution["display_name_alternatives"],
             international_names=institution["international"]["display_name"],

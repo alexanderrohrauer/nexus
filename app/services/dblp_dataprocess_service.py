@@ -1,4 +1,5 @@
 import logging
+from string import digits
 
 from app.models import Work, Researcher
 from app.models.researchers import ResearcherExternalId
@@ -11,7 +12,6 @@ logger = logging.getLogger("uvicorn.error")
 def restructure_works(works: list[dict], authors: list[Researcher]):
     result = []
     for work in works:
-        # TODO implement a merger logic
         author_links = []
         info = work["info"]
         filtered_authors = filter(lambda val: isinstance(val, dict),
@@ -25,7 +25,7 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
                 continue
         parsed = Work(
             external_id=WorkExternalId(dblp=work["@id"], doi=parse_doi(info["doi"] if "doi" in info else None)),
-            title=info["title"],
+            title=info["title"].strip(),
             type=WorkType(dblp=info["type"]),
             publication_year=int(info["year"]),
             authors=author_links if len(author_links) > 0 else None,
@@ -42,7 +42,7 @@ def restructure_authors(authors: list[dict]):
     for author in authors:
         parsed = Researcher(
             external_id=ResearcherExternalId(dblp=author["@pid"]),
-            full_name=author["text"],
+            full_name=author["text"].strip().translate(str.maketrans('', '', digits)),
             dblp_meta=author
         )
         parsed.snm_key = compute_researcher_snm_key(parsed)
