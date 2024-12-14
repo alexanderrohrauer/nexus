@@ -15,6 +15,7 @@ class EditableDocument(Document):
     # TODO set at manual write
     manually_updated_at: Optional[datetime] = None
     duplication_key: Optional[UUID] = None
+    marked_for_removal: bool = False
 
 
 class SNMEntity(BaseModel):

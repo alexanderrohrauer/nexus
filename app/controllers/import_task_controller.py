@@ -10,7 +10,7 @@ from app.dtos.import_task import ImportJob, ImportTask, CreateImportTaskRequest,
 from app.scheduled.import_jobs import import_job_map
 from app.scheduled.models import ImportJobId, ImportCursor
 from app.scheduled.scheduler import scheduler
-from app.services import deduplication_service
+from app.services import deduplication_service, duplicate_elimination_service
 
 router = APIRouter(
     prefix="/import-task",
@@ -120,3 +120,17 @@ async def deduplication():
 @router.post("/run-deduplication")
 async def run_deduplication(background_tasks: BackgroundTasks):
     background_tasks.add_task(deduplication)
+
+
+async def deduplication_elimination():
+    logger.info("Starting deduplication elimination.")
+    await duplicate_elimination_service.eliminate_institutions_duplicates()
+    await duplicate_elimination_service.eliminate_researcher_duplicates()
+    await duplicate_elimination_service.eliminate_work_duplicates()
+
+    logger.info("Deduplication elimination finished.")
+
+
+@router.post("/run-deduplication-elimination")
+async def run_deduplication_elimination(background_tasks: BackgroundTasks):
+    background_tasks.add_task(deduplication_elimination)
