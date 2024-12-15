@@ -9,6 +9,7 @@ interface VegaVisualizationProps {
   visualization: SchemaVisualization;
 }
 
+// TODO maybe fix resize window some day...
 export function EChartsVisualization(props: VegaVisualizationProps) {
   const divRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
@@ -19,8 +20,10 @@ export function EChartsVisualization(props: VegaVisualizationProps) {
       const resizeObserver = new ResizeObserver(() => {
         chart.resize();
       });
-      resizeObserver.observe(divRef.current);
-      window.addEventListener("resize", () => chart.resize());
+      setTimeout(() => {
+        resizeObserver.observe(divRef.current);
+        window.addEventListener("resize", () => chart.resize());
+      }, 1000);
       const spec = { ...props.spec, series: props.data };
       chart.setOption(spec);
     }
