@@ -19,6 +19,7 @@ class OpenAlexSession(CachedSession):
                          cache=SQLiteBackend('openalex_cache', expire_after=60 * 60 * 24 * 7))
 
 
+# TODO maybe we get similar results between openalex and dblp if we dont search by topic - search by normal search instead
 async def fetch_topics(keywords: list[str]):
     result = []
     for keyword in keywords:

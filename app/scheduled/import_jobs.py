@@ -14,12 +14,12 @@ logger = logging.getLogger("uvicorn.error")
 
 async def openalex_import_job(n_batches: int, keywords: list[str], cursor: Cursor, cron_expr: str):
     print(f"run openalex job with {n_batches} and {keywords} and {cursor}")
-    topic_ids = await openalex_service.fetch_topics(keywords)
+    # topic_ids = await openalex_service.fetch_topics(keywords)
     # TODO here stop fetching when no results are returned (or latest items are already inserted)
     page = cursor["batch_id"] + 1
     page_size = cursor["batch_size"]
     for i in range(n_batches):
-        works = await openalex_service.fetch_works(topic_ids, page, page_size)
+        works = await openalex_service.fetch_works(keywords, page, page_size)
         authors = await openalex_service.fetch_authors_for_works(works)
         institutions = await openalex_service.fetch_institutions_for_authors(authors)
         institutions = openalex_dataprocess_service.restructure_institutions(institutions)

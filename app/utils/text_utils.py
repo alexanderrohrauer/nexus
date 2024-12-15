@@ -28,8 +28,7 @@ CONSONANTS_REGEX = re.compile(r"[^ABCDFGHJKLMNPQRSTVWXYZabcdfghjklmnpqrstvwxyz]"
 
 def compute_work_snm_key(work: Work):
     title = re.sub(CONSONANTS_REGEX, "", work.title)
-    doi = work.external_id.doi or ""
-    return f"{doi}{title}{work.publication_year}"
+    return f"{title}{work.publication_year}"
 
 
 def compute_researcher_snm_key(researcher: Researcher):

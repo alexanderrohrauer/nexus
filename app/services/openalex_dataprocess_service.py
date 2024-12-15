@@ -1,3 +1,4 @@
+import html
 import logging
 from datetime import date
 from string import digits
@@ -30,7 +31,7 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
         ids["doi"] = parse_doi(work["doi"])
         parsed = Work(
             external_id=WorkExternalId(**ids),
-            title=work["title"].strip(),
+            title=html.unescape(work["title"].strip()),
             type=WorkType(openalex=work["type"]),
             publication_year=int(work["publication_year"]),
             publication_date=date.fromisoformat(work["publication_date"]),
