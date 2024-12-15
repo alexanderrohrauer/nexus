@@ -1,8 +1,8 @@
-//@import url("https://code.highcharts.com/css/highcharts.css");
-//
-//:root {
-//  --highcharts-background-color: theme("colors.muted.DEFAULT");
-//}
+@import url("https://code.highcharts.com/css/highcharts.css");
+
+:root {
+  --highcharts-background-color: theme("colors.muted.DEFAULT");
+}
 
 .glass {
  background: white;

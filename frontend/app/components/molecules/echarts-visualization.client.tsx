@@ -16,13 +16,19 @@ export function EChartsVisualization(props: VegaVisualizationProps) {
     if (divRef.current && frameRef.current) {
       divRef.current.style.height = `${frameRef.current.clientHeight}px`;
       const chart = echarts.init(divRef.current);
+      const resizeObserver = new ResizeObserver(() => {
+        chart.resize();
+      });
+      resizeObserver.observe(divRef.current);
+      window.addEventListener("resize", () => chart.resize());
       const spec = { ...props.spec, series: props.data };
       chart.setOption(spec);
     }
   }, [divRef, frameRef, props.spec, props.data]);
+  useEffect(() => {}, []);
   return (
     <VisualizationFrame visualization={props.visualization} ref={frameRef}>
-      <div ref={divRef} />
+      <div ref={divRef} className="w-full" />
     </VisualizationFrame>
   );
 }
