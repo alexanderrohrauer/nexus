@@ -11,17 +11,18 @@ interface VegaVisualizationProps {
 
 export function EChartsVisualization(props: VegaVisualizationProps) {
   const divRef = useRef<HTMLDivElement | null>(null);
+  const frameRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (divRef.current) {
+    if (divRef.current && frameRef.current) {
+      divRef.current.style.height = `${frameRef.current.clientHeight}px`;
       const chart = echarts.init(divRef.current);
       const spec = { ...props.spec, series: props.data };
-      console.log(spec);
       chart.setOption(spec);
     }
-  }, [divRef, props.spec, props.data]);
+  }, [divRef, frameRef, props.spec, props.data]);
   return (
-    <VisualizationFrame visualization={props.visualization}>
-      <div ref={divRef} className="w-full h-[93%]" />
+    <VisualizationFrame visualization={props.visualization} ref={frameRef}>
+      <div ref={divRef} />
     </VisualizationFrame>
   );
 }
