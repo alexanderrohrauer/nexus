@@ -9,7 +9,7 @@ from app.utils.text_utils import parse_doi, compute_work_snm_key, compute_resear
 
 logger = logging.getLogger("uvicorn.error")
 
-# TODO html unescape at title everywhere
+
 def restructure_works(works: list[dict], authors: list[Researcher]):
     result = []
     for work in works:
