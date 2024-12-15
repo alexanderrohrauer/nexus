@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
 import { HighchartsVisualization } from "~/components/molecules/highcharts-visualization.client";
 import { LeafletVisualization } from "~/components/molecules/leaflet-visualization.client";
+import { EChartsVisualization } from "~/components/molecules/echarts-visualization.client";
 
 interface VisualizationProps {
   visualization: SchemaVisualization;
@@ -61,6 +62,14 @@ export function Visualization(props: VisualizationProps) {
       ),
   });
 
+  const getHeight = (container: HTMLDivElement | undefined) => {
+    if (container) {
+      return container.children[0].clientHeight - container.style.marginTop;
+    } else {
+      return 0;
+    }
+  };
+
   return (
     <>
       {/*<Skeleton*/}
@@ -88,6 +97,14 @@ export function Visualization(props: VisualizationProps) {
           <HighchartsVisualization
             spec={data.data!.spec}
             data={{}}
+            visualization={props.visualization}
+          />
+        )}
+
+        {data && data.data!.type === "ECharts" && (
+          <EChartsVisualization
+            spec={data.data!.spec}
+            data={data.data!.data}
             visualization={props.visualization}
           />
         )}

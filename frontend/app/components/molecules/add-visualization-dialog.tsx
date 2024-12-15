@@ -47,6 +47,7 @@ const visualizationOptions: ComboboxOption[] = [
   { label: "Vis 5", value: "vis-5" },
   { label: "Vis 6", value: "vis-6" },
   { label: "Leaflet Institution Map", value: "vis-7" },
+  { label: "Dependency Chart", value: "vis-8" },
 ];
 
 export function AddVisualizationDialog(props: AddVisualizationDialogProps) {

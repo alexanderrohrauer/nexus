@@ -29,7 +29,6 @@ async def openalex_import_job(n_batches: int, keywords: list[str], cursor: Curso
         async with lock:
             await researchers_service.upsert_many_openalex(researchers)
         works = openalex_dataprocess_service.restructure_works(works, researchers)
-        # TODO do cleansing
         async with lock:
             await works_service.insert_and_link(works)
         page = page + 1
@@ -55,7 +54,6 @@ async def dblp_import_job(n_batches: int, keywords: list[str], cursor: Cursor, c
         async with lock:
             await researchers_service.upsert_many_dblp(researchers)
         works = dblp_dataprocess_service.restructure_works(works, researchers)
-        # TODO do cleansing and calculate SNM key here
         async with lock:
             await works_service.insert_and_link(works)
         page = page + 1

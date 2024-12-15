@@ -1,5 +1,7 @@
+from itertools import combinations
 from uuid import UUID
 
+import pydash as _
 from beanie.odm.operators.find.logical import Not
 from fastapi import HTTPException
 
@@ -1930,6 +1932,21 @@ mock_data = {
     ],
     "vis-7": [
         {}, []
+    ],
+    "vis-8": [
+        {
+            "title": {
+                "text": "Les Miserables",
+                "subtext": "Circular layout",
+                "top": "bottom",
+                "left": "right"
+            },
+            "tooltip": {},
+            "legend": [],
+            "animationDurationUpdate": 1500,
+            "animationEasingUpdate": "quinticInOut"
+        },
+        []
     ]
 }
 
@@ -1937,6 +1954,7 @@ mock_data = {
 async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID):
     try:
         visualization = next(v for v in dashboard.visualizations if v.uuid == visualization_uuid)
+        t = "Highcharts"
         spec = mock_data[visualization.visualization][0]
         data = mock_data[visualization.visualization][1]
         if visualization.visualization == "vis-4":
@@ -1950,10 +1968,58 @@ async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID)
             institutions = await Institution.find(Not(Institution.location == None)).to_list()
             data = [{"type": "marker",
                      "data": [{"id": i.uuid, "name": i.name, "position": i.location} for i in institutions]}]
+            t = "Leaflet"
+        if visualization.visualization == "vis-8":
+            works = await Work.find_all(fetch_links=True, limit=30).to_list()
+            nodes = []
+            links = []
+            for w in works:
+                author_nodes = [{"id": a.uuid, "name": a.full_name} for a in w.authors]
+                nodes = nodes + author_nodes
+                author_ids = [a.uuid for a in w.authors]
+                pairs = list(combinations(author_ids, 2))
+                pairs = [{"source": s, "target": t} for s, t in pairs]
+                links = links + pairs
+            nodes = _.uniq_by(nodes, lambda a: a["id"])
+
+            data = [
+                {
+                    "name": "Les Miserables",
+                    "type": "graph",
+                    "layout": "circular",
+                    "circular": {
+                        "rotateLabel": True
+                    },
+                    "focusNodeAdjacency": True,
+                    "itemStyle": {
+                        "opacity": 0.8
+                    },
+                    "emphasis": {
+                        "itemStyle": {
+                            "opacity": 1
+                        },
+                        "lineStyle": {
+                            "opacity": 1
+                        }
+                    },
+                    "data": nodes,
+                    "links": links,
+                    "roam": True,
+                    "label": {
+                        "position": "right",
+                        "formatter": "{b}"
+                    },
+                    "lineStyle": {
+                        "color": "source",
+                        "curveness": 0.3
+                    }
+                }
+            ]
+            t = "ECharts"
         return {
             "spec": spec,
             "data": data,
-            "type": "Highcharts" if visualization.visualization != "vis-7" else "Leaflet"
+            "type": t
         }
     except StopIteration:
         raise HTTPException(status_code=404, detail="Visualization not found")
