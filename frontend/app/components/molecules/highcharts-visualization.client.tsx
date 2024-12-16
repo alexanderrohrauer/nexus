@@ -37,7 +37,7 @@ export function HighchartsVisualization(props: VegaVisualizationProps) {
             ...props.spec,
             chart: {
               ...props.spec.chart,
-              styledMode: true,
+              // styledMode: true,
               zooming: {
                 type: "x",
                 mouseWheel: { enabled: true },
