@@ -846,11 +846,7 @@ mock_data = {
                 "height": "100%"
             },
             "title": {
-                "text": "The Indo-European Language Tree",
-                "align": "left"
-            },
-            "subtitle": {
-                "text": "A Force-Directed Network Graph in Highcharts",
+                "text": "Researcher",
                 "align": "left"
             },
             "plotOptions": {
@@ -1936,7 +1932,7 @@ mock_data = {
     "vis-8": [
         {
             "title": {
-                "text": "Les Miserables",
+                "text": "Researcher",
                 "subtext": "Circular layout",
                 "top": "bottom",
                 "left": "right"
@@ -1984,7 +1980,7 @@ async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID)
 
             data = [
                 {
-                    "name": "Les Miserables",
+                    "name": "Researcher",
                     "type": "graph",
                     "layout": "circular",
                     "circular": {
