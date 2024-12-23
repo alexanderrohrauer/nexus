@@ -17,7 +17,7 @@ interface VegaVisualizationProps {
   data: any;
   visualization: SchemaVisualization;
 }
-
+// TODO maybe implement react less
 export function HighchartsVisualization(props: VegaVisualizationProps) {
   const divRef = useRef<HTMLDivElement | null>(null);
   const [height, setHeight] = useState(0);

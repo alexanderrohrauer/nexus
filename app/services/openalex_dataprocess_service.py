@@ -27,8 +27,8 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
                 logger.error(f"Author with id " + author_id + " not found in work " + work["id"])
                 continue
         ids = work["ids"].copy()
-        ids["openalex"] = parse_openalex_id(work["id"])
-        ids["doi"] = parse_doi(work["doi"])
+        ids["openalex"] = parse_openalex_id(ids["openalex"])
+        ids["doi"] = parse_doi(ids["doi"]) if "doi" in ids else None
         parsed = Work(
             external_id=WorkExternalId(**ids),
             title=html.unescape(work["title"].strip()),
@@ -64,8 +64,8 @@ def restructure_authors(authors: list[dict], institutions: list[Institution]):
             institution_id = parse_openalex_id(author["last_known_institutions"][0]["id"])
             institution = next(i for i in institutions if i.external_id.openalex == institution_id)
         ids = author["ids"].copy()
-        ids["openalex"] = parse_openalex_id(author["id"])
-        ids["orcid"] = parse_orcid(author["orcid"])
+        ids["openalex"] = parse_openalex_id(ids["openalex"])
+        ids["orcid"] = parse_orcid(ids["orcid"]) if "orcid" in ids else None
         parsed = Researcher(
             external_id=ResearcherExternalId(**ids),
             full_name=author["display_name"].strip().translate(str.maketrans('', '', digits)),
@@ -84,8 +84,8 @@ def restructure_institutions(institutions: list[dict]):
     result = []
     for institution in institutions:
         ids = institution["ids"].copy()
-        ids["openalex"] = parse_openalex_id(institution["id"])
-        ids["ror"] = parse_ror(institution["ids"]["ror"]) if "ror" in ids else None
+        ids["openalex"] = parse_openalex_id(ids["openalex"])
+        ids["ror"] = parse_ror(ids["ror"]) if "ror" in ids else None
         parsed = Institution(
             external_id=InstitutionExternalId(**ids),
             name=institution["display_name"].strip(),

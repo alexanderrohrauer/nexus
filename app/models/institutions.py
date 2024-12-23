@@ -15,6 +15,15 @@ class InstitutionExternalId(BaseModel):
     wikipedia: Optional[str] = None
     wikidata: Optional[str] = None
 
+    def ror_match(self, external_id):
+        return self.ror is not None and self.ror == external_id.ror
+
+    def openalex_match(self, external_id):
+        return self.openalex is not None and self.openalex == external_id.openalex
+
+    def matches(self, external_id):
+        return self.openalex_match(external_id) or self.ror_match(external_id)
+
 
 # TODO maybe do here also Optional everywhere...
 class Institution(EditableDocument, SNMEntity):
@@ -37,6 +46,11 @@ class Institution(EditableDocument, SNMEntity):
     openalex_meta: Optional[dict] = Field(default=None)
     orcid_meta: Optional[dict] = Field(default=None)
     dblp_meta: Optional[dict] = Field(default=None)
+
+    @property
+    def normalized_name(self): 
+        # TODO normalize eventually
+        return self.name.lower()
 
     class Settings:
         validate_on_save = True

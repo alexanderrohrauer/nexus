@@ -1,5 +1,5 @@
 import createClient from "openapi-fetch";
-import { paths } from "~/lib/api/types";
+import type { paths } from "~/lib/api/types";
 
 const baseUrl =
   typeof window === "undefined"

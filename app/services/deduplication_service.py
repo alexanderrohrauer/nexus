@@ -27,14 +27,14 @@ async def deduplicate_works():
             duplication_key = current_work.duplication_key or uuid4()
             for prev_work in works:
                 if prev_work.uuid != current_work.uuid:
-                    distance = nltk.edit_distance(prev_work.title, current_work.title)
-                    doi_match = prev_work.external_id.doi is not None and prev_work.external_id.doi == current_work.external_id.doi
-                    if distance <= 3 or doi_match:
+                    distance = nltk.edit_distance(prev_work.normalized_title, current_work.normalized_title)
+                    id_match = prev_work.external_id.matches(current_work.external_id)
+                    if distance <= 3 or id_match:
                         print(
-                            f"Duplicate work found: {prev_work.title} and {current_work.title} ({prev_work.uuid}, {current_work.uuid}, DOI match: {doi_match})")
-                        await prev_work.set({Work.duplication_key: duplication_key, Work.marked_for_removal: doi_match})
+                            f"Duplicate work found: {prev_work.title} and {current_work.title} ({prev_work.uuid}, {current_work.uuid}, DOI match: {id_match})")
+                        await prev_work.set({Work.duplication_key: duplication_key, Work.marked_for_removal: id_match})
                         await current_work.set(
-                            {Work.duplication_key: duplication_key, Work.marked_for_removal: doi_match})
+                            {Work.duplication_key: duplication_key, Work.marked_for_removal: id_match})
 
                 else:
                     break
@@ -52,20 +52,24 @@ async def deduplicate_researchers():
             duplication_key = current_researcher.duplication_key or uuid4()
             for prev_researcher in researchers:
                 if prev_researcher.uuid != current_researcher.uuid:
-                    distance = nltk.edit_distance(prev_researcher.full_name, current_researcher.full_name)
-                    if distance <= RESEARCHERS_LEVENSHTEIN_THRESHOLD:
+                    distance = nltk.edit_distance(prev_researcher.normalized_full_name, current_researcher.normalized_full_name)
+                    id_match = prev_researcher.external_id.matches(current_researcher.external_id)
+                    distance_match = distance <= RESEARCHERS_LEVENSHTEIN_THRESHOLD
+                    if distance_match:
                         prev_works = await Work.find(Work.authors.id == prev_researcher.id).to_list()
                         current_works = await Work.find(Work.authors.id == current_researcher.id).to_list()
                         all_works_dois = [w.external_id.doi for w in prev_works if w.external_id.doi is not None] \
                                          + [w.external_id.doi for w in current_works if w.external_id.doi is not None]
                         duplicates = _.duplicates(all_works_dois)
                         if len(duplicates) > 0:
-                            print(
-                                f"Duplicate researcher found: {prev_researcher.full_name} and {current_researcher.full_name} ({prev_researcher.uuid}, {current_researcher.uuid})")
-                            # TODO set marked_for_removal
-                            await prev_researcher.set({Researcher.duplication_key: duplication_key})
-                            await current_researcher.set({Researcher.duplication_key: duplication_key})
-                    # TODO we could run here a merge-logic based on orcid some day
+                            id_match = True
+                    if distance_match or id_match:
+                        print(
+                            f"Duplicate researcher found: {prev_researcher.full_name} and {current_researcher.full_name} ({prev_researcher.uuid}, {current_researcher.uuid})")
+                        await prev_researcher.set(
+                            {Researcher.duplication_key: duplication_key, Researcher.marked_for_removal: id_match})
+                        await current_researcher.set(
+                            {Researcher.duplication_key: duplication_key, Researcher.marked_for_removal: id_match})
                 else:
                     break
         skip = skip + 1
@@ -82,18 +86,17 @@ async def deduplicate_institutions():
             duplication_key = current_institution.duplication_key or uuid4()
             for prev_institution in institutions:
                 if prev_institution.uuid != current_institution.uuid:
-                    distance = nltk.edit_distance(prev_institution.name, current_institution.name)
-                    ror_match = prev_institution.external_id.ror is not None and prev_institution.external_id.ror == current_institution.external_id.ror
+                    distance = nltk.edit_distance(prev_institution.normalized_name, current_institution.normalized_name)
+                    id_match = prev_institution.external_id.matches(current_institution.external_id)
                     attribute_match = (
                             distance <= INSTITUTIONS_LEVENSHTEIN_THRESHOLD and prev_institution.city == current_institution.city and prev_institution.country == current_institution.country)
-                    # TODO do levenshtein maybe
-                    if attribute_match or ror_match:
+                    if attribute_match or id_match:
                         print(
-                            f"Duplicate institution found: {prev_institution.name} and {current_institution.name} ({prev_institution.uuid}, {current_institution.uuid}, ROR match: {ror_match})")
+                            f"Duplicate institution found: {prev_institution.name} and {current_institution.name} ({prev_institution.uuid}, {current_institution.uuid}, ROR match: {id_match})")
                         await prev_institution.set(
-                            {Institution.duplication_key: duplication_key, Institution.marked_for_removal: ror_match})
+                            {Institution.duplication_key: duplication_key, Institution.marked_for_removal: id_match})
                         await current_institution.set(
-                            {Institution.duplication_key: duplication_key, Institution.marked_for_removal: ror_match})
+                            {Institution.duplication_key: duplication_key, Institution.marked_for_removal: id_match})
                 else:
                     break
         skip = skip + 1

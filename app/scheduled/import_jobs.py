@@ -20,17 +20,17 @@ async def openalex_import_job(n_batches: int, keywords: list[str], cursor: Curso
     page_size = cursor["batch_size"]
     for i in range(n_batches):
         works = await openalex_service.fetch_works(keywords, page, page_size)
-        authors = await openalex_service.fetch_authors_for_works(works)
-        institutions = await openalex_service.fetch_institutions_for_authors(authors)
+        authors = await openalex_service.fetch_authors_for_works(works, page - 1)
+        institutions = await openalex_service.fetch_institutions_for_authors(authors, page - 1)
         institutions = openalex_dataprocess_service.restructure_institutions(institutions)
         async with lock:
-            await institutions_service.upsert_many(institutions)
+            await institutions_service.insert_many(institutions)
         researchers = openalex_dataprocess_service.restructure_authors(authors, institutions)
         async with lock:
-            await researchers_service.upsert_many_openalex(researchers)
+            await researchers_service.insert_many(researchers)
         works = openalex_dataprocess_service.restructure_works(works, researchers)
         async with lock:
-            await works_service.insert_and_link(works)
+            await works_service.insert_many(works)
         page = page + 1
 
     logger.info("OpenAlex import finished")
@@ -52,10 +52,10 @@ async def dblp_import_job(n_batches: int, keywords: list[str], cursor: Cursor, c
         authors = await dblp_service.fetch_authors_for_works(works)
         researchers = dblp_dataprocess_service.restructure_authors(authors)
         async with lock:
-            await researchers_service.upsert_many_dblp(researchers)
+            await researchers_service.insert_many(researchers)
         works = dblp_dataprocess_service.restructure_works(works, researchers)
         async with lock:
-            await works_service.insert_and_link(works)
+            await works_service.insert_many(works)
         page = page + 1
 
     logger.info("DBLP import finished")

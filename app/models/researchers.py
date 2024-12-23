@@ -16,6 +16,17 @@ class ResearcherExternalId(BaseModel):
     twitter: Optional[str] = None
     wikipedia: Optional[str] = None
 
+    def openalex_match(self, external_id):
+        return self.openalex is not None and external_id.openalex == self.openalex
+
+    def dblp_match(self, external_id):
+        return self.dblp is not None and external_id.dblp == self.dblp
+
+    def orcid_match(self, external_id):
+        return self.orcid is not None and external_id.orcid == self.orcid
+
+    def matches(self, external_id):
+        return self.openalex_match(external_id) or self.dblp_match(external_id) or self.orcid_match(external_id)
 
 class AffiliationType(Enum):
     EDUCATION = "EDUCATION"
@@ -39,6 +50,11 @@ class Researcher(EditableDocument, SNMEntity):
     openalex_meta: Optional[dict] = Field(default=None)
     orcid_meta: Optional[dict] = Field(default=None)
     dblp_meta: Optional[dict] = Field(default=None)
+
+    @property
+    def normalized_full_name(self):
+        # TODO eventually normalize
+        return self.full_name.lower()
 
     def replace_affiliation(self, institution: Institution, replacement: Institution):
         if self.affiliations is not None:

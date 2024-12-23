@@ -13,7 +13,7 @@ interface VegaVisualizationProps {
   data: any;
   visualization: SchemaVisualization;
 }
-
+// TODO implement react less
 export function LeafletVisualization(props: VegaVisualizationProps) {
   const position = [51.505, -0.09];
   const markerSeries = useMemo(

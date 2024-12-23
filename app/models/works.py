@@ -16,6 +16,18 @@ class WorkExternalId(BaseModel):
     pmid: Optional[str] = None
     pmcid: Optional[str] = None
 
+    def openalex_match(self, external_id):
+        return self.openalex is not None and self.openalex == external_id.openalex
+
+    def dblp_match(self, external_id):
+        return self.dblp is not None and self.dblp == external_id.dblp
+
+    def doi_match(self, external_id):
+        return self.doi is not None and self.doi == external_id.doi
+
+    def matches(self, external_id):
+        return self.openalex_match(external_id) or self.dblp_match(external_id) or self.doi_match(external_id)
+
 
 class WorkType(BaseModel):
     openalex: Optional[str] = None
@@ -37,6 +49,11 @@ class Work(EditableDocument, SNMEntity):
     openalex_meta: Optional[dict] = Field(default=None)
     orcid_meta: Optional[dict] = Field(default=None)
     dblp_meta: Optional[dict] = Field(default=None)
+
+    @property
+    def normalized_title(self):
+        # TODO normalize eventually...
+        return self.title.lower()
 
     def replace_author(self, researcher: Researcher, replacement: Researcher):
         if self.authors is not None:

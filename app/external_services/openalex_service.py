@@ -4,12 +4,17 @@ import pydash as _
 from aiohttp_client_cache import CachedSession, SQLiteBackend
 
 from app.utils.text_utils import parse_openalex_id
+from evaluation.test_data import TestData
 
 OPENALEX_URL = "https://api.openalex.org"
-OPENALEX_AUTHOR_BATCH_SIZE = 20
-OPENALEX_INSTITUTION_BATCH_SIZE = 20
+OPENALEX_AUTHOR_BATCH_SIZE = 10
+OPENALEX_INSTITUTION_BATCH_SIZE = 10
 
 logger = logging.getLogger("uvicorn.error")
+
+works_test_data = TestData()
+authors_test_data = TestData()
+institutions_test_data = TestData()
 
 
 # TODO config (1day * 7)
@@ -25,7 +30,7 @@ async def fetch_topics(keywords: list[str]):
     for keyword in keywords:
         params = {"filter": f"default.search:{keyword}", "per-page": 1}
         async with OpenAlexSession() as session:
-            logging.debug("Fetching topics...")
+            logger.debug("Fetching topics...")
             response = await session.get(f"{OPENALEX_URL}/topics", params=params)
             body = await response.json()
             if len(body["results"]) > 0:
@@ -41,6 +46,7 @@ async def fetch_works(topic_ids_or_kws: list[dict | str], page: int, page_size: 
     result = []
     topic_ids = []
     keywords = []
+
     for topic_or_kw in topic_ids_or_kws:
         if isinstance(topic_or_kw, str):
             keywords.append(topic_or_kw)
@@ -53,7 +59,7 @@ async def fetch_works(topic_ids_or_kws: list[dict | str], page: int, page_size: 
                   "sort": "publication_year:desc"}
         async with OpenAlexSession() as session:
             response = await session.get(f"{OPENALEX_URL}/works", params=params)
-            logging.debug("Fetching topic works...")
+            logger.debug(f"Fetching topic works ({response.url})...")
             body = await response.json()
             result = body["results"]
 
@@ -62,13 +68,15 @@ async def fetch_works(topic_ids_or_kws: list[dict | str], page: int, page_size: 
                   "sort": "publication_year:desc"}
         async with OpenAlexSession() as session:
             response = await session.get(f"{OPENALEX_URL}/works", params=params)
-            logging.debug("Fetching keyword works...")
+            logger.debug(f"Fetching keyword works ({response.url})...")
             body = await response.json()
+            # TODO extract
+            works_test_data.populate(page - 1, "openalex_works.json", body["results"])
             result = result + body["results"]
     return result
 
 
-async def fetch_authors_for_works(works: list[dict]) -> list[dict]:
+async def fetch_authors_for_works(works: list[dict], batch_id: int) -> list[dict]:
     authors = []
     author_ids = _.uniq(_.flatten(
         map(lambda w: [parse_openalex_id(a["author"]["id"]) for a in w["authorships"]],
@@ -79,13 +87,15 @@ async def fetch_authors_for_works(works: list[dict]) -> list[dict]:
         params = {"filter": f"ids.openalex:{chunk_expr}", "per-page": OPENALEX_AUTHOR_BATCH_SIZE}
         async with OpenAlexSession() as session:
             response = await session.get(f"{OPENALEX_URL}/authors", params=params)
-            logging.debug("Fetching authors...")
+            logger.debug(f"Fetching authors ({response.url})...")
             body = await response.json()
         authors = authors + body["results"]
+    # TODO extract
+    authors_test_data.populate(batch_id, "openalex_authors.json", authors)
     return authors
 
 
-async def fetch_institutions_for_authors(authors: list[dict]) -> list[dict]:
+async def fetch_institutions_for_authors(authors: list[dict], batch_id: int) -> list[dict]:
     institutions = []
     institution_ids = _.uniq(_.flatten(
         map(lambda a: [parse_openalex_id(a["institution"]["id"]) for a in a["affiliations"]],
@@ -98,7 +108,9 @@ async def fetch_institutions_for_authors(authors: list[dict]) -> list[dict]:
         params = {"filter": f"ids.openalex:{chunk_expr}", "per-page": OPENALEX_AUTHOR_BATCH_SIZE}
         async with OpenAlexSession() as session:
             response = await session.get(f"{OPENALEX_URL}/institutions", params=params)
-            logging.debug("Fetching institution...")
+            logger.debug(f"Fetching institutions ({response.url})...")
             body = await response.json()
         institutions = institutions + body["results"]
+    # TODO extract
+    institutions_test_data.populate(batch_id, "openalex_institutions.json", institutions)
     return institutions
