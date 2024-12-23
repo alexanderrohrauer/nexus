@@ -49,7 +49,7 @@ async def dblp_import_job(n_batches: int, keywords: list[str], cursor: Cursor, c
     page_size = cursor["batch_size"]
     for i in range(n_batches):
         works = await dblp_service.fetch_works(keywords, page, page_size)
-        authors = await dblp_service.fetch_authors_for_works(works)
+        authors = await dblp_service.fetch_authors_for_works(works, page)
         researchers = dblp_dataprocess_service.restructure_authors(authors)
         async with lock:
             await researchers_service.insert_many(researchers)

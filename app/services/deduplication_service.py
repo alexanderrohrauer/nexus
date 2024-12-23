@@ -32,9 +32,9 @@ async def deduplicate_works():
                     if distance <= 3 or id_match:
                         print(
                             f"Duplicate work found: {prev_work.title} and {current_work.title} ({prev_work.uuid}, {current_work.uuid}, DOI match: {id_match})")
-                        await prev_work.set({Work.duplication_key: duplication_key, Work.marked_for_removal: id_match})
+                        await prev_work.set({Work.duplication_key: duplication_key, Work.marked_for_removal: id_match or prev_work.marked_for_removal})
                         await current_work.set(
-                            {Work.duplication_key: duplication_key, Work.marked_for_removal: id_match})
+                            {Work.duplication_key: duplication_key, Work.marked_for_removal: id_match or current_work.marked_for_removal})
 
                 else:
                     break
@@ -67,9 +67,9 @@ async def deduplicate_researchers():
                         print(
                             f"Duplicate researcher found: {prev_researcher.full_name} and {current_researcher.full_name} ({prev_researcher.uuid}, {current_researcher.uuid})")
                         await prev_researcher.set(
-                            {Researcher.duplication_key: duplication_key, Researcher.marked_for_removal: id_match})
+                            {Researcher.duplication_key: duplication_key, Researcher.marked_for_removal: id_match or prev_researcher.marked_for_removal})
                         await current_researcher.set(
-                            {Researcher.duplication_key: duplication_key, Researcher.marked_for_removal: id_match})
+                            {Researcher.duplication_key: duplication_key, Researcher.marked_for_removal: id_match or current_researcher.marked_for_removal})
                 else:
                     break
         skip = skip + 1
@@ -94,9 +94,9 @@ async def deduplicate_institutions():
                         print(
                             f"Duplicate institution found: {prev_institution.name} and {current_institution.name} ({prev_institution.uuid}, {current_institution.uuid}, ROR match: {id_match})")
                         await prev_institution.set(
-                            {Institution.duplication_key: duplication_key, Institution.marked_for_removal: id_match})
+                            {Institution.duplication_key: duplication_key, Institution.marked_for_removal: id_match or prev_institution.marked_for_removal})
                         await current_institution.set(
-                            {Institution.duplication_key: duplication_key, Institution.marked_for_removal: id_match})
+                            {Institution.duplication_key: duplication_key, Institution.marked_for_removal: id_match or current_institution.marked_for_removal})
                 else:
                     break
         skip = skip + 1

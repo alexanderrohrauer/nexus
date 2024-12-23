@@ -1,0 +1,55 @@
+[
+  [
+    {
+      "copyOf": 0,
+      "batchId": 0,
+      "data": {
+        "title": "Mutli-Partner Project: A Model-Driven Engineering Framework for Federated Digital Twins of Industrial Systems (MATISSE)",
+        "ids": {
+          "openalex": "https://openalex.org/W4405432029"
+        }
+      }
+    },
+    {
+      "copyOf": 1,
+      "batchId": 0,
+      "data": {
+        "ids": {
+          "openalex": "https://openalex.org/W4405665298",
+          "doi": "https://doi.org/10.22214/ijraset.2024.65994"
+        }
+      }
+    },
+    {
+      "copyOf": 2,
+      "batchId": 0,
+      "data": {
+        "title": "LIGHT-DRIVEN ACTIVE COLLOIDS",
+        "ids": {
+          "openalex": "https://openalex.org/W4405648662",
+          "doi": "https://doi.org/10.1039/9781837674589-00173",
+          "mag": null,
+          "dblp": null,
+          "pmid": null,
+          "pmcid": null
+        }
+      }
+    }
+  ],
+  [
+    {
+      "copyOf": 3,
+      "batchId": 0,
+      "data": {
+        "ids": {
+          "openalex": "https://openalex.org/W4405660570",
+          "doi": "https://doi.org/10.2112/jcr-si113-011.1",
+          "mag": null,
+          "dblp": null,
+          "pmid": null,
+          "pmcid": null
+        }
+      }
+    }
+  ]
+]

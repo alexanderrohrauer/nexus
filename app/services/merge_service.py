@@ -20,9 +20,7 @@ async def merge_institutions(i1: Institution, i2: Institution):
         researcher.institution = i1
         await researcher.save()
     i1.marked_for_removal = False
-    i1.duplication_key = None
     await i1.save()
-    await i2.delete()
     return i1
 
 
@@ -40,9 +38,7 @@ async def merge_researchers(r1: Researcher, r2: Researcher) -> Researcher:
         work.replace_author(r2, r1)
         await work.save()
     r1.marked_for_removal = False
-    r1.duplication_key = None
     await r1.save()
-    await r2.delete()
     return r1
 
 
@@ -61,7 +57,5 @@ async def merge_works(w1: Work, w2: Work) -> Work:
         authors.append(author)
     w1.authors = authors
     w1.marked_for_removal = False
-    w1.duplication_key = None
     await w1.save()
-    await w2.delete()
     return w1

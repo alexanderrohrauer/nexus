@@ -1,0 +1,21 @@
+[
+  [
+    {
+      "copyOf": 0,
+      "batchId": 0,
+      "data": {}
+    }
+  ],
+  [
+    {
+      "copyOf": 1,
+      "batchId": 0,
+      "data": {
+        "@id": "3478365",
+        "info": {
+          "title": "Joint Procedings of the 12th Educators Symposium (EduSymp 2016) and 3rd International Workshop on Open Source Software for Model Driven Engineering (OSS4MDE 2016) co-located with the ACM/IEEE 19th International Conference on Model Driven Engineering Languages and Systems (MODELS 2016), Saint Malo, France, October 3, 2016."
+        }
+      }
+    }
+  ]
+]

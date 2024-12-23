@@ -1,0 +1,63 @@
+[
+  [
+    {
+      "copyOf": 0,
+      "batchId": 0,
+      "data": {
+        "ids": {
+          "openalex": "https://openalex.org/A5023093640",
+          "orcid": null,
+          "dblp": null
+        }
+      }
+    },
+    {
+      "copyOf": 1,
+      "batchId": 0,
+      "data": {
+        "display_name": "Benoit Combemale",
+        "ids": {
+          "openalex": "https://openalex.org/A5079739011",
+          "orcid": null,
+          "dblp": null
+        }
+      }
+    },
+    {
+      "copyOf": 2,
+      "batchId": 0,
+      "data": {}
+    }
+  ],
+  [
+    {
+      "copyOf": 2,
+      "batchId": 0,
+      "data": {}
+    },
+    {
+      "copyOf": 1,
+      "batchId": 1,
+      "data": {
+        "display_name": "Max Müller",
+        "ids": {
+          "openalex": "https://openalex.org/A5079739020",
+          "orcid": null,
+          "dblp": null
+        }
+      }
+    },
+    {
+      "copyOf": 1,
+      "batchId": 1,
+      "data": {
+        "display_name": "Max Mueller",
+        "ids": {
+          "openalex": "https://openalex.org/A5079739021",
+          "orcid": null,
+          "dblp": null
+        }
+      }
+    }
+  ]
+]

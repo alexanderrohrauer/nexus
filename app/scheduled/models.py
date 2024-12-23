@@ -18,4 +18,4 @@ class ImportJobId(Enum):
 class ImportCursor(BaseModel):
     batch_id: int = Field(gt=-1, default=0)
     # TODO change back
-    batch_size: int = Field(gt=-1, lt=501, default=2)
+    batch_size: int = Field(gt=-1, lt=501, default=5)

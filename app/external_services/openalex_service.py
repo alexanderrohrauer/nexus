@@ -4,7 +4,7 @@ import pydash as _
 from aiohttp_client_cache import CachedSession, SQLiteBackend
 
 from app.utils.text_utils import parse_openalex_id
-from evaluation.test_data import TestData
+from evaluation.test_data import TestDataInjector
 
 OPENALEX_URL = "https://api.openalex.org"
 OPENALEX_AUTHOR_BATCH_SIZE = 10
@@ -12,16 +12,16 @@ OPENALEX_INSTITUTION_BATCH_SIZE = 10
 
 logger = logging.getLogger("uvicorn.error")
 
-works_test_data = TestData()
-authors_test_data = TestData()
-institutions_test_data = TestData()
+works_test_data = TestDataInjector()
+authors_test_data = TestDataInjector()
+institutions_test_data = TestDataInjector()
 
 
 # TODO config (1day * 7)
 class OpenAlexSession(CachedSession):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs, headers={"User-Agent": "mailto:k12105578@students.jku.at"},
-                         cache=SQLiteBackend('openalex_cache', expire_after=60 * 60 * 24 * 7))
+                         cache=SQLiteBackend('openalex_cache', expire_after=-1))
 
 
 # TODO maybe we get similar results between openalex and dblp if we dont search by topic - search by normal search instead
@@ -70,9 +70,9 @@ async def fetch_works(topic_ids_or_kws: list[dict | str], page: int, page_size: 
             response = await session.get(f"{OPENALEX_URL}/works", params=params)
             logger.debug(f"Fetching keyword works ({response.url})...")
             body = await response.json()
-            # TODO extract
-            works_test_data.populate(page - 1, "openalex_works.json", body["results"])
             result = result + body["results"]
+    # TODO extract
+    works_test_data.inject(page - 1, "openalex_works.json", result)
     return result
 
 
@@ -91,7 +91,7 @@ async def fetch_authors_for_works(works: list[dict], batch_id: int) -> list[dict
             body = await response.json()
         authors = authors + body["results"]
     # TODO extract
-    authors_test_data.populate(batch_id, "openalex_authors.json", authors)
+    authors_test_data.inject(batch_id, "openalex_authors.json", authors)
     return authors
 
 
@@ -112,5 +112,5 @@ async def fetch_institutions_for_authors(authors: list[dict], batch_id: int) -> 
             body = await response.json()
         institutions = institutions + body["results"]
     # TODO extract
-    institutions_test_data.populate(batch_id, "openalex_institutions.json", institutions)
+    institutions_test_data.inject(batch_id, "openalex_institutions.json", institutions)
     return institutions

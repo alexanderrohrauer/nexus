@@ -1,0 +1,86 @@
+[
+  [
+    {
+      "copyOf": 0,
+      "batchId": 0,
+      "data": {
+        "display_name": "Michgan State University",
+        "ids": {
+          "openalex": "https://openalex.org/I87216514",
+          "ror": "https://ror.org/05hs6h995",
+          "mag": null,
+          "grid": null,
+          "wikipedia": null,
+          "wikidata": null
+        }
+      }
+    },
+    {
+      "copyOf": 1,
+      "batchId": 0,
+      "data": {}
+    },
+    {
+      "copyOf": 2,
+      "batchId": 0,
+      "data": {
+        "display_name": "Universitat Politecnica de Valencia",
+        "ids": {
+          "openalex": "https://openalex.org/I60053952",
+          "ror": "https://ror.org/01460j860",
+          "mag": null,
+          "grid": null,
+          "wikipedia": null,
+          "wikidata": null
+        }
+      }
+    }
+  ],
+  [
+    {
+      "copyOf": 3,
+      "batchId": 0,
+      "data": {
+        "display_name": "universite de rennes",
+        "ids": {
+          "openalex": "https://openalex.org/I56067802",
+          "ror": "https://ror.org/015m7wh34",
+          "mag": null,
+          "grid": null,
+          "wikipedia": null,
+          "wikidata": null
+        }
+      }
+    },
+    {
+      "copyOf": 0,
+      "batchId": 1,
+      "data": {
+        "display_name": "Chinesische Akademie der Wissenschaften",
+        "ids": {
+          "openalex": "https://openalex.org/I19820367",
+          "ror": "https://ror.org/034t30j35",
+          "mag": null,
+          "grid": null,
+          "wikipedia": null,
+          "wikidata": null
+        }
+      }
+    },
+    {
+      "copyOf": 4,
+      "batchId": 1,
+      "data": {
+        "display_name": "Jangzhou University",
+        "ids": {
+          "openalex": "https://openalex.org/I78978613",
+          "ror": "https://ror.org/03tqb8s12",
+          "mag": null,
+          "grid": null,
+          "wikipedia": null,
+          "wikidata": null
+        }
+      }
+    }
+  ]
+]

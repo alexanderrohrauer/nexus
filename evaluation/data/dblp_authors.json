@@ -1,0 +1,43 @@
+[
+  [
+    {
+      "copyOf": 0,
+      "batchId": 0,
+      "data": {
+        "text": "Teddy Lazebnik",
+        "@pid": "89/7791-2"
+      }
+    },
+    {
+      "copyOf": 1,
+      "batchId": 0,
+      "data": {}
+    }
+  ],
+  [
+    {
+      "copyOf": 2,
+      "batchId": 0,
+      "data": {
+        "text": "Féderico Ciccozzi",
+        "@pid": "89/7791-22"
+      }
+    },
+    {
+      "copyOf": 0,
+      "batchId": 1,
+      "data": {
+        "text": "Richard Paige",
+        "@pid": "p/RichardPaige"
+      }
+    },
+    {
+      "copyOf": 1,
+      "batchId": 1,
+      "data": {
+        "text": "jordi cabot",
+        "@pid": "18/950"
+      }
+    }
+  ]
+]
