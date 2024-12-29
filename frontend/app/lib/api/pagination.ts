@@ -5,6 +5,7 @@ import type { SchemaResearcher } from "~/lib/api/types";
 interface ResearcherQuery {
   limit: number;
   q: string;
+  search?: string;
 }
 
 export const useResearchersPagination = (query: ResearcherQuery) =>
@@ -18,6 +19,7 @@ export const useResearchersPagination = (query: ResearcherQuery) =>
               limit: query.limit,
               offset: pageParam,
               q: query.q,
+              search: query.search,
             },
           },
         })

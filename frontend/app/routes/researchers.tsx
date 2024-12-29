@@ -12,7 +12,7 @@ import {
   Dialog,
   DialogContent,
   DialogFooter,
-  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
 import Filter from "~/components/molecules/filter";
@@ -54,6 +54,7 @@ const affiliationFields = [
 ];
 
 const fields = [
+  { name: "uuid", label: "ID", type: "researcher" },
   {
     name: "external_id",
     label: "External ID",
@@ -121,7 +122,7 @@ export default function Researchers(props: ResearchersProps) {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-max">
-                <DialogHeader>Filter</DialogHeader>
+                <DialogTitle>Filter</DialogTitle>
                 <Filter
                   fields={fields}
                   filters={filters}

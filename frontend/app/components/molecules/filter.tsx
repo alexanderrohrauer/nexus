@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import {
   DateInput,
   NumberInput,
+  ResearcherPicker,
   StringInput,
 } from "~/components/molecules/filters";
 import {
@@ -31,14 +32,43 @@ import {
 interface DynamicFilterProps {
   fields: any[];
 }
-
+const primitives = ["string", "number", "boolean", "date"];
 const operators = [
-  { value: "$eq", label: "Equals" },
-  { value: "$ne", label: "Not Equals" },
-  { value: "$gt", label: "Greater Than" },
-  { value: "$lt", label: "Less Than" },
-  { value: "$gte", label: "Greater Than or Equal" },
-  { value: "$lte", label: "Less Than or Equal" },
+  {
+    value: "$eq",
+    label: "Equals",
+    applicableTo: primitives,
+  },
+  {
+    value: "$ne",
+    label: "Not Equals",
+    applicableTo: primitives,
+  },
+  {
+    value: "$gt",
+    label: "Greater Than",
+    applicableTo: primitives,
+  },
+  {
+    value: "$lt",
+    label: "Less Than",
+    applicableTo: primitives,
+  },
+  {
+    value: "$gte",
+    label: "Greater Than or Equal",
+    applicableTo: primitives,
+  },
+  {
+    value: "$lte",
+    label: "Less Than or Equal",
+    applicableTo: primitives,
+  },
+  {
+    value: "$in",
+    label: "In",
+    applicableTo: ["researcher", "institution", "work"],
+  },
   { value: "$regex", label: "Matches (Regex)", applicableTo: ["string"] },
 ];
 
@@ -75,6 +105,8 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
         return <NumberInput value={value} onChange={onChange} />;
       case "date":
         return <DateInput value={value} onChange={onChange} />;
+      case "researcher":
+        return <ResearcherPicker value={value} onChange={onChange} />;
       default:
         return <StringInput value={value} onChange={onChange} />;
     }
@@ -104,7 +136,7 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
             onClick={() =>
               addFilter({
                 field: prefix + option.name,
-                operator: "$eq",
+                operator: null,
                 value: "",
               })
             }
@@ -123,6 +155,7 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
       {filters.map((filter, index) => {
         const fieldType = getFieldType(filter.field);
         const applicableOperators = getApplicableOperators(fieldType);
+        filter.operator = filter.operator ?? applicableOperators[0].value;
 
         return (
           <div key={index} className="flex items-center mb-3 space-x-2">
@@ -133,7 +166,7 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
                 updateFilter(index, { ...filter, operator: value })
               }
             >
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="max-w-[200px]">
                 <SelectValue placeholder="Operator" />
               </SelectTrigger>
               <SelectContent>
@@ -163,9 +196,7 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
         <DropdownMenuTrigger asChild>
           <Button variant="secondary">Add filter</Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          {renderAddItems(fields)}
-        </DropdownMenuContent>
+        <DropdownMenuContent>{renderAddItems(fields)}</DropdownMenuContent>
       </DropdownMenu>
     </div>
   );

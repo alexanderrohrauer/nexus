@@ -1,6 +1,13 @@
 import * as React from "react";
-import { cva, VariantProps } from "class-variance-authority";
-import { CheckIcon, ChevronDown, XCircle, XIcon } from "lucide-react";
+import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
+import {
+  CheckIcon,
+  ChevronDown,
+  ExternalLink,
+  XCircle,
+  XIcon,
+} from "lucide-react";
 
 import { cn } from "~/lib/utils";
 import { Separator } from "~/components/ui/separator";
@@ -21,30 +28,35 @@ import {
   CommandSeparator,
 } from "~/components/ui/command";
 import { withFormikField } from "~/lib/withFormikField";
+import { NavLink } from "@remix-run/react";
 
 /**
  * Variants for the multi-select component to handle different styles.
  * Uses class-variance-authority (cva) to define different styles based on "variant" prop.
  */
-const multiSelectVariants = cva(
-  "m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300",
-  {
-    variants: {
-      variant: {
-        default:
-          "border-foreground/10 text-foreground bg-card hover:bg-card/80",
-        secondary:
-          "border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        inverted: "inverted",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
+const multiSelectVariants = cva("m-1", {
+  variants: {
+    variant: {
+      default: "border-foreground/10 text-foreground bg-card hover:bg-card/80",
+      secondary:
+        "border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      destructive:
+        "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+      inverted: "inverted",
     },
   },
-);
+  defaultVariants: {
+    variant: "default",
+  },
+});
+
+interface Option {
+  /** The text to display for the option. */
+  label: string;
+  /** The unique value associated with the option. */
+  value: string;
+  link?: string;
+}
 
 /**
  * Props for MultiSelect component
@@ -56,21 +68,13 @@ interface MultiSelectProps
    * An array of option objects to be displayed in the multi-select component.
    * Each option object has a label, value, and an optional icon.
    */
-  options: {
-    /** The text to display for the option. */
-    label: string;
-    /** The unique value associated with the option. */
-    value: string;
-  }[];
+  options: Option[];
 
   /**
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
    */
-  onValueChange?: (value: string[]) => void;
-
-  /** The default selected values when the component mounts. */
-  defaultValue?: string[];
+  onValueChange?: (value: Option[]) => void;
 
   /**
    * Placeholder text to be displayed when no values are selected.
@@ -98,8 +102,11 @@ interface MultiSelectProps
   className?: string;
 
   name?: string;
+  loadMoreButton?: React.ReactNode;
+  onSearch?: (search: string) => void;
+  selectedValue: Option[];
 }
-
+// TODO duplicate items hover bug in options
 export const MultiSelect: React.FC<MultiSelectProps> = ({
   options,
   onValueChange,
@@ -110,10 +117,11 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   modalPopover = false,
   className,
   name,
+  loadMoreButton,
+  onSearch,
+  selectedValue,
   ...props
 }) => {
-  const [selectedValues, setSelectedValues] =
-    React.useState<string[]>(defaultValue);
   const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -122,16 +130,18 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   };
 
-  const toggleOption = (option: string) => {
-    const newSelectedValues = selectedValues.includes(option)
-      ? selectedValues.filter((value) => value !== option)
-      : [...selectedValues, option];
-    setSelectedValues(newSelectedValues);
+  const toggleOption = (option: Option) => {
+    const newSelectedValues = selectedValue.some(
+      (v) => v.value === option.value,
+    )
+      ? selectedValue.filter((value) => value.value !== option.value)
+      : [...selectedValue, option];
+    onValueChange?.(newSelectedValues);
     onValueChange?.(newSelectedValues);
   };
 
   const handleClear = () => {
-    setSelectedValues([]);
+    onValueChange?.([]);
     onValueChange?.([]);
   };
 
@@ -140,18 +150,17 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   };
 
   const clearExtraOptions = () => {
-    const newSelectedValues = selectedValues.slice(0, maxCount);
-    setSelectedValues(newSelectedValues);
+    const newSelectedValues = selectedValue.slice(0, maxCount);
+    onValueChange?.(newSelectedValues);
     onValueChange?.(newSelectedValues);
   };
 
   const toggleAll = () => {
-    if (selectedValues.length === options.length) {
+    if (selectedValue.length === options.length) {
       handleClear();
     } else {
-      const allValues = options.map((option) => option.value);
-      setSelectedValues(allValues);
-      onValueChange?.(allValues);
+      onValueChange?.(options);
+      onValueChange?.(options);
     }
   };
 
@@ -167,18 +176,17 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
           {...props}
           onClick={handleTogglePopover}
           className={cn(
-            "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
+            "flex p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
             className,
           )}
         >
-          {selectedValues.length > 0 ? (
+          {selectedValue.length > 0 ? (
             <div className="flex justify-between items-center w-full">
               <div className="flex flex-wrap items-center space-x-1">
-                {selectedValues.slice(0, maxCount).map((value) => {
-                  const option = options.find((o) => o.value === value);
+                {selectedValue.slice(0, maxCount).map((value) => {
                   return (
-                    <Badge key={value} variant="secondary">
-                      {option?.label}
+                    <Badge key={value.value} variant="secondary">
+                      {value?.label}
                       <XIcon
                         className="ml-2 h-4 w-4 cursor-pointer"
                         onClick={(event) => {
@@ -189,14 +197,14 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                     </Badge>
                   );
                 })}
-                {selectedValues.length > maxCount && (
+                {selectedValue.length > maxCount && (
                   <Badge
                     className={cn(
                       "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
                       multiSelectVariants({ variant }),
                     )}
                   >
-                    {`+ ${selectedValues.length - maxCount}`}
+                    {`+${selectedValue.length - maxCount}`}
                     <XCircle
                       className="ml-2 h-4 w-4 cursor-pointer"
                       onClick={(event) => {
@@ -233,16 +241,17 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-auto p-0"
+        className="p-0"
         align="start"
         onEscapeKeyDown={() => setIsPopoverOpen(false)}
       >
-        <Command>
+        <Command shouldFilter={!onSearch}>
           <CommandInput
             placeholder="Search..."
             onKeyDown={handleInputKeyDown}
+            onValueChange={onSearch}
           />
-          <CommandList>
+          <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden">
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               <CommandItem
@@ -253,7 +262,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                 <div
                   className={cn(
                     "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                    selectedValues.length === options.length
+                    selectedValue.length === options.length
                       ? "bg-primary text-primary-foreground"
                       : "opacity-50 [&_svg]:invisible",
                   )}
@@ -262,12 +271,16 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                 </div>
                 <span>(Select All)</span>
               </CommandItem>
+            </CommandGroup>
+            <CommandGroup>
               {options.map((option) => {
-                const isSelected = selectedValues.includes(option.value);
+                const isSelected = selectedValue.some(
+                  (v) => v.value === option.value,
+                );
                 return (
                   <CommandItem
                     key={option.value}
-                    onSelect={() => toggleOption(option.value)}
+                    onSelect={() => toggleOption(option)}
                     className="cursor-pointer"
                   >
                     <div
@@ -281,14 +294,28 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
                       <CheckIcon className="h-4 w-4" />
                     </div>
                     <span>{option.label}</span>
+                    {option.link && (
+                      <NavLink
+                        to={option.link}
+                        target="_blank"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ExternalLink />
+                      </NavLink>
+                    )}
                   </CommandItem>
                 );
               })}
             </CommandGroup>
+            {loadMoreButton && (
+              <div className="mt-3 mb-2 flex justify-center">
+                {loadMoreButton}
+              </div>
+            )}
             <CommandSeparator />
             <CommandGroup>
               <div className="flex items-center justify-between">
-                {selectedValues.length > 0 && (
+                {selectedValue.length > 0 && (
                   <>
                     <CommandItem
                       onSelect={handleClear}
@@ -313,10 +340,6 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
           </CommandList>
         </Command>
       </PopoverContent>
-      {/*{name &&*/}
-      {/*  selectedValues.map((value, i) => (*/}
-      {/*    <input key={i} type="hidden" name={name} value={value} />*/}
-      {/*  ))}*/}
     </Popover>
   );
 };
