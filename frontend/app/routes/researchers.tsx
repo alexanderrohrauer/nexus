@@ -23,6 +23,7 @@ import { Routes } from "~/routes";
 import { clsx } from "clsx";
 import { useResearchersPagination } from "~/lib/api/pagination";
 import Loader from "~/components/molecules/loader";
+import useDebounce from "~/lib/custom-utils";
 
 interface ResearchersProps {}
 // TODO complete
@@ -89,12 +90,14 @@ export default function Researchers(props: ResearchersProps) {
     setPageName("Researchers");
   }, []);
   const { filters, setFilters, applyFilters } = useFilterState();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const debouncedSearch = useDebounce(searchParams.get("search"), 500);
   const pagination = useResearchersPagination({
     q: searchParams.has("q")
       ? decodeURIComponent(searchParams.get("q"))
       : undefined,
     limit: 20,
+    search: debouncedSearch,
   });
   const researchers = pagination.data?.pages.flat() ?? [];
   return (
@@ -111,7 +114,16 @@ export default function Researchers(props: ResearchersProps) {
             {/*  TODO implement sorts*/}
           </div>
           <div className="flex space-x-2">
-            <Input placeholder="Type to search..." />
+            <Input
+              placeholder="Type to search..."
+              onInput={(e) => {
+                searchParams.set(
+                  "search",
+                  (e.target as HTMLInputElement).value,
+                );
+                setSearchParams(searchParams);
+              }}
+            />
             <Dialog>
               <DialogTrigger asChild>
                 <Button size="icon" variant="outline" className="relative">
@@ -138,7 +150,7 @@ export default function Researchers(props: ResearchersProps) {
           </div>
         </SidebarHeader>
         <SidebarContent className="gap-0 overflow-y-auto">
-          <Loader task={pagination} once>
+          <Loader task={pagination}>
             {researchers.map((researcher) => (
               <NavLink
                 key={researcher.uuid}
@@ -156,6 +168,7 @@ export default function Researchers(props: ResearchersProps) {
               >
                 <div className="flex w-full items-center gap-2">
                   <div className="text-xs flex space-x-1 items-center">
+                    {/*TODO maybe render the source (dblp) here*/}
                     <Users size="12" strokeWidth={2.5} />
                     <span>Researcher</span>
                   </div>{" "}
