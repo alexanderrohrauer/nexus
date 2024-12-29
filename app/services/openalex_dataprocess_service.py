@@ -74,6 +74,7 @@ def restructure_authors(authors: list[dict], institutions: list[Institution]):
             institution=institution.id if institution is not None else None,
             topic_keywords=[t["display_name"] for t in author["topics"]],
             openalex_meta=author
+        #   TODO maybe add country from last_known_institution (write down somewhere to run evaluation again -> create mongodb dump at end of bsc thesis)
         )
         parsed.snm_key = compute_researcher_snm_key(parsed)
         result.append(parsed)

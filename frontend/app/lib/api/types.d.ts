@@ -92,16 +92,165 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/import-task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Import Task */
+        get: operations["get_import_task_import_task_get"];
+        /** Update Import Task */
+        put: operations["update_import_task_import_task_put"];
+        /** Create Import Task */
+        post: operations["create_import_task_import_task_post"];
+        /** Delete Import Task */
+        delete: operations["delete_import_task_import_task_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/import-task/reset-cursors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reset Cursors */
+        put: operations["reset_cursors_import_task_reset_cursors_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/import-task/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run All Import Jobs */
+        post: operations["run_all_import_jobs_import_task_run_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/import-task/run-deduplication": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run Deduplication */
+        post: operations["run_deduplication_import_task_run_deduplication_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/import-task/run-deduplication-elimination": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run Deduplication Elimination */
+        post: operations["run_deduplication_elimination_import_task_run_deduplication_elimination_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/researchers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Researchers */
+        get: operations["get_researchers_researchers_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/researchers/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Researcher */
+        get: operations["get_researcher_researchers__uuid__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Affiliation */
+        Affiliation: {
+            /** Years */
+            years: number[];
+            type?: components["schemas"]["AffiliationType"] | null;
+            /** Institution */
+            institution: {
+                /** Id */
+                id: string;
+                /** Collection */
+                collection: string;
+            };
+        };
+        /**
+         * AffiliationType
+         * @enum {string}
+         */
+        AffiliationType: AffiliationType;
         /** CreateDashboardRequest */
         CreateDashboardRequest: {
             /** Title */
             title: string;
             /** Visualizations */
             visualizations: components["schemas"]["CreateVisualizationRequest"][];
+        };
+        /** CreateImportTaskRequest */
+        CreateImportTaskRequest: {
+            /** Cron Expr */
+            cron_expr: string;
+            /** N Batches */
+            n_batches: number;
+            /** Keywords */
+            keywords: string[];
         };
         /** CreateVisualizationRequest */
         CreateVisualizationRequest: {
@@ -146,7 +295,96 @@ export interface components {
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
-            detail: components["schemas"]["ValidationError"][];
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
+         * ImportJobId
+         * @enum {string}
+         */
+        ImportJobId: ImportJobId;
+        /** Researcher */
+        Researcher: {
+            /** Snm Key */
+            snm_key?: string | null;
+            /**
+             *  Id
+             * @description MongoDB document ObjectID
+             */
+            _id?: string | null;
+            /**
+             * Uuid
+             * Format: uuid
+             */
+            uuid?: string;
+            /**
+             * Imported At
+             * Format: date-time
+             */
+            imported_at?: string;
+            /** Manually Updated At */
+            manually_updated_at?: string | null;
+            /** Duplication Key */
+            duplication_key?: string | null;
+            /**
+             * Marked For Removal
+             * @default false
+             */
+            marked_for_removal: boolean;
+            external_id: components["schemas"]["ResearcherExternalId"];
+            /** Full Name */
+            full_name: string;
+            /** Alternative Names */
+            alternative_names?: string[] | null;
+            /** Affiliations */
+            affiliations?: components["schemas"]["Affiliation"][] | null;
+            /** Institution */
+            institution?: {
+                /** Id */
+                id: string;
+                /** Collection */
+                collection: string;
+            } | null;
+            /** Country */
+            country?: string | null;
+            /** Topic Keywords */
+            topic_keywords?: string[] | null;
+            /** Openalex Meta */
+            openalex_meta?: Record<string, never> | null;
+            /** Orcid Meta */
+            orcid_meta?: Record<string, never> | null;
+            /** Dblp Meta */
+            dblp_meta?: Record<string, never> | null;
+        };
+        /** ResearcherExternalId */
+        ResearcherExternalId: {
+            /** Openalex */
+            openalex?: string | null;
+            /** Orcid */
+            orcid?: string | null;
+            /** Dblp */
+            dblp?: string | null;
+            /** Scopus */
+            scopus?: string | null;
+            /** Twitter */
+            twitter?: string | null;
+            /** Wikipedia */
+            wikipedia?: string | null;
+        };
+        /** ResetCursorsRequest */
+        ResetCursorsRequest: {
+            /** Jobs */
+            jobs: components["schemas"]["ImportJobId"][];
+        };
+        /** UpdateImportTaskRequest */
+        UpdateImportTaskRequest: {
+            /** Cron Expr */
+            cron_expr: string;
+            /** N Batches */
+            n_batches: number;
+            /** Keywords */
+            keywords: string[];
+            /** Jobs */
+            jobs: components["schemas"]["ImportJobId"][];
         };
         /** UpdateVisualizationRequest */
         UpdateVisualizationRequest: {
@@ -196,11 +434,19 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaAffiliation = components['schemas']['Affiliation'];
+export type SchemaAffiliationType = components['schemas']['AffiliationType'];
 export type SchemaCreateDashboardRequest = components['schemas']['CreateDashboardRequest'];
+export type SchemaCreateImportTaskRequest = components['schemas']['CreateImportTaskRequest'];
 export type SchemaCreateVisualizationRequest = components['schemas']['CreateVisualizationRequest'];
 export type SchemaDashboard = components['schemas']['Dashboard'];
 export type SchemaDashboardMinimal = components['schemas']['DashboardMinimal'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
+export type SchemaImportJobId = components['schemas']['ImportJobId'];
+export type SchemaResearcher = components['schemas']['Researcher'];
+export type SchemaResearcherExternalId = components['schemas']['ResearcherExternalId'];
+export type SchemaResetCursorsRequest = components['schemas']['ResetCursorsRequest'];
+export type SchemaUpdateImportTaskRequest = components['schemas']['UpdateImportTaskRequest'];
 export type SchemaUpdateVisualizationRequest = components['schemas']['UpdateVisualizationRequest'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
 export type SchemaVisualization = components['schemas']['Visualization'];
@@ -456,4 +702,276 @@ export interface operations {
             };
         };
     };
+    get_import_task_import_task_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    update_import_task_import_task_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateImportTaskRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_import_task_import_task_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateImportTaskRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_import_task_import_task_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    reset_cursors_import_task_reset_cursors_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetCursorsRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    run_all_import_jobs_import_task_run_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    run_deduplication_import_task_run_deduplication_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    run_deduplication_elimination_import_task_run_deduplication_elimination_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_researchers_researchers_get: {
+        parameters: {
+            query?: {
+                limit?: unknown;
+                offset?: unknown;
+                q?: unknown;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Researcher"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_researcher_researchers__uuid__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Researcher"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+}
+export enum AffiliationType {
+    EDUCATION = "EDUCATION",
+    EMPLOYMENT = "EMPLOYMENT"
+}
+export enum ImportJobId {
+    openalex_import_job = "openalex_import_job",
+    orcid_import_job = "orcid_import_job",
+    dblp_import_job = "dblp_import_job"
 }
