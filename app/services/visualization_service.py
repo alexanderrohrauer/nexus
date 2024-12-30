@@ -1954,10 +1954,11 @@ async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID)
         spec = mock_data[visualization.visualization][0]
         data = mock_data[visualization.visualization][1]
         if visualization.visualization == "vis-4":
-            works = await Work.find_all(fetch_links=True, limit=30).to_list()
+            works = await Work.find_all(limit=30).to_list()
             base = works[0].authors[0]
             data = []
             for w in works:
+                await w.fetch_link(Work.authors)
                 data = data + [[base.full_name, a.full_name] for a in filter(lambda x: x.id != base.id, w.authors)]
             spec["series"][0]["data"] = data
         if visualization.visualization == "vis-7":
@@ -1966,10 +1967,11 @@ async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID)
                      "data": [{"id": i.uuid, "name": i.name, "position": i.location} for i in institutions]}]
             t = "Leaflet"
         if visualization.visualization == "vis-8":
-            works = await Work.find_all(fetch_links=True, limit=30).to_list()
+            works = await Work.find_all(limit=30).to_list()
             nodes = []
             links = []
             for w in works:
+                await w.fetch_link(Work.authors)
                 author_nodes = [{"id": a.uuid, "name": a.full_name} for a in w.authors]
                 nodes = nodes + author_nodes
                 author_ids = [a.uuid for a in w.authors]

@@ -5,7 +5,7 @@ export const INSTITUTION_FIELDS = [
   {
     name: "international_names",
     label: "International names",
-    isRelation: true,
+    type: "multi",
     children: [
       { name: "ar", label: "Arabic", type: "string" },
       { name: "zh", label: "Chinese (simplified)", type: "string" },
@@ -29,7 +29,7 @@ export const INSTITUTION_FIELDS = [
   {
     name: "external_id",
     label: "External ID",
-    isRelation: true,
+    type: "multi",
     children: [
       { name: "openalex", label: "OpenAlex", type: "string" },
       { name: "ror", label: "ROR", type: "string" },
@@ -50,23 +50,12 @@ export const INSTITUTION_FIELDS = [
   { name: "imported_at", label: "Imported At", type: "date" },
 ];
 
-const AFFILIATION_FIELDS = [
-  { name: "years", label: "Years", type: "number" },
-  { name: "type", label: "Type", type: "string" },
-  {
-    name: "institution",
-    label: "Institution",
-    isRelation: true,
-    children: INSTITUTION_FIELDS,
-  },
-];
-
 export const RESEARCHER_FIELDS = [
   { name: "uuid", label: "ID", type: "researcher" },
   {
     name: "external_id",
     label: "External ID",
-    isRelation: true,
+    type: "multi",
     children: [
       { name: "openalex", label: "OpenAlex", type: "string" },
       { name: "orcid", label: "ORCID", type: "string" },
@@ -78,8 +67,17 @@ export const RESEARCHER_FIELDS = [
   {
     name: "affiliations",
     label: "Affiliations",
-    isRelation: true,
-    children: AFFILIATION_FIELDS,
+    type: "multi",
+    children: [
+      { name: "years", label: "Years", type: "number" },
+      { name: "type", label: "Type", type: "string" },
+      {
+        name: "institution",
+        label: "Institution",
+        isRelation: true,
+        children: INSTITUTION_FIELDS,
+      },
+    ],
   },
   { name: "topic_keywords", label: "Keywords", type: "string" },
   {
@@ -96,7 +94,7 @@ export const WORK_FIELDS = [
   {
     name: "external_id",
     label: "External ID",
-    isRelation: true,
+    type: "multi",
     children: [
       { name: "openalex", label: "OpenAlex", type: "string" },
       { name: "doi", label: "DOI", type: "string" },
@@ -115,7 +113,7 @@ export const WORK_FIELDS = [
   {
     name: "type",
     label: "Type",
-    isRelation: true,
+    type: "multi",
     children: [
       { name: "openalex", label: "OpenAlex", type: "string" },
       { name: "dblp", label: "DBLP", type: "string" },
