@@ -35,12 +35,12 @@ import {
 interface DynamicFilterProps {
   fields: any[];
 }
-const primitives = ["string", "number", "boolean", "date"];
+const primitives = ["string", "number", "date"];
 const operators = [
   {
     value: "$eq",
     label: "Equals",
-    applicableTo: primitives,
+    applicableTo: [...primitives, "boolean"],
   },
   {
     value: "$ne",
