@@ -1,9 +1,12 @@
 import React, { useMemo } from "react";
 import {
+  BooleanInput,
   DateInput,
+  InstitutionPicker,
   NumberInput,
   ResearcherPicker,
   StringInput,
+  WorkPicker,
 } from "~/components/molecules/filters";
 import {
   FilterProvider,
@@ -72,7 +75,7 @@ const operators = [
   { value: "$regex", label: "Matches (Regex)", applicableTo: ["string"] },
 ];
 
-const flattenFields = (fields: any[], prefix = "", depth = 2) => {
+const flattenFields = (fields: any[], prefix = "", depth = 3) => {
   return fields.flatMap((option) => {
     if (option.isRelation && depth > 0) {
       return flattenFields(
@@ -103,16 +106,22 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
     switch (fieldType) {
       case "number":
         return <NumberInput value={value} onChange={onChange} />;
+      case "boolean":
+        return <BooleanInput value={value} onChange={onChange} />;
       case "date":
         return <DateInput value={value} onChange={onChange} />;
+      case "work":
+        return <WorkPicker value={value} onChange={onChange} />;
       case "researcher":
         return <ResearcherPicker value={value} onChange={onChange} />;
+      case "institution":
+        return <InstitutionPicker value={value} onChange={onChange} />;
       default:
         return <StringInput value={value} onChange={onChange} />;
     }
   };
 
-  const renderAddItems = (options: any[], prefix = "", depth = 2) => {
+  const renderAddItems = (options: any[], prefix = "", depth = 3) => {
     return options.map((option) => {
       if (option.isRelation && depth > 0) {
         return (

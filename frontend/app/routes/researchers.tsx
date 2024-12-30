@@ -24,64 +24,9 @@ import { clsx } from "clsx";
 import { useResearchersPagination } from "~/lib/api/pagination";
 import Loader from "~/components/molecules/loader";
 import useDebounce from "~/lib/custom-utils";
+import { RESEARCHER_FIELDS } from "~/lib/filters";
 
 interface ResearchersProps {}
-// TODO complete
-const institutionFields = [
-  {
-    name: "external_id",
-    label: "External ID",
-    isRelation: true,
-    children: [
-      { name: "openalex", label: "OpenAlex", type: "string" },
-      { name: "ror", label: "ROR", type: "string" },
-    ],
-  },
-  { name: "name", label: "Name", type: "string" },
-  { name: "city", label: "City", type: "string" },
-  { name: "country", label: "Country", type: "string" },
-  { name: "imported_at", label: "Imported At", type: "date" },
-];
-
-const affiliationFields = [
-  { name: "years", label: "Years", type: "number" },
-  { name: "type", label: "Type", type: "string" },
-  {
-    name: "institution",
-    label: "Institution",
-    isRelation: true,
-    children: institutionFields,
-  },
-];
-
-const fields = [
-  { name: "uuid", label: "ID", type: "researcher" },
-  {
-    name: "external_id",
-    label: "External ID",
-    isRelation: true,
-    children: [
-      { name: "openalex", label: "OpenAlex", type: "string" },
-      { name: "orcid", label: "ORCID", type: "string" },
-      { name: "dblp", label: "DBLP", type: "string" },
-    ],
-  },
-  { name: "full_name", label: "Full name", type: "string" },
-  {
-    name: "affiliations",
-    label: "Affiliations",
-    isRelation: true,
-    children: affiliationFields,
-  },
-  { name: "topic_keywords", label: "Keywords", type: "string" },
-  {
-    name: "institution",
-    label: "Institution",
-    isRelation: true,
-    children: institutionFields,
-  },
-  { name: "imported_at", label: "Imported At", type: "date" },
-];
 
 export default function Researchers(props: ResearchersProps) {
   const { setPageName } = useNav();
@@ -135,7 +80,7 @@ export default function Researchers(props: ResearchersProps) {
               <DialogContent className="max-w-max">
                 <DialogTitle>Filter</DialogTitle>
                 <Filter
-                  fields={fields}
+                  fields={RESEARCHER_FIELDS}
                   filters={filters}
                   setFilters={setFilters}
                 />

@@ -214,28 +214,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/institutions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Institutions */
+        get: operations["get_institutions_institutions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/institutions/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Institution */
+        get: operations["get_institution_institutions__uuid__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/works": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Works */
+        get: operations["get_works_works_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/works/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Work */
+        get: operations["get_work_works__uuid__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** Affiliation */
-        Affiliation: {
-            /** Years */
-            years: number[];
-            type?: components["schemas"]["AffiliationType"] | null;
-            /** Institution */
-            institution: {
-                /** Id */
-                id: string;
-                /** Collection */
-                collection: string;
-            };
-        };
-        /**
-         * AffiliationType
-         * @enum {string}
-         */
-        AffiliationType: AffiliationType;
         /** CreateDashboardRequest */
         CreateDashboardRequest: {
             /** Title */
@@ -302,10 +352,17 @@ export interface components {
          * @enum {string}
          */
         ImportJobId: ImportJobId;
-        /** Researcher */
-        Researcher: {
+        /** Institution */
+        Institution: {
             /** Snm Key */
             snm_key?: string | null;
+            /** Duplication Key */
+            duplication_key?: string | null;
+            /**
+             * Marked For Removal
+             * @default false
+             */
+            marked_for_removal: boolean;
             /**
              *  Id
              * @description MongoDB document ObjectID
@@ -316,13 +373,74 @@ export interface components {
              * Format: uuid
              */
             uuid?: string;
-            /**
-             * Imported At
-             * Format: date-time
-             */
+            /** Imported At */
             imported_at?: string;
             /** Manually Updated At */
             manually_updated_at?: string | null;
+            external_id: components["schemas"]["InstitutionExternalId"];
+            /** Name */
+            name: string;
+            /** Acronyms */
+            acronyms: string[];
+            /** Alternative Names */
+            alternative_names: string[];
+            /** International Names */
+            international_names: {
+                [key: string]: string;
+            };
+            /** City */
+            city?: string | null;
+            /** Region */
+            region?: string | null;
+            /**
+             * Country
+             * @description Is the country code
+             */
+            country?: string | null;
+            /**
+             * Location
+             * @description Long-Lat
+             */
+            location?: [
+                number,
+                number
+            ] | null;
+            /** Homepage Url */
+            homepage_url?: string | null;
+            /** Image Url */
+            image_url?: string | null;
+            /** Parent Institutions Ids */
+            parent_institutions_ids: string[];
+            /** Type */
+            type?: string | null;
+            /** Topic Keywords */
+            topic_keywords: string[];
+            /** Openalex Meta */
+            openalex_meta?: Record<string, never> | null;
+            /** Orcid Meta */
+            orcid_meta?: Record<string, never> | null;
+            /** Dblp Meta */
+            dblp_meta?: Record<string, never> | null;
+        };
+        /** InstitutionExternalId */
+        InstitutionExternalId: {
+            /** Grid */
+            grid?: string | null;
+            /** Mag */
+            mag?: string | null;
+            /** Openalex */
+            openalex?: string | null;
+            /** Ror */
+            ror?: string | null;
+            /** Wikipedia */
+            wikipedia?: string | null;
+            /** Wikidata */
+            wikidata?: string | null;
+        };
+        /** Researcher */
+        Researcher: {
+            /** Snm Key */
+            snm_key?: string | null;
             /** Duplication Key */
             duplication_key?: string | null;
             /**
@@ -330,13 +448,32 @@ export interface components {
              * @default false
              */
             marked_for_removal: boolean;
+            /**
+             *  Id
+             * @description MongoDB document ObjectID
+             */
+            _id?: string | null;
+            /**
+             * Uuid
+             * Format: uuid
+             */
+            uuid?: string;
+            /** Imported At */
+            imported_at?: string;
+            /** Manually Updated At */
+            manually_updated_at?: string | null;
             external_id: components["schemas"]["ResearcherExternalId"];
             /** Full Name */
             full_name: string;
             /** Alternative Names */
             alternative_names?: string[] | null;
             /** Affiliations */
-            affiliations?: components["schemas"]["Affiliation"][] | null;
+            affiliations?: {
+                /** Id */
+                id: string;
+                /** Collection */
+                collection: string;
+            }[] | null;
             /** Institution */
             institution?: {
                 /** Id */
@@ -344,8 +481,6 @@ export interface components {
                 /** Collection */
                 collection: string;
             } | null;
-            /** Country */
-            country?: string | null;
             /** Topic Keywords */
             topic_keywords?: string[] | null;
             /** Openalex Meta */
@@ -427,6 +562,83 @@ export interface components {
              */
             default_query: unknown[] | Record<string, never>;
         };
+        /** Work */
+        Work: {
+            /** Snm Key */
+            snm_key?: string | null;
+            /** Duplication Key */
+            duplication_key?: string | null;
+            /**
+             * Marked For Removal
+             * @default false
+             */
+            marked_for_removal: boolean;
+            /**
+             *  Id
+             * @description MongoDB document ObjectID
+             */
+            _id?: string | null;
+            /**
+             * Uuid
+             * Format: uuid
+             */
+            uuid?: string;
+            /** Imported At */
+            imported_at?: string;
+            /** Manually Updated At */
+            manually_updated_at?: string | null;
+            external_id: components["schemas"]["WorkExternalId"];
+            /** Title */
+            title: string;
+            type: components["schemas"]["WorkType"];
+            /** Publication Year */
+            publication_year: number;
+            /** Publication Date */
+            publication_date?: string | null;
+            /** Keywords */
+            keywords?: string[] | null;
+            /** Authors */
+            authors?: {
+                /** Id */
+                id: string;
+                /** Collection */
+                collection: string;
+            }[] | null;
+            /** Language */
+            language?: string | null;
+            /** Open Access */
+            open_access?: boolean | null;
+            /** Openalex Meta */
+            openalex_meta?: Record<string, never> | null;
+            /** Orcid Meta */
+            orcid_meta?: Record<string, never> | null;
+            /** Dblp Meta */
+            dblp_meta?: Record<string, never> | null;
+        };
+        /** WorkExternalId */
+        WorkExternalId: {
+            /** Openalex */
+            openalex?: string | null;
+            /** Mag */
+            mag?: string | null;
+            /** Dblp */
+            dblp?: string | null;
+            /** Doi */
+            doi?: string | null;
+            /** Pmid */
+            pmid?: string | null;
+            /** Pmcid */
+            pmcid?: string | null;
+        };
+        /** WorkType */
+        WorkType: {
+            /** Openalex */
+            openalex?: string | null;
+            /** Orcid */
+            orcid?: string | null;
+            /** Dblp */
+            dblp?: string | null;
+        };
     };
     responses: never;
     parameters: never;
@@ -434,8 +646,6 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-export type SchemaAffiliation = components['schemas']['Affiliation'];
-export type SchemaAffiliationType = components['schemas']['AffiliationType'];
 export type SchemaCreateDashboardRequest = components['schemas']['CreateDashboardRequest'];
 export type SchemaCreateImportTaskRequest = components['schemas']['CreateImportTaskRequest'];
 export type SchemaCreateVisualizationRequest = components['schemas']['CreateVisualizationRequest'];
@@ -443,6 +653,8 @@ export type SchemaDashboard = components['schemas']['Dashboard'];
 export type SchemaDashboardMinimal = components['schemas']['DashboardMinimal'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaImportJobId = components['schemas']['ImportJobId'];
+export type SchemaInstitution = components['schemas']['Institution'];
+export type SchemaInstitutionExternalId = components['schemas']['InstitutionExternalId'];
 export type SchemaResearcher = components['schemas']['Researcher'];
 export type SchemaResearcherExternalId = components['schemas']['ResearcherExternalId'];
 export type SchemaResetCursorsRequest = components['schemas']['ResetCursorsRequest'];
@@ -450,6 +662,9 @@ export type SchemaUpdateImportTaskRequest = components['schemas']['UpdateImportT
 export type SchemaUpdateVisualizationRequest = components['schemas']['UpdateVisualizationRequest'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
 export type SchemaVisualization = components['schemas']['Visualization'];
+export type SchemaWork = components['schemas']['Work'];
+export type SchemaWorkExternalId = components['schemas']['WorkExternalId'];
+export type SchemaWorkType = components['schemas']['WorkType'];
 export type $defs = Record<string, never>;
 export interface operations {
     get_dashboards_dashboards_get: {
@@ -904,9 +1119,11 @@ export interface operations {
     get_researchers_researchers_get: {
         parameters: {
             query?: {
-                limit?: unknown;
-                offset?: unknown;
-                q?: unknown;
+                search?: string | null;
+                q?: string;
+                sort?: string | null;
+                limit?: number;
+                offset?: number;
             };
             header?: never;
             path?: never;
@@ -965,10 +1182,138 @@ export interface operations {
             };
         };
     };
-}
-export enum AffiliationType {
-    EDUCATION = "EDUCATION",
-    EMPLOYMENT = "EMPLOYMENT"
+    get_institutions_institutions_get: {
+        parameters: {
+            query?: {
+                search?: string | null;
+                q?: string;
+                sort?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Institution"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_institution_institutions__uuid__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Institution"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_works_works_get: {
+        parameters: {
+            query?: {
+                search?: string | null;
+                q?: string;
+                sort?: string | null;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Work"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_work_works__uuid__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Work"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
 }
 export enum ImportJobId {
     openalex_import_job = "openalex_import_job",

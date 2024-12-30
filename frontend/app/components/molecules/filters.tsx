@@ -2,11 +2,16 @@ import { Input } from "~/components/ui/input";
 import { DatePicker } from "~/components/ui/date-picker";
 import { useMemo, useState } from "react";
 import { MultiSelect } from "~/components/ui/multi-select";
-import { useResearchersPagination } from "~/lib/api/pagination";
+import {
+  useInstitutionsPagination,
+  useResearchersPagination,
+  useWorksPagination,
+} from "~/lib/api/pagination";
 import { mapParams } from "~/lib/links";
 import { Routes } from "~/routes";
 import { Button } from "~/components/ui/button";
 import useDebounce from "~/lib/custom-utils";
+import { Switch } from "~/components/ui/switch";
 
 export const StringInput = ({ value, onChange }) => (
   <Input
@@ -16,6 +21,10 @@ export const StringInput = ({ value, onChange }) => (
     placeholder="Value"
     className="w-56"
   />
+);
+
+export const BooleanInput = ({ value, onChange }) => (
+  <Switch checked={value} onCheckedChange={(checked) => onChange(checked)} />
 );
 
 export const NumberInput = ({ value, onChange }) => (
@@ -61,6 +70,44 @@ export const DateInput = ({ value, onChange }) => {
   );
 };
 
+export const WorkPicker = ({ value, onChange }) => {
+  const [search, setSearch] = useState<string>();
+  const debouncedSearch = useDebounce(search, 500);
+  const pagination = useWorksPagination({
+    limit: 20,
+    q: undefined,
+    search: debouncedSearch,
+  });
+  const options = useMemo(
+    () =>
+      pagination.data?.pages.flat().map((r) => ({
+        value: r.uuid,
+        label: r.title,
+        link: mapParams(Routes.Institution, { uuid: r.uuid }),
+      })) ?? [],
+    [pagination.data],
+  );
+  return (
+    <MultiSelect
+      options={options}
+      onValueChange={onChange}
+      selectedValue={value || []}
+      className="w-72"
+      maxCount={1}
+      onSearch={setSearch}
+      loadMoreButton={
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => pagination.fetchNextPage()}
+        >
+          Load more
+        </Button>
+      }
+    />
+  );
+};
+
 export const ResearcherPicker = ({ value, onChange }) => {
   const [search, setSearch] = useState<string>();
   const debouncedSearch = useDebounce(search, 500);
@@ -75,6 +122,44 @@ export const ResearcherPicker = ({ value, onChange }) => {
         value: r.uuid,
         label: r.full_name,
         link: mapParams(Routes.Researcher, { uuid: r.uuid }),
+      })) ?? [],
+    [pagination.data],
+  );
+  return (
+    <MultiSelect
+      options={options}
+      onValueChange={onChange}
+      selectedValue={value || []}
+      className="w-72"
+      maxCount={1}
+      onSearch={setSearch}
+      loadMoreButton={
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => pagination.fetchNextPage()}
+        >
+          Load more
+        </Button>
+      }
+    />
+  );
+};
+
+export const InstitutionPicker = ({ value, onChange }) => {
+  const [search, setSearch] = useState<string>();
+  const debouncedSearch = useDebounce(search, 500);
+  const pagination = useInstitutionsPagination({
+    limit: 20,
+    q: undefined,
+    search: debouncedSearch,
+  });
+  const options = useMemo(
+    () =>
+      pagination.data?.pages.flat().map((r) => ({
+        value: r.uuid,
+        label: r.name,
+        link: mapParams(Routes.Institution, { uuid: r.uuid }),
       })) ?? [],
     [pagination.data],
   );
