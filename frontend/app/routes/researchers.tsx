@@ -34,6 +34,7 @@ export default function Researchers(props: ResearchersProps) {
           title={researcher.full_name}
           item={researcher}
           subTitle={researcher.institution && researcher.institution.name}
+          key={researcher.uuid}
         />
       )}
       filterFields={RESEARCHER_FIELDS}

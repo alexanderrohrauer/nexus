@@ -1,6 +1,6 @@
 from enum import Enum
 
-from beanie import Link
+from beanie import Link, BackLink
 from pydantic import Field, BaseModel
 from typing_extensions import Optional
 
@@ -54,6 +54,7 @@ class Researcher(EditableDocument, SNMEntity):
     openalex_meta: Optional[dict] = Field(default=None)
     orcid_meta: Optional[dict] = Field(default=None)
     dblp_meta: Optional[dict] = Field(default=None)
+    works: list[BackLink["Work"]] = Field(original_field="authors", exclude=True)
 
     @property
     def normalized_full_name(self):

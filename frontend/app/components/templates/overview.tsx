@@ -69,7 +69,7 @@ export function Overview({
                   )}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-max">
+              <DialogContent className="max-w-max top-40">
                 <DialogTitle>Filter</DialogTitle>
                 <Filter
                   fields={filterFields}

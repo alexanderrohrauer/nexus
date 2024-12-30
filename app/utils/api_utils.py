@@ -10,7 +10,7 @@ from pydantic import BaseModel
 
 
 def transform_filter_field(field: dict):
-    if field["field"] == "imported_at":
+    if field["field"].endswith("imported_at") or field["field"].endswith("publication_date"):
         return datetime.fromisoformat(field["value"])
     if field["operator"] == "$regex":
         return re.compile(field["value"], flags=re.IGNORECASE)

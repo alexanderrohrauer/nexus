@@ -45,6 +45,7 @@ export default function Researchers(props: ResearchersProps) {
           title={work.title}
           item={work}
           subTitle={getWorkSubtitle(work)}
+          key={work.uuid}
         />
       )}
       filterFields={WORK_FIELDS}

@@ -43,7 +43,7 @@ export function OverviewListItem({
       <div className="flex w-full items-center gap-2">
         <div className="text-xs flex space-x-1 items-center">
           {sources.map((source) => (
-            <TextTooltip text={source}>
+            <TextTooltip text={source} key={source}>
               <img
                 src={`/icons/sources/${source}.png`}
                 className="h-4 w-4 bg-muted rounded-sm border border-border"

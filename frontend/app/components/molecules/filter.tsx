@@ -79,9 +79,11 @@ const flattenFields = (fields: any[], prefix = "", depth = 2) => {
   return fields.flatMap((option) => {
     if ((option.isRelation && depth > 0) || option.type === "multi") {
       return flattenFields(
-        option.children,
+        typeof option.children === "function"
+          ? option.children()
+          : option.children,
         prefix + option.name + ".",
-        depth - 1,
+        option.isRelation ? depth - 1 : depth,
       ).flat();
     } else if (!option.isRelation) {
       return { ...option, name: prefix + option.name };
@@ -130,9 +132,11 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 {renderAddItems(
-                  option.children,
+                  typeof option.children === "function"
+                    ? option.children()
+                    : option.children,
                   prefix + option.name + ".",
-                  depth - 1,
+                  option.isRelation ? depth - 1 : depth,
                 )}
               </DropdownMenuSubContent>
             </DropdownMenuPortal>

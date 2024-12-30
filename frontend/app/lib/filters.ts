@@ -1,5 +1,14 @@
 // TODO eventually fetch all available languages some day
-export const INSTITUTION_FIELDS = [
+const filters = {};
+
+const registerFilter = (name: string, filter: any[]) => {
+  filters[name] = filter;
+  return filter;
+};
+
+const resolveFilter = (name: string) => () => filters[name];
+
+export const INSTITUTION_FIELDS = registerFilter("institution", [
   { name: "uuid", label: "ID", type: "institution" },
   { name: "homepage_url", label: "Homepage URL", type: "string" },
   {
@@ -47,49 +56,16 @@ export const INSTITUTION_FIELDS = [
   },
   { name: "acronyms", label: "Acronyms", type: "string" },
   { name: "alternative_names", label: "Alternative names", type: "string" },
-  { name: "imported_at", label: "Imported At", type: "date" },
-];
-
-export const RESEARCHER_FIELDS = [
-  { name: "uuid", label: "ID", type: "researcher" },
   {
-    name: "external_id",
-    label: "External ID",
-    type: "multi",
-    children: [
-      { name: "openalex", label: "OpenAlex", type: "string" },
-      { name: "orcid", label: "ORCID", type: "string" },
-      { name: "dblp", label: "DBLP", type: "string" },
-    ],
-  },
-  { name: "full_name", label: "Full name", type: "string" },
-  { name: "alternative_names", label: "Alternative names", type: "string" },
-  {
-    name: "affiliations",
-    label: "Affiliations",
-    type: "multi",
-    children: [
-      { name: "years", label: "Years", type: "number" },
-      { name: "type", label: "Type", type: "string" },
-      {
-        name: "institution",
-        label: "Institution",
-        isRelation: true,
-        children: INSTITUTION_FIELDS,
-      },
-    ],
-  },
-  { name: "topic_keywords", label: "Keywords", type: "string" },
-  {
-    name: "institution",
-    label: "Institution",
+    name: "current_researchers",
+    label: "Current researchers",
     isRelation: true,
-    children: INSTITUTION_FIELDS,
+    children: resolveFilter("researcher"),
   },
   { name: "imported_at", label: "Imported At", type: "date" },
-];
+]);
 
-export const WORK_FIELDS = [
+export const WORK_FIELDS = registerFilter("work", [
   { name: "uuid", label: "ID", type: "work" },
   {
     name: "external_id",
@@ -105,7 +81,7 @@ export const WORK_FIELDS = [
     name: "authors",
     label: "Authors",
     isRelation: true,
-    children: RESEARCHER_FIELDS,
+    children: resolveFilter("researcher"),
   },
   { name: "open_access", label: "Open access", type: "boolean" },
   { name: "publication_date", label: "Publication date", type: "date" },
@@ -124,4 +100,49 @@ export const WORK_FIELDS = [
   { name: "publication_year", label: "Publication year", type: "number" },
   { name: "language", label: "Language", type: "string" },
   { name: "imported_at", label: "Imported At", type: "date" },
-];
+]);
+export const RESEARCHER_FIELDS = registerFilter("researcher", [
+  { name: "uuid", label: "ID", type: "researcher" },
+  {
+    name: "external_id",
+    label: "External ID",
+    type: "multi",
+    children: [
+      { name: "openalex", label: "OpenAlex", type: "string" },
+      { name: "orcid", label: "ORCID", type: "string" },
+      { name: "dblp", label: "DBLP", type: "string" },
+    ],
+  },
+  { name: "full_name", label: "Full name", type: "string" },
+  { name: "alternative_names", label: "Alternative names", type: "string" },
+  //   TODO maybe implement backref for affiliations
+  {
+    name: "affiliations",
+    label: "Affiliations",
+    isRelation: true,
+    children: [
+      { name: "years", label: "Years", type: "number" },
+      { name: "type", label: "Type", type: "string" },
+      {
+        name: "institution",
+        label: "Institution",
+        isRelation: true,
+        children: resolveFilter("institution"),
+      },
+    ],
+  },
+  { name: "topic_keywords", label: "Keywords", type: "string" },
+  {
+    name: "institution",
+    label: "Institution",
+    isRelation: true,
+    children: resolveFilter("institution"),
+  },
+  { name: "imported_at", label: "Imported At", type: "date" },
+  {
+    name: "works",
+    label: "Works",
+    isRelation: true,
+    children: resolveFilter("work"),
+  },
+]);

@@ -1,7 +1,7 @@
 from typing import Optional, Tuple, Annotated
 
 import pymongo
-from beanie import Indexed
+from beanie import Indexed, BackLink
 from pydantic import Field, HttpUrl, BaseModel
 
 from app.db.models import EditableDocument, SNMEntity
@@ -46,6 +46,7 @@ class Institution(EditableDocument, SNMEntity):
     openalex_meta: Optional[dict] = Field(default=None)
     orcid_meta: Optional[dict] = Field(default=None)
     dblp_meta: Optional[dict] = Field(default=None)
+    current_researchers: list[BackLink["Researcher"]] = Field(original_field="institution", exclude=True)
 
     @property
     def normalized_name(self): 
