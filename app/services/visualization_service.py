@@ -5,7 +5,10 @@ import pydash as _
 from beanie.odm.operators.find.logical import Not
 from fastapi import HTTPException
 
+from app.dtos.visualizations import VisualizationData
 from app.models import Dashboard, Work, Institution
+from app.utils.visualization_utils import ChartInput
+from app.visualizations import CHARTS
 
 # TODO remove
 # mock_data =  {
@@ -1946,14 +1949,27 @@ mock_data = {
     ]
 }
 
+async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID, queries: dict) -> VisualizationData:
+    try:
+        visualization = next(v for v in dashboard.visualizations if v.uuid == visualization_uuid)
+        chart_cls = next(chart for chart in CHARTS if chart.identifier == visualization.chart)
+        chart_instance = chart_cls()
+        chart_input = ChartInput(queries=queries, pre_filters=visualization.query_preset)
+        return VisualizationData(
+            series=await chart_instance.get_series(chart_input),
+            generator=chart_instance.generator,
+            chart_template=chart_instance.chart_template,
+            filters=chart_input.get_all_queries())
+    except StopIteration:
+        raise HTTPException(status_code=404, detail="Visualization/Type not found")
 
-async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID):
+async def get_visualization_data_old(dashboard: Dashboard, visualization_uuid: UUID):
     try:
         visualization = next(v for v in dashboard.visualizations if v.uuid == visualization_uuid)
         t = "Highcharts"
-        spec = mock_data[visualization.visualization][0]
-        data = mock_data[visualization.visualization][1]
-        if visualization.visualization == "vis-4":
+        spec = mock_data[visualization.chart][0]
+        data = mock_data[visualization.chart][1]
+        if visualization.chart == "vis-4":
             works = await Work.find_all(limit=30).to_list()
             base = works[0].authors[0]
             data = []
@@ -1961,12 +1977,12 @@ async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID)
                 await w.fetch_link(Work.authors)
                 data = data + [[base.full_name, a.full_name] for a in filter(lambda x: x.id != base.id, w.authors)]
             spec["series"][0]["data"] = data
-        if visualization.visualization == "vis-7":
+        if visualization.chart == "vis-7":
             institutions = await Institution.find(Not(Institution.location == None)).to_list()
             data = [{"type": "marker",
                      "data": [{"id": i.uuid, "name": i.name, "position": i.location} for i in institutions]}]
             t = "Leaflet"
-        if visualization.visualization == "vis-8":
+        if visualization.chart == "vis-8":
             works = await Work.find_all(limit=30).to_list()
             nodes = []
             links = []

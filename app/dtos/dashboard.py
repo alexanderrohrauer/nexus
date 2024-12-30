@@ -14,7 +14,7 @@ class UpdateVisualizationRequest(BaseModel):
 
 
 class CreateVisualizationRequest(UpdateVisualizationRequest):
-    visualization: str = Field(min_length=1)
+    chart: str = Field(min_length=1)
 
 
 class CreateDashboardRequest(BaseModel):

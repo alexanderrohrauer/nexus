@@ -1,10 +1,13 @@
+import json
 from http import HTTPStatus
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter
 
 from app.dtos.dashboard import CreateDashboardRequest, DashboardMinimal, CreateVisualizationRequest, \
     UpdateVisualizationRequest
+from app.dtos.visualizations import VisualizationData
 from app.models import Dashboard, Visualization
 from app.services import dashboard_service, visualization_service
 
@@ -34,9 +37,9 @@ async def delete_dashboard(uuid: UUID) -> None:
     await dashboard_service.delete_by_uuid(uuid)
 
 @router.get("/{uuid}/visualizations/{visualization_uuid}/data")
-async def get_visualization_data(uuid: UUID, visualization_uuid: UUID):
+async def get_visualization_data(uuid: UUID, visualization_uuid: UUID, q: Optional[str] = "{}") -> VisualizationData:
     dashboard = await dashboard_service.find_by_uuid(uuid)
-    return await visualization_service.get_visualization_data(dashboard, visualization_uuid)
+    return await visualization_service.get_visualization_data(dashboard, visualization_uuid, json.loads(q))
 
 @router.post("/{uuid}/visualizations")
 async def add_visualization(uuid: UUID, visualization: CreateVisualizationRequest):

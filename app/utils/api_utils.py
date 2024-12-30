@@ -47,6 +47,7 @@ class SearchAndFilterParams:
         return {
             "$and": boolean_builder
         } if len(boolean_builder) > 0 else {}
+
     def get_sort(self):
         result = []
         if self.sort is not None:

@@ -5,9 +5,7 @@ import { Popover, PopoverContent } from "~/components/ui/popover";
 import { isElementInViewport } from "~/lib/use-in-viewport";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
-import { HighchartsVisualization } from "~/components/molecules/highcharts-visualization.client";
-import { LeafletVisualization } from "~/components/molecules/leaflet-visualization.client";
-import { EChartsVisualization } from "~/components/molecules/echarts-visualization.client";
+import { VisualizationFrame } from "~/components/molecules/visualization-frame";
 
 interface VisualizationProps {
   visualization: SchemaVisualization;
@@ -23,6 +21,7 @@ export function Visualization(props: VisualizationProps) {
     left: 0,
     top: 0,
   });
+  const [filters, setFilters] = useState({});
   const contentRef = useRef<HTMLDivElement | null>(null);
   //   TODO render visualization here
   const onClick = (ev: MouseEvent) => {
@@ -46,7 +45,7 @@ export function Visualization(props: VisualizationProps) {
 
   const [open, setOpen] = useState(false);
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["visualization_data", props.visualization.uuid],
     queryFn: () =>
       client.GET(
@@ -57,6 +56,7 @@ export function Visualization(props: VisualizationProps) {
               uuid: props.dashboard.uuid!,
               visualization_uuid: props.visualization.uuid!,
             },
+            query: { q: JSON.stringify(filters) },
           },
         },
       ),
@@ -93,27 +93,14 @@ export function Visualization(props: VisualizationProps) {
         {/*    visualization={props.visualization}*/}
         {/*  />*/}
         {/*)}*/}
-        {data && data.data!.type === "Highcharts" && (
-          <HighchartsVisualization
-            spec={data.data!.spec}
-            data={{}}
-            visualization={props.visualization}
-          />
-        )}
 
-        {data && data.data!.type === "ECharts" && (
-          <EChartsVisualization
-            spec={data.data!.spec}
-            data={data.data!.data}
+        {data && (
+          <VisualizationFrame
             visualization={props.visualization}
-          />
-        )}
-
-        {data && data.data!.type === "Leaflet" && (
-          <LeafletVisualization
-            spec={data.data!.spec}
-            data={data.data!.data}
-            visualization={props.visualization}
+            response={data.data!}
+            applyFilters={() => refetch()}
+            filters={filters}
+            onFiltersChange={(filters) => setFilters(filters)}
           />
         )}
       </div>

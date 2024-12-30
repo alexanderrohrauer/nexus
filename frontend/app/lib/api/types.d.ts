@@ -312,8 +312,8 @@ export interface components {
             columns: number;
             /** Default Query */
             default_query: unknown[] | Record<string, never>;
-            /** Visualization */
-            visualization: string;
+            /** Chart */
+            chart: string;
         };
         /** Dashboard */
         Dashboard: {
@@ -342,6 +342,11 @@ export interface components {
             /** Title */
             title: string;
         };
+        /**
+         * EntityType
+         * @enum {string}
+         */
+        EntityType: EntityType;
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -510,6 +515,22 @@ export interface components {
             /** Jobs */
             jobs: components["schemas"]["ImportJobId"][];
         };
+        /** Series */
+        Series: {
+            /** Data */
+            data: Record<string, never>;
+            entity_type: components["schemas"]["EntityType"];
+        };
+        /** SeriesMap */
+        SeriesMap: {
+            /**
+             * Data
+             * @default {}
+             */
+            data: {
+                [key: string]: components["schemas"]["Series"];
+            };
+        };
         /** UpdateImportTaskRequest */
         UpdateImportTaskRequest: {
             /** Cron Expr */
@@ -554,13 +575,23 @@ export interface components {
             rows: number;
             /** Columns */
             columns: number;
-            /** Visualization */
-            visualization: string;
+            /** Chart */
+            chart: string;
             /**
-             * Default Query
+             * Query Preset
              * @default {}
              */
-            default_query: unknown[] | Record<string, never>;
+            query_preset: Record<string, never>;
+        };
+        /** VisualizationData */
+        VisualizationData: {
+            series: components["schemas"]["SeriesMap"];
+            /** Generator */
+            generator: string;
+            /** Chart Template */
+            chart_template: string;
+            /** Filters */
+            filters: Record<string, never>;
         };
         /** Work */
         Work: {
@@ -651,6 +682,7 @@ export type SchemaCreateImportTaskRequest = components['schemas']['CreateImportT
 export type SchemaCreateVisualizationRequest = components['schemas']['CreateVisualizationRequest'];
 export type SchemaDashboard = components['schemas']['Dashboard'];
 export type SchemaDashboardMinimal = components['schemas']['DashboardMinimal'];
+export type SchemaEntityType = components['schemas']['EntityType'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaImportJobId = components['schemas']['ImportJobId'];
 export type SchemaInstitution = components['schemas']['Institution'];
@@ -658,10 +690,13 @@ export type SchemaInstitutionExternalId = components['schemas']['InstitutionExte
 export type SchemaResearcher = components['schemas']['Researcher'];
 export type SchemaResearcherExternalId = components['schemas']['ResearcherExternalId'];
 export type SchemaResetCursorsRequest = components['schemas']['ResetCursorsRequest'];
+export type SchemaSeries = components['schemas']['Series'];
+export type SchemaSeriesMap = components['schemas']['SeriesMap'];
 export type SchemaUpdateImportTaskRequest = components['schemas']['UpdateImportTaskRequest'];
 export type SchemaUpdateVisualizationRequest = components['schemas']['UpdateVisualizationRequest'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
 export type SchemaVisualization = components['schemas']['Visualization'];
+export type SchemaVisualizationData = components['schemas']['VisualizationData'];
 export type SchemaWork = components['schemas']['Work'];
 export type SchemaWorkExternalId = components['schemas']['WorkExternalId'];
 export type SchemaWorkType = components['schemas']['WorkType'];
@@ -784,7 +819,9 @@ export interface operations {
     };
     get_visualization_data_dashboards__uuid__visualizations__visualization_uuid__data_get: {
         parameters: {
-            query?: never;
+            query?: {
+                q?: string | null;
+            };
             header?: never;
             path: {
                 uuid: string;
@@ -800,7 +837,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["VisualizationData"];
                 };
             };
             /** @description Validation Error */
@@ -1314,6 +1351,11 @@ export interface operations {
             };
         };
     };
+}
+export enum EntityType {
+    RESEARCHER = "RESEARCHER",
+    WORK = "WORK",
+    INSTITUTION = "INSTITUTION"
 }
 export enum ImportJobId {
     openalex_import_job = "openalex_import_job",

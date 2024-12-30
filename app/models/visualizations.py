@@ -11,8 +11,8 @@ class Visualization(BaseModel):
     # TODO max 12
     rows: int = Field(gt=1)
     columns: int = Field(gt=1)
-    visualization: str = Field(min_length=1)
-    default_query: list | dict = Field(default={})
+    chart: str = Field(min_length=1)
+    query_preset: dict = Field(default={})
 
 
 class Dashboard(Document):
