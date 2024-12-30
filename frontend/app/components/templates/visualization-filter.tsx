@@ -47,7 +47,14 @@ export function VisualizationFilter(props: VisualizationFilterProps) {
           entityType={filter.entityType}
           filter={filters[filter.name] ?? []}
           onChange={(f) =>
-            setFilters((prev) => ({ ...prev, [filter.name]: f }))
+            setFilters((prev) => {
+              if (f.length > 0) {
+                return { ...prev, [filter.name]: f };
+              } else {
+                delete prev[filter.name];
+                return prev;
+              }
+            })
           }
         />
       ))}
