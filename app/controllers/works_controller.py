@@ -20,7 +20,7 @@ logger = logging.getLogger("uvicorn.error")
 async def get_works(params: Annotated[WorkSearchParams, Depends(WorkSearchParams)]) -> list[Work]:
     query = params.get_filter()
     logger.debug(query)
-    result = await Work.find(query, fetch_links=True).limit(params.limit).skip(params.offset).to_list()
+    result = await Work.find(query, nesting_depth=2, fetch_links=True).limit(params.limit).skip(params.offset).to_list()
     return result
 
 

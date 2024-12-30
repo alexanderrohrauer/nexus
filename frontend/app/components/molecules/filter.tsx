@@ -160,7 +160,7 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
   };
 
   return (
-    <div className="min-w-[800px]">
+    <div className="min-w-[800px] max-h-96 overflow-y-auto">
       {filters.map((filter, index) => {
         const fieldType = getFieldType(filter.field);
         const applicableOperators = getApplicableOperators(fieldType);

@@ -20,7 +20,7 @@ logger = logging.getLogger("uvicorn.error")
 async def get_researchers(params: Annotated[ResearcherSearchParams, Depends(ResearcherSearchParams)]) -> list[Researcher]:
     query = params.get_filter()
     logger.debug(query)
-    result = await Researcher.find(query, fetch_links=True).limit(params.limit).skip(params.offset).to_list()
+    result = await Researcher.find(query, nesting_depth=2, fetch_links=True).limit(params.limit).skip(params.offset).to_list()
     return result
 
 

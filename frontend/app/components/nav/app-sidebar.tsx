@@ -31,20 +31,20 @@ const data = {
       idPrefix: "_index",
     },
     {
-      title: "Researchers",
-      url: Routes.Researchers,
-      icon: Users,
-      idPrefix: "researchers",
-    },
-    {
       title: "Works",
       url: Routes.Works,
       icon: Library,
       idPrefix: "works",
     },
     {
+      title: "Researchers",
+      url: Routes.Researchers,
+      icon: Users,
+      idPrefix: "researchers",
+    },
+    {
       title: "Institutions",
-      url: "#",
+      url: Routes.Institutions,
       icon: Landmark,
       badge: "10",
       idPrefix: "institutions",

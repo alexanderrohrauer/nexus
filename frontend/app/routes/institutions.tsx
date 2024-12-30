@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useNav } from "~/components/context/nav-context";
-import { useResearchersPagination } from "~/lib/api/pagination";
+import { useInstitutionsPagination } from "~/lib/api/pagination";
 import { useSearchParams } from "@remix-run/react";
 import useDebounce from "~/lib/custom-utils";
 import { Overview } from "~/components/templates/overview";
 import { Routes } from "~/routes";
-import type { SchemaResearcher } from "~/lib/api/types";
-import { RESEARCHER_FIELDS } from "~/lib/filters";
+import type { SchemaInstitution } from "~/lib/api/types";
+import { INSTITUTION_FIELDS } from "~/lib/filters";
 import { OverviewListItem } from "~/components/molecules/overview-list-item";
 
 interface ResearchersProps {}
@@ -14,11 +14,11 @@ interface ResearchersProps {}
 export default function Researchers(props: ResearchersProps) {
   const { setPageName } = useNav();
   useEffect(() => {
-    setPageName("Researchers");
+    setPageName("Institutions");
   }, []);
   const [searchParams] = useSearchParams();
   const debouncedSearch = useDebounce(searchParams.get("search"), 500);
-  const pagination = useResearchersPagination({
+  const pagination = useInstitutionsPagination({
     q: searchParams.has("q")
       ? decodeURIComponent(searchParams.get("q"))
       : undefined,
@@ -27,16 +27,16 @@ export default function Researchers(props: ResearchersProps) {
   });
   return (
     <Overview
-      renderItem={(researcher: SchemaResearcher) => (
+      renderItem={(institution: SchemaInstitution) => (
         <OverviewListItem
-          uuid={researcher.uuid}
-          route={Routes.Researcher}
-          title={researcher.full_name}
-          item={researcher}
-          subTitle={researcher.institution && researcher.institution.name}
+          uuid={institution.uuid}
+          route={Routes.Institution}
+          title={institution.name}
+          item={institution}
+          subTitle={institution.country}
         />
       )}
-      filterFields={RESEARCHER_FIELDS}
+      filterFields={INSTITUTION_FIELDS}
       pagination={pagination}
     />
   );

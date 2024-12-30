@@ -1,8 +1,10 @@
 export enum Routes {
   //   TODO maybe do slugs?
-  Institution = "/institutions/{uuid}",
   Home = "/",
   Works = "/works",
+  Work = "/works/{uuid}",
+  Institutions = "/institutions",
+  Institution = "/institutions/{uuid}",
   Researchers = "/researchers",
   Researcher = "/researchers/{uuid}",
   Dashboard = "/dashboards/{uuid}",
