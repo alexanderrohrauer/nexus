@@ -28,15 +28,19 @@ class ResearcherExternalId(BaseModel):
     def matches(self, external_id):
         return self.openalex_match(external_id) or self.dblp_match(external_id) or self.orcid_match(external_id)
 
+
 class AffiliationType(Enum):
     EDUCATION = "EDUCATION"
     EMPLOYMENT = "EMPLOYMENT"
 
 
-class Affiliation(BaseModel):
+class Affiliation(EditableDocument):
     years: list[int]
     type: Optional[AffiliationType] = None
     institution: Link[Institution]
+
+    class Settings:
+        validate_on_save = True
 
 
 class Researcher(EditableDocument, SNMEntity):
@@ -44,9 +48,8 @@ class Researcher(EditableDocument, SNMEntity):
     full_name: str
     alternative_names: Optional[list[str]] = None
     # TODO normalize affiliations
-    affiliations: Optional[list[Affiliation]] = None
+    affiliations: Optional[list[Link[Affiliation]]] = None
     institution: Optional[Link[Institution]] = None
-    country: Optional[str] = None
     topic_keywords: Optional[list[str]] = None
     openalex_meta: Optional[dict] = Field(default=None)
     orcid_meta: Optional[dict] = Field(default=None)

@@ -67,7 +67,6 @@ const fields = [
     ],
   },
   { name: "full_name", label: "Full name", type: "string" },
-  { name: "country", label: "Country", type: "string" },
   {
     name: "affiliations",
     label: "Affiliations",
