@@ -92,7 +92,7 @@ export const RESEARCHER_FIELDS = [
 ];
 
 export const WORK_FIELDS = [
-  { name: "uuid", label: "ID", type: "researcher" },
+  { name: "uuid", label: "ID", type: "work" },
   {
     name: "external_id",
     label: "External ID",
