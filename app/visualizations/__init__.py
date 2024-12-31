@@ -1,5 +1,7 @@
-from app.visualizations.mixed import ResearcherEdgeBundling
+from app.visualizations.mixed import ResearcherEdgeBundling, InstitutionsMap, Bubble
 
 CHARTS = [
-    ResearcherEdgeBundling
+    ResearcherEdgeBundling,
+    InstitutionsMap,
+    Bubble
 ]

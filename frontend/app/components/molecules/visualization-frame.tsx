@@ -13,9 +13,11 @@ import {
 import { Button } from "~/components/ui/button";
 import { FilterIcon } from "lucide-react";
 import { VisualizationFilter } from "~/components/templates/visualization-filter";
+import { HighchartsVisualization } from "~/components/charts/highcharts-visualization.client";
 import { EChartsVisualization } from "~/components/charts/echarts-visualization.client";
+import { LeafletVisualization } from "~/components/charts/leaflet-visualization.client";
 
-interface VisualizationFrameProps extends React.PropsWithChildren {
+interface VisualizationFrameProps {
   visualization: SchemaVisualization;
   response: SchemaVisualizationData;
   applyFilters(): void;
@@ -38,7 +40,6 @@ class Nexus {
 export const VisualizationFrame = function (props: VisualizationFrameProps) {
   const frameRef = useRef<HTMLDivElement | null>(null);
   const divRef = useRef<HTMLDivElement | null>(null);
-  // TODO finish
   const nexus = useMemo(
     () => new Nexus(props.response.series.data),
     [props.response],
@@ -49,8 +50,9 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
       "data:text/javascript;base64," + btoa(props.response.generator);
     import(b64module)
       .then((module) => {
-        setOptions(module.default(nexus));
+        return module.default(nexus);
       })
+      .then((options) => setOptions(options))
       .catch(console.error);
   }, [props.response, nexus]);
 
@@ -74,7 +76,7 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
               )}
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-max top-40">
+          <DialogContent className="max-w-max top-56">
             <DialogTitle>Filter</DialogTitle>
             <VisualizationFilter
               response={props.response}
@@ -92,8 +94,22 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
       <div className="flex-1" ref={frameRef}>
         {props.response.chart_template === "ECHARTS" && (
           <EChartsVisualization
-            spec={{}}
-            data={{}}
+            visualization={props.visualization}
+            options={options}
+            response={props.response}
+            ref={divRef}
+          />
+        )}
+        {props.response.chart_template === "HIGHCHARTS" && (
+          <HighchartsVisualization
+            visualization={props.visualization}
+            options={options}
+            response={props.response}
+            ref={divRef}
+          />
+        )}
+        {props.response.chart_template === "LEAFLET" && (
+          <LeafletVisualization
             visualization={props.visualization}
             options={options}
             response={props.response}

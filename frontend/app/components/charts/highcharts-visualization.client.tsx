@@ -1,54 +1,56 @@
-import React, { useEffect, useRef, useState } from "react";
-import { VisualizationFrame } from "~/components/molecules/visualization-frame";
-import type { SchemaVisualization } from "~/lib/api/types";
-// TODO lazy loading
+import React, { useEffect, useRef } from "react";
+import type {
+  SchemaVisualization,
+  SchemaVisualizationData,
+} from "~/lib/api/types";
+// TODO maybe lazy loading
+import "highcharts/modules/accessibility";
 import "highcharts/highcharts-more";
 import "highcharts/modules/mouse-wheel-zoom";
-import "highcharts/modules/accessibility";
 import "highcharts/modules/exporting";
 import "highcharts/modules/networkgraph";
 import "highcharts/modules/venn";
 import "highcharts/modules/wordcloud";
 import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
 
-interface VegaVisualizationProps {
-  spec: any;
-  data: any;
+interface HighchartsVisualizationProps {
   visualization: SchemaVisualization;
+  options: any | undefined;
+  response: SchemaVisualizationData;
 }
-// TODO maybe implement react less
-export function HighchartsVisualization(props: VegaVisualizationProps) {
-  const divRef = useRef<HTMLDivElement | null>(null);
-  const [height, setHeight] = useState(0);
 
+// TODO maybe fix resize window some day...
+export const HighchartsVisualization = React.forwardRef(function (
+  props: HighchartsVisualizationProps,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) {
+  const chartRef = useRef<Highcharts.Chart>();
   useEffect(() => {
-    if (divRef.current) {
-      setHeight(divRef.current.clientHeight);
+    if (ref.current && props.options) {
+      // const resizeObserver = new ResizeObserver(() => {
+      //   chart.resize();
+      // });
+      // setTimeout(() => {
+      //   resizeObserver.observe(ref.current);
+      //   window.addEventListener("resize", () => chart.resize());
+      // }, 1000);
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+      chartRef.current = Highcharts.chart(ref.current, {
+        ...props.options,
+        chart: {
+          ...props.options.chart,
+          // styledMode: true,
+          zooming: {
+            type: "xy",
+            mouseWheel: { enabled: true },
+          },
+          height: ref.current.clientHeight,
+        },
+      });
     }
-  }, [divRef]);
+  }, [ref, props.options]);
 
-  return (
-    <VisualizationFrame visualization={props.visualization} ref={divRef}>
-      {height && (
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={{
-            ...props.spec,
-            chart: {
-              ...props.spec.chart,
-              // styledMode: true,
-              zooming: {
-                type: "x",
-                mouseWheel: { enabled: true },
-              },
-              // width: props.visualization.columns * 10,
-              // height: props.visualization.rows * 10,
-              height,
-            },
-          }}
-        />
-      )}
-    </VisualizationFrame>
-  );
-}
+  return <div ref={ref} className="w-full" />;
+});

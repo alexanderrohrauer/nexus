@@ -1,8 +1,9 @@
 from itertools import combinations
 
 import pydash as _
+from beanie.odm.operators.find.logical import Not
 
-from app.models import Work
+from app.models import Work, Institution
 from app.utils.visualization_utils import Chart, ChartType, ChartTemplates, read_generator, SeriesMap, ChartInput, \
     Series, EntityType
 
@@ -30,3 +31,39 @@ class ResearcherEdgeBundling(Chart):
         nodes = _.uniq_by(nodes, lambda a: a["id"])
         result.add("researchers", Series(data={"data": nodes, "links": links}, entity_type=EntityType.WORK))
         return result
+
+
+class InstitutionsMap(Chart):
+    identifier = "institutions_map"
+    name = "Institutions map"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.LEAFLET
+    generator = """
+        export default function(nexus) {
+            return {
+                series: [
+                    nexus.series("institutions", {})
+                ]
+            }
+        }
+    """
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        result = SeriesMap()
+        institutions = await Institution.find(Not(Institution.location == None),
+                                              chart_input.get_series_query("institutions"), nesting_depth=2,
+                                              fetch_links=True).to_list()
+        series = {"type": "marker",
+                  "data": [{"id": i.uuid, "name": i.name, "position": i.location} for i in institutions]}
+        result.add("institutions", Series(data=series, entity_type=EntityType.INSTITUTION))
+        return result
+
+class Bubble(Chart):
+    identifier = "bubble"
+    name = "Bubble"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.HIGHCHARTS
+    generator = read_generator("bubble.js")
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        return SeriesMap()

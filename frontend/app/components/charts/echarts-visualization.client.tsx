@@ -5,20 +5,17 @@ import type {
 } from "~/lib/api/types";
 import * as echarts from "echarts";
 
-interface VegaVisualizationProps {
-  // TODO remove
-  spec: any;
-  data: any;
+interface EChartsVisualizationProps {
   visualization: SchemaVisualization;
   options: any | undefined;
   response: SchemaVisualizationData;
 }
 
 // TODO maybe fix resize window some day...
-export const EChartsVisualization = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLProps<HTMLDivElement>
->(function (props: VegaVisualizationProps, ref) {
+export const EChartsVisualization = React.forwardRef(function (
+  props: EChartsVisualizationProps,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) {
   useEffect(() => {
     if (ref.current && props.options) {
       const chart = echarts.init(ref.current);
@@ -29,10 +26,9 @@ export const EChartsVisualization = React.forwardRef<
         resizeObserver.observe(ref.current);
         window.addEventListener("resize", () => chart.resize());
       }, 1000);
-      console.log("options", props.options);
       chart.setOption(props.options);
     }
-  }, [ref, props.spec, props.data, props.options]);
+  }, [ref, props.options]);
   useEffect(() => {}, []);
   return <div ref={ref} className="w-full" />;
 });

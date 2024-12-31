@@ -15,12 +15,11 @@ import type {
   SchemaDashboard,
 } from "~/lib/api/types";
 import { Info, Plus, X } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
 import { Form, Formik } from "formik";
 import { useRevalidator } from "react-router";
 import { TextTooltip } from "~/components/molecules/text-tooltip";
-import type { ComboboxOption } from "~/components/ui/combobox";
 import { ComboboxField } from "~/components/ui/combobox";
 import { useToast } from "~/lib/toast";
 import { useRef } from "react";
@@ -38,22 +37,16 @@ const initialValues: SchemaCreateVisualizationRequest = {
   default_query: {},
 };
 
-// TODO extract this to endpoint
-const visualizationOptions: ComboboxOption[] = [
-  { label: "Researcher edge bundling", value: "researcher_edge_bundling" },
-  // { label: "Researcher table", value: "vis-2" },
-  // { label: "Mixed map", value: "vis-3" },
-  // { label: "Researcher relationships", value: "vis-4" },
-  // { label: "Vis 5", value: "vis-5" },
-  // { label: "Vis 6", value: "vis-6" },
-  // { label: "Leaflet Institution Map", value: "vis-7" },
-  // { label: "Dependency Chart", value: "vis-8" },
-];
-
 export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
   const revalidator = useRevalidator();
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const toast = useToast();
+
+  const { data: mixedChartTypes } = useQuery({
+    queryKey: ["mixed-chart-types"],
+    queryFn: () => client.GET("/charts/mixed").then((res) => res.data),
+  });
+
   // TODO error handler
   const addMutation = useMutation({
     mutationFn: (data: SchemaCreateVisualizationRequest) =>
@@ -100,7 +93,7 @@ export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
               <Label htmlFor="chart">Chart</Label>
               <ComboboxField
                 name="chart"
-                options={visualizationOptions}
+                options={mixedChartTypes}
                 placeholder="Select chart"
               />
             </div>

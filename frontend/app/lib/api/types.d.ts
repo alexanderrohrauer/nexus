@@ -282,10 +282,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/charts/mixed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Mixed Charts */
+        get: operations["get_mixed_charts_charts_mixed_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ChartInfo */
+        ChartInfo: {
+            /** Value */
+            value: string;
+            /** Label */
+            label: string;
+        };
         /** CreateDashboardRequest */
         CreateDashboardRequest: {
             /** Title */
@@ -677,6 +701,7 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaChartInfo = components['schemas']['ChartInfo'];
 export type SchemaCreateDashboardRequest = components['schemas']['CreateDashboardRequest'];
 export type SchemaCreateImportTaskRequest = components['schemas']['CreateImportTaskRequest'];
 export type SchemaCreateVisualizationRequest = components['schemas']['CreateVisualizationRequest'];
@@ -1347,6 +1372,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_mixed_charts_charts_mixed_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChartInfo"][];
                 };
             };
         };
