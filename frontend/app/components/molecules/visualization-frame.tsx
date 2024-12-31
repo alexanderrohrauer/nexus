@@ -16,11 +16,12 @@ import { VisualizationFilter } from "~/components/templates/visualization-filter
 import { HighchartsVisualization } from "~/components/charts/highcharts-visualization.client";
 import { EChartsVisualization } from "~/components/charts/echarts-visualization.client";
 import { LeafletVisualization } from "~/components/charts/leaflet-visualization.client";
+import { useQueryClient } from "@tanstack/react-query";
+import { EditVisualizationDialog } from "~/components/templates/edit-visualization-dialog";
 
 interface VisualizationFrameProps {
   visualization: SchemaVisualization;
   response: SchemaVisualizationData;
-  applyFilters(): void;
   filters: any;
   onFiltersChange(filters: any): void;
 }
@@ -60,34 +61,56 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
       divRef.current.style.height = `${frameRef.current.clientHeight}px`;
     }
   }, [divRef, frameRef]);
+  const queryClient = useQueryClient();
 
   return (
     <div className="flex flex-col h-full p-3 space-y-1">
       <div className="flex items-center justify-between">
-        <h1>{props.visualization.title}</h1>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button size="icon" variant="outline" className="relative h-8 w-8">
-              <FilterIcon />
-              {Object.keys(props.filters).length > 0 && (
-                <div className="rounded-full bg-red-500 h-2 w-2 absolute right-1.5 top-2" />
-              )}
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-max top-56">
-            <DialogTitle>Filter</DialogTitle>
-            <VisualizationFilter
-              response={props.response}
-              filters={props.filters}
-              onFilterChange={(filters) => props.onFiltersChange(filters)}
-            />
-            <DialogFooter>
-              <DialogTrigger asChild>
-                <Button onClick={() => props.applyFilters()}>Apply</Button>
-              </DialogTrigger>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <h1 className="font-medium">{props.visualization.title}</h1>
+        <div className="space-x-1">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                size="icon"
+                variant="outline"
+                className="relative h-8 w-8"
+              >
+                <FilterIcon />
+                {Object.keys(props.filters).length > 0 && (
+                  <div className="rounded-full bg-red-500 h-2 w-2 absolute right-1.5 top-2" />
+                )}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-max">
+              <DialogTitle>Filter</DialogTitle>
+              <VisualizationFilter
+                response={props.response}
+                filters={props.filters}
+                onFilterChange={(filters) => props.onFiltersChange(filters)}
+              />
+              <DialogFooter>
+                <DialogTrigger asChild>
+                  <Button
+                    onClick={() =>
+                      queryClient.invalidateQueries({
+                        queryKey: [
+                          "visualization_data",
+                          props.visualization.uuid,
+                        ],
+                      })
+                    }
+                  >
+                    Apply
+                  </Button>
+                </DialogTrigger>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <EditVisualizationDialog
+            visualization={props.visualization}
+            response={props.response}
+          />
+        </div>
       </div>
       <div className="flex-1" ref={frameRef}>
         {props.response.chart_template === "ECHARTS" && (

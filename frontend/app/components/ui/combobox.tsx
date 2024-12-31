@@ -30,6 +30,7 @@ interface ComboboxProps {
   placeholder?: string;
   onValueChange?: (value: string | null) => void;
   value?: string | null;
+  disabled?: boolean;
 }
 
 export function Combobox(props: ComboboxProps) {
@@ -48,6 +49,7 @@ export function Combobox(props: ComboboxProps) {
             variant="outline"
             role="combobox"
             aria-expanded={open}
+            disabled={props.disabled}
           >
             {props.value
               ? props.options.find((option) => option.value === props.value)

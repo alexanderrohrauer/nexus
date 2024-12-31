@@ -34,18 +34,6 @@ export const HighchartsVisualization = React.forwardRef(function (
       //   resizeObserver.observe(ref.current);
       //   window.addEventListener("resize", () => chart.resize());
       // }, 1000);
-      console.log({
-        ...props.options,
-        chart: {
-          ...props.options.chart,
-          // styledMode: true,
-          zooming: {
-            type: "xy",
-            mouseWheel: { enabled: true },
-          },
-          height: ref.current.clientHeight,
-        },
-      });
       if (chartRef.current) {
         chartRef.current.destroy();
       }
@@ -64,5 +52,11 @@ export const HighchartsVisualization = React.forwardRef(function (
     }
   }, [ref, props.options]);
 
-  return <div ref={ref} className="w-full" />;
+  return (
+    <div
+      ref={ref}
+      className="w-full"
+      id={`highcharts-${props.visualization.uuid}`}
+    />
+  );
 });

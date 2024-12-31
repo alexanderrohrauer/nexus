@@ -1959,7 +1959,7 @@ async def get_visualization_data(dashboard: Dashboard, visualization_uuid: UUID,
             series=await chart_instance.get_series(chart_input),
             generator=chart_instance.generator,
             chart_template=chart_instance.chart_template,
-            filters=chart_input.get_all_queries())
+            filters=chart_input.queries)
     except StopIteration:
         raise HTTPException(status_code=404, detail="Visualization/Type not found")
 

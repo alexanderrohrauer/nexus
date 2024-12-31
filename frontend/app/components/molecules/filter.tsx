@@ -209,7 +209,9 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
         <DropdownMenuTrigger asChild>
           <Button variant="secondary">Add filter</Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>{renderAddItems(fields)}</DropdownMenuContent>
+        <DropdownMenuContent className="max-h-96 overflow-y-auto">
+          {renderAddItems(fields)}
+        </DropdownMenuContent>
       </DropdownMenu>
     </div>
   );

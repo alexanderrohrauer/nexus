@@ -12,7 +12,7 @@ interface VisualizationProps {
 export function Visualization(props: VisualizationProps) {
   const [filters, setFilters] = useState({});
 
-  const { data, refetch } = useQuery({
+  const { data } = useQuery({
     queryKey: ["visualization_data", props.visualization.uuid],
     queryFn: () =>
       client.GET(
@@ -49,7 +49,6 @@ export function Visualization(props: VisualizationProps) {
           <VisualizationFrame
             visualization={props.visualization}
             response={data.data!}
-            applyFilters={() => refetch()}
             filters={filters}
             onFiltersChange={(filters) => setFilters(filters)}
           />

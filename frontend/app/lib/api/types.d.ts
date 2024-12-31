@@ -334,8 +334,8 @@ export interface components {
             rows: number;
             /** Columns */
             columns: number;
-            /** Default Query */
-            default_query: unknown[] | Record<string, never>;
+            /** Query Preset */
+            query_preset: Record<string, never>;
             /** Chart */
             chart: string;
         };
@@ -574,8 +574,8 @@ export interface components {
             rows: number;
             /** Columns */
             columns: number;
-            /** Default Query */
-            default_query: unknown[] | Record<string, never>;
+            /** Query Preset */
+            query_preset: Record<string, never>;
         };
         /** ValidationError */
         ValidationError: {

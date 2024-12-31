@@ -8,21 +8,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { InputField } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import type {
   SchemaCreateVisualizationRequest,
   SchemaDashboard,
 } from "~/lib/api/types";
-import { Info, Plus, X } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
-import { Form, Formik } from "formik";
+import { Formik } from "formik";
 import { useRevalidator } from "react-router";
-import { TextTooltip } from "~/components/molecules/text-tooltip";
-import { ComboboxField } from "~/components/ui/combobox";
 import { useToast } from "~/lib/toast";
-import { useRef } from "react";
+import React, { useRef } from "react";
+import { VisualizationForm } from "~/components/molecules/visualization-form";
 
 interface AddVisualizationDialogProps {
   dashboard: SchemaDashboard;
@@ -41,11 +38,6 @@ export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
   const revalidator = useRevalidator();
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const toast = useToast();
-
-  const { data: mixedChartTypes } = useQuery({
-    queryKey: ["mixed-chart-types"],
-    queryFn: () => client.GET("/charts/mixed").then((res) => res.data),
-  });
 
   // TODO error handler
   const addMutation = useMutation({
@@ -82,49 +74,11 @@ export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
           initialValues={initialValues}
           onSubmit={addMutation.mutateAsync}
         >
-          <Form className="space-y-3">
-            {/*TODO maybe create a separate component for this div...*/}
-            <div>
-              <Label htmlFor="title">Title</Label>
-              <InputField name="title" placeholder="Title" required />
-            </div>
-
-            <div>
-              <Label htmlFor="chart">Chart</Label>
-              <ComboboxField
-                name="chart"
-                options={mixedChartTypes}
-                placeholder="Select chart"
-              />
-            </div>
-
-            <div>
-              <Label className="flex item-center space-x-1">
-                <span>Size</span>{" "}
-                <TextTooltip text={"Format: rows x columns"}>
-                  <Info size={16} />
-                </TextTooltip>
-              </Label>
-              <div className="flex space-x-3 items-center">
-                <InputField
-                  type="number"
-                  name="rows"
-                  min={2}
-                  placeholder="Rows"
-                />
-                <X size={40} />
-                <InputField
-                  type="number"
-                  name="columns"
-                  min={2}
-                  placeholder="Columns"
-                />
-              </div>
-            </div>
+          <VisualizationForm>
             <DialogFooter>
               <Button type="submit">Add</Button>
             </DialogFooter>
-          </Form>
+          </VisualizationForm>
         </Formik>
       </DialogContent>
     </Dialog>

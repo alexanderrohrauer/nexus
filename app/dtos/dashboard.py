@@ -10,7 +10,7 @@ class UpdateVisualizationRequest(BaseModel):
     title: str = Field(min_length=1)
     rows: int = Field(gt=1)
     columns: int = Field(gt=1)
-    default_query: list | dict
+    query_preset: dict
 
 
 class CreateVisualizationRequest(UpdateVisualizationRequest):
