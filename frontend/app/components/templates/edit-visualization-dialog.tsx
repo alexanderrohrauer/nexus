@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { VisualizationForm } from "~/components/molecules/visualization-form";
 import { Button } from "~/components/ui/button";
 import {
@@ -23,6 +23,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
 import { useNav } from "~/components/context/nav-context";
 import { useRevalidator } from "react-router";
+import type { ConfirmationModalRef } from "~/components/molecules/confirmation-modal";
+import { ConfirmationModal } from "~/components/molecules/confirmation-modal";
 
 interface EditVisualizationProps {
   visualization: SchemaVisualization;
@@ -34,6 +36,7 @@ export function EditVisualizationDialog(props: EditVisualizationProps) {
   const toast = useToast();
   const revalidator = useRevalidator();
   const queryClient = useQueryClient();
+  const deleteConf = useRef<ConfirmationModalRef | null>(null);
   const mutation = useMutation({
     mutationFn: (formValues: SchemaUpdateVisualizationRequest) =>
       client.PUT("/dashboards/{uuid}/visualizations/{visualization_uuid}", {
@@ -52,6 +55,28 @@ export function EditVisualizationDialog(props: EditVisualizationProps) {
       revalidator.revalidate();
       setTimeout(
         () => toast.success("Visualization successfully updated"),
+        200,
+      );
+    },
+    onError: async () => {
+      setTimeout(() => toast.error("Visualization update failed"), 200);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () =>
+      client.DELETE("/dashboards/{uuid}/visualizations/{visualization_uuid}", {
+        params: {
+          path: {
+            uuid: dashboard.uuid,
+            visualization_uuid: props.visualization.uuid,
+          },
+        },
+      }),
+    onSuccess: async () => {
+      revalidator.revalidate();
+      setTimeout(
+        () => toast.success("Visualization successfully deleted"),
         200,
       );
     },
@@ -88,6 +113,13 @@ export function EditVisualizationDialog(props: EditVisualizationProps) {
               </FastField>
             </div>
             <DialogFooter>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => deleteConf.current?.trigger(null)}
+              >
+                Delete
+              </Button>
               <DialogTrigger asChild>
                 <Button type="submit">Save</Button>
               </DialogTrigger>
@@ -95,6 +127,14 @@ export function EditVisualizationDialog(props: EditVisualizationProps) {
           </VisualizationForm>
         </Formik>
       </DialogContent>
+      <ConfirmationModal
+        variant="destructive"
+        title="Delete visualization"
+        description="Do you really want to delete this visualization?"
+        okText="Delete"
+        ok={() => deleteMutation.mutateAsync()}
+        ref={deleteConf}
+      />
     </Dialog>
   );
 }
