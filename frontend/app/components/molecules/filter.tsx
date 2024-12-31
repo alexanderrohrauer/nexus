@@ -130,7 +130,7 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
           <DropdownMenuSub key={`menu-${option.name}.${depth}`}>
             <DropdownMenuSubTrigger>{option.label}</DropdownMenuSubTrigger>
             <DropdownMenuPortal>
-              <DropdownMenuSubContent>
+              <DropdownMenuSubContent className="max-h-96 overflow-y-auto">
                 {renderAddItems(
                   typeof option.children === "function"
                     ? option.children()
