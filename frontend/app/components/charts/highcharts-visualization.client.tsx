@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import type {
   SchemaVisualization,
   SchemaVisualizationData,
@@ -13,6 +13,7 @@ import "highcharts/modules/venn";
 import "highcharts/modules/wordcloud";
 import "highcharts/modules/boost";
 import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
 
 interface HighchartsVisualizationProps {
   visualization: SchemaVisualization;
@@ -25,44 +26,30 @@ export const HighchartsVisualization = React.forwardRef(function (
   props: HighchartsVisualizationProps,
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
-  const chartRef = useRef<Highcharts.Chart>();
-  useEffect(() => {
-    if (ref.current && props.options) {
-      // const resizeObserver = new ResizeObserver(() => {
-      //   chart.resize();
-      // });
-      // setTimeout(() => {
-      //   resizeObserver.observe(ref.current);
-      //   window.addEventListener("resize", () => chart.resize());
-      // }, 1000);
-      if (chartRef.current) {
-        chartRef.current.destroy();
-      }
-      chartRef.current = Highcharts.chart(ref.current, {
-        ...props.options,
-        chart: {
-          ...props.options.chart,
-          // styledMode: true,
-          animation: false,
-          zooming: {
-            type: "xy",
-            mouseWheel: { enabled: true },
-          },
-          height: ref.current.clientHeight,
-        },
-        boost: {
-          useGPUTranslations: true,
-          usePreAllocated: true,
-        },
-      });
-    }
-  }, [ref, props.options]);
-
   return (
-    <div
-      ref={ref}
-      className="w-full"
-      id={`highcharts-${props.visualization.uuid}`}
-    />
+    <div ref={ref}>
+      {props.options && (
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={{
+            ...props.options,
+            chart: {
+              ...props.options.chart,
+              // styledMode: true,
+              animation: false,
+              zooming: {
+                type: "xy",
+                mouseWheel: { enabled: true },
+              },
+              height: ref.current.clientHeight,
+            },
+            boost: {
+              useGPUTranslations: true,
+              usePreAllocated: true,
+            },
+          }}
+        />
+      )}
+    </div>
   );
 });
