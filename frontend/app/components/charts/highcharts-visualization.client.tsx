@@ -11,6 +11,7 @@ import "highcharts/modules/exporting";
 import "highcharts/modules/networkgraph";
 import "highcharts/modules/venn";
 import "highcharts/modules/wordcloud";
+import "highcharts/modules/boost";
 import Highcharts from "highcharts";
 
 interface HighchartsVisualizationProps {
@@ -42,11 +43,16 @@ export const HighchartsVisualization = React.forwardRef(function (
         chart: {
           ...props.options.chart,
           // styledMode: true,
+          animation: false,
           zooming: {
             type: "xy",
             mouseWheel: { enabled: true },
           },
           height: ref.current.clientHeight,
+        },
+        boost: {
+          useGPUTranslations: true,
+          usePreAllocated: true,
         },
       });
     }

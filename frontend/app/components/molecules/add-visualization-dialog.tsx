@@ -28,10 +28,10 @@ interface AddVisualizationDialogProps {
 const initialValues: SchemaCreateVisualizationRequest = {
   title: "",
   // @ts-ignore
-  visualization: null,
+  chart: null,
   rows: 2,
   columns: 2,
-  default_query: {},
+  query_preset: {},
 };
 
 export function AddVisualizationDialog(props: AddVisualizationDialogProps) {

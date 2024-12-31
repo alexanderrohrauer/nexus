@@ -18,6 +18,7 @@ export default function (nexus) {
         },
         "plotOptions": {
             "packedbubble": {
+                "animation": false,
                 "minSize": "20%",
                 "maxSize": "100%",
                 "zMin": 0,
@@ -38,11 +39,15 @@ export default function (nexus) {
                         "value": 250
                     }
                 }
+            },
+            series: {
+                animation: false
             }
         },
         "series": [
             {
                 "name": "Europe",
+                "animation": false,
                 "data": [
                     {
                         "name": "Germany",
@@ -192,6 +197,7 @@ export default function (nexus) {
             },
             {
                 "name": "Africa",
+                "animation": false,
                 "data": [
                     {
                         "name": "Senegal",
@@ -265,6 +271,7 @@ export default function (nexus) {
             },
             {
                 "name": "Oceania",
+                "animation": false,
                 "data": [
                     {
                         "name": "Australia",
@@ -282,6 +289,7 @@ export default function (nexus) {
             },
             {
                 "name": "North America",
+                "animation": false,
                 "data": [
                     {
                         "name": "Costa Rica",
@@ -327,6 +335,7 @@ export default function (nexus) {
             },
             {
                 "name": "South America",
+                "animation": false,
                 "data": [
                     {
                         "name": "El Salvador",
@@ -376,6 +385,7 @@ export default function (nexus) {
             },
             {
                 "name": "Asia",
+                "animation": false,
                 "data": [
                     {
                         "name": "Nepal",
