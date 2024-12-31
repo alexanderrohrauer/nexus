@@ -50,14 +50,12 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
       "data:text/javascript;base64," + btoa(props.response.generator);
     import(b64module)
       .then((module) => {
-        return module.default(nexus);
+        setOptions(module.default(nexus));
       })
-      .then((options) => setOptions(options))
       .catch(console.error);
   }, [props.response, nexus]);
 
   useEffect(() => {
-    console.log(divRef.current, frameRef.current);
     if (divRef.current && frameRef.current) {
       divRef.current.style.height = `${frameRef.current.clientHeight}px`;
     }

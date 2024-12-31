@@ -1,4 +1,4 @@
-export default async function (nexus) {
+export default function (nexus) {
     return {
         "chart": {
             "type": "packedbubble",
