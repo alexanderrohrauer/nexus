@@ -16,7 +16,7 @@ class FindKeysResult(BaseModel):
     count: int
 
 
-# TODO Implement filter for specific duplication key
+# TODO Implement filter for specific duplication key -> Not needed
 async def eliminate_work_duplicates(filter=None):
     logger.info("Work duplicate elimination started...")
     keys = await Work.aggregate([{"$group": {"_id": "$duplication_key", "count": {"$sum": 1}}}], projection_model=FindKeysResult).to_list()

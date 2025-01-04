@@ -20,12 +20,14 @@ INSTITUTIONS_LEVENSHTEIN_THRESHOLD = 3
 async def deduplicate_works():
     works = None
     skip = 0
+    limit = 2
     while works is None or len(works) > 0:
         print(f"Work batch: {skip}")
-        works = await Work.find_all(skip=skip, limit=w_works).sort(Work.snm_key).to_list()
-        for current_work in reversed(works):
+        works = await Work.find_all(skip=skip, limit=limit).sort(Work.snm_key).to_list()
+        if len(works) > 0:
+            current_work = works[-1]
             duplication_key = current_work.duplication_key or uuid4()
-            for prev_work in works:
+            for prev_work in reversed(works[:1]):
                 if prev_work.uuid != current_work.uuid:
                     distance = nltk.edit_distance(prev_work.normalized_title, current_work.normalized_title)
                     id_match = prev_work.external_id.matches(current_work.external_id)
@@ -38,19 +40,23 @@ async def deduplicate_works():
 
                 else:
                     break
-        skip = skip + 1
+
+            skip = skip + 1 if limit >= w_works else skip
+            limit = limit + 1 if limit < w_works else limit
 
 
 async def deduplicate_researchers():
     researchers = None
     skip = 0
+    limit = 2
     while researchers is None or len(researchers) > 0:
         print(f"Researcher batch: {skip}")
-        researchers = await Researcher.find_all(skip=skip, limit=w_researchers).sort(
+        researchers = await Researcher.find_all(skip=skip, limit=limit).sort(
             Researcher.snm_key).to_list()
-        for current_researcher in reversed(researchers):
+        if len(researchers) > 0:
+            current_researcher = researchers[-1]
             duplication_key = current_researcher.duplication_key or uuid4()
-            for prev_researcher in researchers:
+            for prev_researcher in reversed(researchers[:-1]):
                 if prev_researcher.uuid != current_researcher.uuid:
                     distance = nltk.edit_distance(prev_researcher.normalized_full_name, current_researcher.normalized_full_name)
                     id_match = prev_researcher.external_id.matches(current_researcher.external_id)
@@ -72,19 +78,24 @@ async def deduplicate_researchers():
                             {Researcher.duplication_key: duplication_key, Researcher.marked_for_removal: id_match or current_researcher.marked_for_removal})
                 else:
                     break
-        skip = skip + 1
+            skip = skip + 1 if limit >= w_researchers else skip
+            limit = limit + 1 if limit < w_researchers else limit
+
+
 
 
 async def deduplicate_institutions():
     institutions = None
     skip = 0
+    limit = 2
     while institutions is None or len(institutions) > 0:
         print(f"Institution batch: {skip}")
-        institutions = await Institution.find_all(skip=skip, limit=w_institutions).sort(
+        institutions = await Institution.find_all(skip=skip, limit=limit).sort(
             Institution.snm_key).to_list()
-        for current_institution in reversed(institutions):
+        if len(institutions) > 0:
+            current_institution = institutions[-1]
             duplication_key = current_institution.duplication_key or uuid4()
-            for prev_institution in institutions:
+            for prev_institution in reversed(institutions[:-1]):
                 if prev_institution.uuid != current_institution.uuid:
                     distance = nltk.edit_distance(prev_institution.normalized_name, current_institution.normalized_name)
                     id_match = prev_institution.external_id.matches(current_institution.external_id)
@@ -99,4 +110,5 @@ async def deduplicate_institutions():
                             {Institution.duplication_key: duplication_key, Institution.marked_for_removal: id_match or current_institution.marked_for_removal})
                 else:
                     break
-        skip = skip + 1
+            skip = skip + 1 if limit >= w_institutions else skip
+            limit = limit + 1 if limit < w_institutions else limit
