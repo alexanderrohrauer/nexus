@@ -146,7 +146,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/import-task/run-deduplication": {
+    "/import-task/run-duplicate-detection": {
         parameters: {
             query?: never;
             header?: never;
@@ -155,8 +155,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Run Deduplication */
-        post: operations["run_deduplication_import_task_run_deduplication_post"];
+        /** Run Duplicate Detection */
+        post: operations["run_duplicate_detection_import_task_run_duplicate_detection_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -214,6 +214,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/researchers/{uuid}/duplicates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Researcher Duplicates */
+        get: operations["get_researcher_duplicates_researchers__uuid__duplicates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/researchers/{uuid}/mark-for-removal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Mark Researcher Duplicates */
+        put: operations["mark_researcher_duplicates_researchers__uuid__mark_for_removal_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/institutions": {
         parameters: {
             query?: never;
@@ -248,6 +282,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/institutions/{uuid}/duplicates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Institution Duplicates */
+        get: operations["get_institution_duplicates_institutions__uuid__duplicates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/institutions/{uuid}/mark-for-removal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Mark Institution Duplicates */
+        put: operations["mark_institution_duplicates_institutions__uuid__mark_for_removal_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/works": {
         parameters: {
             query?: never;
@@ -275,6 +343,40 @@ export interface paths {
         /** Get Work */
         get: operations["get_work_works__uuid__get"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/works/{uuid}/duplicates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Work Duplicates */
+        get: operations["get_work_duplicates_works__uuid__duplicates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/works/{uuid}/mark-for-removal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Mark Work Duplicates */
+        put: operations["mark_work_duplicates_works__uuid__mark_for_removal_put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -466,6 +568,11 @@ export interface components {
             /** Wikidata */
             wikidata?: string | null;
         };
+        /** MarkDuplicates */
+        MarkDuplicates: {
+            /** Uuids */
+            uuids: string[];
+        };
         /** Researcher */
         Researcher: {
             /** Snm Key */
@@ -618,7 +725,63 @@ export interface components {
             filters: Record<string, never>;
         };
         /** Work */
-        Work: {
+        "Work-Input": {
+            /** Snm Key */
+            snm_key?: string | null;
+            /** Duplication Key */
+            duplication_key?: string | null;
+            /**
+             * Marked For Removal
+             * @default false
+             */
+            marked_for_removal: boolean;
+            /**
+             *  Id
+             * @description MongoDB document ObjectID
+             */
+            _id?: string | null;
+            /**
+             * Uuid
+             * Format: uuid
+             */
+            uuid?: string;
+            /**
+             * Imported At
+             * Format: date-time
+             */
+            imported_at?: string;
+            /** Manually Updated At */
+            manually_updated_at?: string | null;
+            external_id: components["schemas"]["WorkExternalId"];
+            /** Title */
+            title: string;
+            type: components["schemas"]["WorkType"];
+            /** Publication Year */
+            publication_year: number;
+            /** Publication Date */
+            publication_date?: string | null;
+            /** Keywords */
+            keywords?: string[] | null;
+            /** Authors */
+            authors?: {
+                /** Id */
+                id: string;
+                /** Collection */
+                collection: string;
+            }[] | null;
+            /** Language */
+            language?: string | null;
+            /** Open Access */
+            open_access?: boolean | null;
+            /** Openalex Meta */
+            openalex_meta?: Record<string, never> | null;
+            /** Orcid Meta */
+            orcid_meta?: Record<string, never> | null;
+            /** Dblp Meta */
+            dblp_meta?: Record<string, never> | null;
+        };
+        /** Work */
+        "Work-Output": {
             /** Snm Key */
             snm_key?: string | null;
             /** Duplication Key */
@@ -712,6 +875,7 @@ export type SchemaHttpValidationError = components['schemas']['HTTPValidationErr
 export type SchemaImportJobId = components['schemas']['ImportJobId'];
 export type SchemaInstitution = components['schemas']['Institution'];
 export type SchemaInstitutionExternalId = components['schemas']['InstitutionExternalId'];
+export type SchemaMarkDuplicates = components['schemas']['MarkDuplicates'];
 export type SchemaResearcher = components['schemas']['Researcher'];
 export type SchemaResearcherExternalId = components['schemas']['ResearcherExternalId'];
 export type SchemaResetCursorsRequest = components['schemas']['ResetCursorsRequest'];
@@ -722,7 +886,8 @@ export type SchemaUpdateVisualizationRequest = components['schemas']['UpdateVisu
 export type SchemaValidationError = components['schemas']['ValidationError'];
 export type SchemaVisualization = components['schemas']['Visualization'];
 export type SchemaVisualizationData = components['schemas']['VisualizationData'];
-export type SchemaWork = components['schemas']['Work'];
+export type SchemaWorkInput = components['schemas']['Work-Input'];
+export type SchemaWorkOutput = components['schemas']['Work-Output'];
 export type SchemaWorkExternalId = components['schemas']['WorkExternalId'];
 export type SchemaWorkType = components['schemas']['WorkType'];
 export type $defs = Record<string, never>;
@@ -1138,7 +1303,7 @@ export interface operations {
             };
         };
     };
-    run_deduplication_import_task_run_deduplication_post: {
+    run_duplicate_detection_import_task_run_duplicate_detection_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1244,6 +1409,72 @@ export interface operations {
             };
         };
     };
+    get_researcher_duplicates_researchers__uuid__duplicates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Researcher"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mark_researcher_duplicates_researchers__uuid__mark_for_removal_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkDuplicates"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_institutions_institutions_get: {
         parameters: {
             query?: {
@@ -1310,6 +1541,72 @@ export interface operations {
             };
         };
     };
+    get_institution_duplicates_institutions__uuid__duplicates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Institution"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mark_institution_duplicates_institutions__uuid__mark_for_removal_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkDuplicates"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_works_works_get: {
         parameters: {
             query?: {
@@ -1331,7 +1628,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Work"][];
+                    "application/json": components["schemas"]["Work-Output"][];
                 };
             };
             /** @description Validation Error */
@@ -1362,7 +1659,73 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Work"];
+                    "application/json": components["schemas"]["Work-Output"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_work_duplicates_works__uuid__duplicates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Work-Output"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mark_work_duplicates_works__uuid__mark_for_removal_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Work-Input"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

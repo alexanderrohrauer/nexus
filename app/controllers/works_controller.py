@@ -27,3 +27,12 @@ async def get_works(params: Annotated[WorkSearchParams, Depends(WorkSearchParams
 @router.get("/{uuid}")
 async def get_work(uuid: UUID) -> Work:
     return await works_service.find_by_id(uuid)
+
+
+@router.get("/{uuid}/duplicates")
+async def get_work_duplicates(uuid: UUID) -> list[Work]:
+    return await works_service.find_duplicates(uuid)
+
+@router.put("/{uuid}/mark-for-removal")
+async def mark_work_duplicates(uuid: UUID, dto: Work):
+    return await works_service.mark_for_removal(uuid, dto.uuids)

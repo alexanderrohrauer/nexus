@@ -7,30 +7,31 @@ logger = logging.getLogger("uvicorn.error")
 
 async def merge_institutions(i1: Institution, i2: Institution):
     logger.info(f"Deduplicate institutions '{i1.name}' and '{i2.name}'")
-    external_id = i1.external_id.model_copy(update=i2.external_id.model_dump(exclude_none=True))
-    r1 = i1.model_copy(
-        update=i1.model_dump(exclude_none=True, exclude={"id", "external_id"}))
-    r1.external_id = external_id
-    r2_researchers = await Researcher.find(Researcher.affiliations.institution.id == i2.id).to_list()
-    for researcher in r2_researchers:
+    external_id = i2.external_id.model_copy(update=i1.external_id.model_dump(exclude_none=True))
+    i1 = i2.model_copy(
+        update=i1.model_dump(exclude_none=True, exclude={"external_id"}))
+    i1.external_id = external_id
+    i2_researchers = await Researcher.find(Researcher.affiliations.institution.id == i2.id).to_list()
+    for researcher in i2_researchers:
         researcher.replace_affiliation(i2, i1)
         await researcher.save()
-    r2_researchers = await Researcher.find(Researcher.institution.id == i2.id).to_list()
-    for researcher in r2_researchers:
+    i2_researchers = await Researcher.find(Researcher.institution.id == i2.id).to_list()
+    for researcher in i2_researchers:
         researcher.institution = i1
         await researcher.save()
     i1.marked_for_removal = False
+    await i2.set({Institution.marked_for_removal: True})
     await i1.save()
     return i1
 
 
 async def merge_researchers(r1: Researcher, r2: Researcher) -> Researcher:
     logger.info(f"Deduplicate researchers '{r1.full_name}' and '{r2.full_name}'")
-    external_id = r1.external_id.model_copy(update=r2.external_id.model_dump(exclude_none=True))
-    r1 = r1.model_copy(
-        update=r2.model_dump(exclude_none=True, exclude={"id", "external_id", "affiliations", "institution"}))
+    external_id = r2.external_id.model_copy(update=r1.external_id.model_dump(exclude_none=True))
+    r1 = r2.model_copy(
+        update=r1.model_dump(exclude_none=True, exclude={"external_id", "affiliations", "institution"}))
     r1.external_id = external_id
-    # TODO dblp does not return institutions so we do not need to merge them here but maybe a different datasource returns it...
+    # dblp does not return institutions so we do not need to merge them here
     r1.affiliations = r1.affiliations or r2.affiliations
     r1.institution = r1.institution or r2.institution
     assigned_works = await Work.find(Work.authors.id == r2.id).to_list()
@@ -38,15 +39,16 @@ async def merge_researchers(r1: Researcher, r2: Researcher) -> Researcher:
         work.replace_author(r2, r1)
         await work.save()
     r1.marked_for_removal = False
+    await r2.set({Researcher.marked_for_removal: True})
     await r1.save()
     return r1
 
 
 async def merge_works(w1: Work, w2: Work) -> Work:
     logger.info(f"Deduplicate works '{w1.title}' and '{w2.title}'")
-    external_id = w1.external_id.model_copy(update=w2.external_id.model_dump(exclude_none=True))
-    w_type = w1.type.model_copy(update=w2.type.model_dump(exclude_none=True))
-    w1 = w1.model_copy(update=w2.model_dump(exclude_none=True, exclude={"id", "external_id", "type", "authors"}))
+    external_id = w2.external_id.model_copy(update=w1.external_id.model_dump(exclude_none=True))
+    w_type = w2.type.model_copy(update=w1.type.model_dump(exclude_none=True))
+    w1 = w2.model_copy(update=w1.model_dump(exclude_none=True, exclude={"external_id", "type", "authors"}))
     w1.external_id = external_id
     w1.type = w_type
     authors = []
@@ -57,5 +59,6 @@ async def merge_works(w1: Work, w2: Work) -> Work:
         authors.append(author)
     w1.authors = authors
     w1.marked_for_removal = False
+    await w2.set({Work.marked_for_removal: True})
     await w1.save()
     return w1

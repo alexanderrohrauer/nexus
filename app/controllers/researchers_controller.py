@@ -4,6 +4,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
+from app.dtos.duplications import MarkDuplicates
 from app.dtos.researchers import ResearcherSearchParams
 from app.models import Researcher
 from app.services import researchers_service
@@ -27,3 +28,13 @@ async def get_researchers(params: Annotated[ResearcherSearchParams, Depends(Rese
 @router.get("/{uuid}")
 async def get_researcher(uuid: UUID) -> Researcher:
     return await researchers_service.find_by_id(uuid)
+
+@router.get("/{uuid}/duplicates")
+async def get_researcher_duplicates(uuid: UUID) -> list[Researcher]:
+    return await researchers_service.find_duplicates(uuid)
+
+
+
+@router.put("/{uuid}/mark-for-removal")
+async def mark_researcher_duplicates(uuid: UUID, dto: MarkDuplicates):
+    return await researchers_service.mark_for_removal(uuid, dto.uuids)
