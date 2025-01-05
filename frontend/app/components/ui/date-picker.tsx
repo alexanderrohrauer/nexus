@@ -18,12 +18,14 @@ interface DatePickerProps {
   onChange: React.Dispatch<React.SetStateAction<Date>>;
   triggerClassName?: string;
   presets?: { label: string; date: Date }[];
+  disabled?: boolean;
 }
 
 export function DatePicker({
   value: date,
   onChange: setDate,
   triggerClassName,
+  disabled,
   ...props
 }: DatePickerProps) {
   return (
@@ -36,6 +38,7 @@ export function DatePicker({
             !date && "text-muted-foreground",
             triggerClassName,
           )}
+          disabled={disabled}
         >
           <CalendarIcon />
           {date ? format(date, "PPP") : <span>Pick a date</span>}

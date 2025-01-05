@@ -1,6 +1,6 @@
 import { Input } from "~/components/ui/input";
 import { DatePicker } from "~/components/ui/date-picker";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { MultiSelect } from "~/components/ui/multi-select";
 import {
   useInstitutionsPagination,
@@ -12,29 +12,57 @@ import { Routes } from "~/routes";
 import { Button } from "~/components/ui/button";
 import useDebounce from "~/lib/custom-utils";
 import { Switch } from "~/components/ui/switch";
+import { Checkbox } from "~/components/ui/checkbox";
+import { Label } from "~/components/ui/label";
+
+const Nullable = ({ value, onChange, emptyValue, children }) => (
+  <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2">
+      <Checkbox
+        checked={value === null}
+        onCheckedChange={() => onChange(value === null ? emptyValue : null)}
+      />
+      <Label>Null</Label>
+    </div>
+
+    {children}
+  </div>
+);
 
 export const StringInput = ({ value, onChange }) => (
-  <Input
-    type="text"
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    placeholder="Value"
-    className="w-56"
-  />
+  <Nullable value={value} onChange={onChange} emptyValue={""}>
+    <Input
+      type="text"
+      value={value ?? ""}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="Value"
+      className="w-56"
+      disabled={value == null}
+    />
+  </Nullable>
 );
 
 export const BooleanInput = ({ value, onChange }) => (
-  <Switch checked={value} onCheckedChange={(checked) => onChange(checked)} />
+  <Nullable value={value} onChange={onChange} emptyValue={false}>
+    <Switch
+      checked={value ?? false}
+      onCheckedChange={(checked) => onChange(checked)}
+      disabled={value == null}
+    />
+  </Nullable>
 );
 
 export const NumberInput = ({ value, onChange }) => (
-  <Input
-    type="number"
-    value={value}
-    onChange={(e) => onChange(Number(e.target.value))}
-    placeholder="Value"
-    className="w-56"
-  />
+  <Nullable value={value} onChange={onChange} emptyValue={0}>
+    <Input
+      type="number"
+      value={value ?? 0}
+      onChange={(e) => onChange(Number(e.target.value))}
+      placeholder="Value"
+      className="w-56"
+      disabled={value == null}
+    />
+  </Nullable>
 );
 
 export const DateInput = ({ value, onChange }) => {
@@ -61,12 +89,15 @@ export const DateInput = ({ value, onChange }) => {
     ];
   }, []);
   return (
-    <DatePicker
-      value={value ? new Date(value) : new Date()}
-      onChange={(date: Date) => onChange(date.toISOString())}
-      triggerClassName="w-56"
-      presets={presets}
-    />
+    <Nullable value={value} onChange={onChange} emptyValue={new Date()}>
+      <DatePicker
+        value={value ? new Date(value) : new Date()}
+        onChange={(date: Date) => onChange(date.toISOString())}
+        triggerClassName="w-56"
+        presets={presets}
+        disabled={value == null}
+      />
+    </Nullable>
   );
 };
 

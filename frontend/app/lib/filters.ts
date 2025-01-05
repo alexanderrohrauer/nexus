@@ -1,4 +1,3 @@
-// TODO eventually fetch all available languages some day
 const filters = {};
 
 const registerFilter = (name: string, filter: any[]) => {
@@ -11,6 +10,7 @@ const resolveFilter = (name: string) => () => filters[name];
 export const INSTITUTION_FIELDS = registerFilter("institution", [
   { name: "uuid", label: "ID", type: "institution" },
   { name: "homepage_url", label: "Homepage URL", type: "string" },
+  // TODO eventually fetch all available languages some day
   {
     name: "international_names",
     label: "International names",
@@ -63,6 +63,8 @@ export const INSTITUTION_FIELDS = registerFilter("institution", [
     children: resolveFilter("researcher"),
   },
   { name: "imported_at", label: "Imported At", type: "date" },
+  { name: "duplication_key", label: "Duplication key", type: "string" },
+  { name: "marked_for_removal", label: "Marked for removal", type: "boolean" },
 ]);
 
 export const WORK_FIELDS = registerFilter("work", [
@@ -100,6 +102,8 @@ export const WORK_FIELDS = registerFilter("work", [
   { name: "publication_year", label: "Publication year", type: "number" },
   { name: "language", label: "Language", type: "string" },
   { name: "imported_at", label: "Imported At", type: "date" },
+  { name: "duplication_key", label: "Duplication key", type: "string" },
+  { name: "marked_for_removal", label: "Marked for removal", type: "boolean" },
 ]);
 export const RESEARCHER_FIELDS = registerFilter("researcher", [
   { name: "uuid", label: "ID", type: "researcher" },
@@ -139,6 +143,8 @@ export const RESEARCHER_FIELDS = registerFilter("researcher", [
     children: resolveFilter("institution"),
   },
   { name: "imported_at", label: "Imported At", type: "date" },
+  { name: "duplication_key", label: "Duplication key", type: "string" },
+  { name: "marked_for_removal", label: "Marked for removal", type: "boolean" },
   {
     name: "works",
     label: "Works",

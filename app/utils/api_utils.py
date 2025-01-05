@@ -11,11 +11,13 @@ from pydantic import BaseModel
 
 def transform_filter_field(field: dict):
     if field["field"].endswith("imported_at") or field["field"].endswith("publication_date"):
-        return datetime.fromisoformat(field["value"])
+        return datetime.fromisoformat(field["value"]) if field["value"] is not None else None
     if field["operator"] == "$regex":
-        return re.compile(field["value"], flags=re.IGNORECASE)
+        return re.compile(field["value"], flags=re.IGNORECASE) if field["value"] is not None else None
     if field["field"].endswith("uuid"):
-        return list(map(lambda option: UUID(option["value"]), field["value"]))
+        return list(map(lambda option: UUID(option["value"]) if option["value"] is not None else None, field["value"]))
+    if field["field"].endswith("duplication_key"):
+        return UUID(field["value"]) if field["value"] is not None else None
     return field["value"]
 
 
