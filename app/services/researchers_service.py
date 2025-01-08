@@ -10,8 +10,9 @@ async def insert_many(researchers: list[Researcher]):
         await Researcher.insert_one(researcher, link_rule=WriteRules.WRITE)
 
 
-async def find_by_id(uuid: UUID):
-    return await Researcher.find_one(Researcher.uuid == uuid)
+async def find_by_id(uuid: UUID, **kwargs):
+    return await Researcher.find_one(Researcher.uuid == uuid, **kwargs)
+
 
 async def find_duplicates(uuid: UUID) -> list[Researcher]:
     entity = await find_by_id(uuid)
@@ -24,4 +25,3 @@ async def mark_for_removal(uuid: UUID, uuids: list[UUID]):
     duplicates = await find_duplicates(uuid)
     for duplicate in duplicates:
         await duplicate.set({Researcher.marked_for_removal: duplicate.uuid in uuids})
-

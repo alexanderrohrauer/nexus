@@ -231,6 +231,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/researchers/{uuid}/visualizations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Researcher Visualizations */
+        get: operations["get_researcher_visualizations_researchers__uuid__visualizations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/researchers/{uuid}/mark-for-removal": {
         parameters: {
             query?: never;
@@ -405,6 +422,38 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Affiliation */
+        Affiliation: {
+            /**
+             *  Id
+             * @description MongoDB document ObjectID
+             */
+            _id?: string | null;
+            /**
+             * Uuid
+             * Format: uuid
+             */
+            uuid?: string;
+            /** Imported At */
+            imported_at?: string;
+            /** Manually Updated At */
+            manually_updated_at?: string | null;
+            /** Years */
+            years: number[];
+            type?: components["schemas"]["AffiliationType"] | null;
+            /** Institution */
+            institution: {
+                /** Id */
+                id: string;
+                /** Collection */
+                collection: string;
+            };
+        };
+        /**
+         * AffiliationType
+         * @enum {string}
+         */
+        AffiliationType: AffiliationType;
         /** ChartInfo */
         ChartInfo: {
             /** Value */
@@ -641,6 +690,11 @@ export interface components {
             /** Wikipedia */
             wikipedia?: string | null;
         };
+        /** ResearcherVisualizations */
+        ResearcherVisualizations: {
+            /** Affiliations */
+            affiliations?: components["schemas"]["Affiliation"][] | null;
+        };
         /** ResetCursorsRequest */
         ResetCursorsRequest: {
             /** Jobs */
@@ -864,6 +918,8 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaAffiliation = components['schemas']['Affiliation'];
+export type SchemaAffiliationType = components['schemas']['AffiliationType'];
 export type SchemaChartInfo = components['schemas']['ChartInfo'];
 export type SchemaCreateDashboardRequest = components['schemas']['CreateDashboardRequest'];
 export type SchemaCreateImportTaskRequest = components['schemas']['CreateImportTaskRequest'];
@@ -878,6 +934,7 @@ export type SchemaInstitutionExternalId = components['schemas']['InstitutionExte
 export type SchemaMarkDuplicates = components['schemas']['MarkDuplicates'];
 export type SchemaResearcher = components['schemas']['Researcher'];
 export type SchemaResearcherExternalId = components['schemas']['ResearcherExternalId'];
+export type SchemaResearcherVisualizations = components['schemas']['ResearcherVisualizations'];
 export type SchemaResetCursorsRequest = components['schemas']['ResetCursorsRequest'];
 export type SchemaSeries = components['schemas']['Series'];
 export type SchemaSeriesMap = components['schemas']['SeriesMap'];
@@ -1440,6 +1497,37 @@ export interface operations {
             };
         };
     };
+    get_researcher_visualizations_researchers__uuid__visualizations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResearcherVisualizations"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     mark_researcher_duplicates_researchers__uuid__mark_for_removal_put: {
         parameters: {
             query?: never;
@@ -1759,6 +1847,10 @@ export interface operations {
             };
         };
     };
+}
+export enum AffiliationType {
+    EDUCATION = "EDUCATION",
+    EMPLOYMENT = "EMPLOYMENT"
 }
 export enum EntityType {
     RESEARCHER = "RESEARCHER",

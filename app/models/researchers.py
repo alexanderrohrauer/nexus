@@ -47,7 +47,6 @@ class Researcher(EditableDocument, SNMEntity):
     external_id: ResearcherExternalId
     full_name: str
     alternative_names: Optional[list[str]] = None
-    # TODO normalize affiliations
     affiliations: Optional[list[Link[Affiliation]]] = None
     institution: Optional[Link[Institution]] = None
     topic_keywords: Optional[list[str]] = None
