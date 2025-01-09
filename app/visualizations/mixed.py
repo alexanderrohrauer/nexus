@@ -122,3 +122,38 @@ class TopResearcherWorksCount(Chart):
         points = list(reversed(sorted(points, key=lambda row: row[-1])))[:20]
         result.add("researchers", Series(data=points, entity_type=EntityType.RESEARCHER))
         return result
+
+class BasicStats(Chart):
+    identifier = "basic_stats"
+    name = "Basic stats"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.MARKDOWN
+    generator = create_basic_generator(["researchers", "institutions", "works"])
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        result = SeriesMap()
+        works_query = chart_input.get_series_query("works")
+        researcher_query = chart_input.get_series_query("researchers")
+        institution_query = chart_input.get_series_query("institutions")
+
+        works_count = await Work.find(works_query, nesting_depth=2, fetch_links=True).count()
+        researchers_count = await Researcher.find(researcher_query, nesting_depth=2, fetch_links=True).count()
+        institutions_count = await Institution.find(institution_query, nesting_depth=2, fetch_links=True).count()
+
+        # TODO maybe add some more stats...
+        works_md = f"""
+### Works
+**Total count:** {works_count}
+        """
+        result.add("works", Series(data=works_md, entity_type=EntityType.WORK))
+        researchers_md = f"""
+### Researchers
+**Total count:** {researchers_count}
+        """
+        result.add("researchers", Series(data=researchers_md, entity_type=EntityType.RESEARCHER))
+        institutions_md = f"""
+### Institutions
+**Total count:** {institutions_count}
+        """
+        result.add("institutions", Series(data=institutions_md, entity_type=EntityType.INSTITUTION))
+        return result

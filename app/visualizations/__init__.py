@@ -1,5 +1,5 @@
 from app.visualizations.mixed import ResearcherEdgeBundling, InstitutionsMap, Bubble, WorksGeoHeatmap, \
-    TopResearcherWorksCount
+    TopResearcherWorksCount, BasicStats
 from app.visualizations.researcher import ResearcherAffiliations
 
 CHARTS = [
@@ -8,5 +8,6 @@ CHARTS = [
     Bubble,
     WorksGeoHeatmap,
     TopResearcherWorksCount,
+    BasicStats,
     ResearcherAffiliations
 ]

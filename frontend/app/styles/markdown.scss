@@ -1,0 +1,136 @@
+.react-markdown {
+  /* Headers */
+  h1, h2, h3, h4, h5, h6 {
+    margin: 20px 0 10px;
+    font-weight: bold;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: 2.5em;
+    padding-bottom: 5px;
+  }
+
+  h2 {
+    font-size: 2em;
+  }
+
+  h3 {
+    font-size: 1.75em;
+    border-bottom: 1px solid #ccc;
+  }
+
+  h4 {
+    font-size: 1.5em;
+  }
+
+  h5 {
+    font-size: 1.25em;
+  }
+
+  h6 {
+    font-size: 1em;
+    color: #666;
+  }
+
+  /* Paragraphs */
+  p {
+    margin: 10px 0;
+  }
+
+  /* Blockquotes */
+  blockquote {
+    margin: 20px 0;
+    padding: 10px 20px;
+    border-left: 5px solid #ccc;
+    background: #f0f0f0;
+    color: #555;
+    font-style: italic;
+  }
+
+  /* Code Blocks */
+  pre {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    overflow-x: auto;
+    border-radius: 5px;
+  }
+
+  code {
+    font-family: 'Courier New', Courier, monospace;
+    background: #f4f4f4;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.95em;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin: 10px 0 10px 25px;
+    padding: 0;
+  }
+
+  li {
+    margin: 5px 0;
+  }
+
+  /* Links */
+  a {
+    color: #007BFF;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+
+  table th,
+  table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+
+  table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+
+  /* Horizontal Rule */
+  hr {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 20px 0;
+  }
+
+  /* Images */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px 0;
+  }
+
+  /* Inline Elements */
+  em {
+    font-style: italic;
+  }
+
+  strong {
+    font-weight: bold;
+  }
+
+  del {
+    text-decoration: line-through;
+  }
+
+}

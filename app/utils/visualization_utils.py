@@ -16,6 +16,7 @@ class ChartTemplates:
     HIGHCHARTS = "HIGHCHARTS"
     LEAFLET = "LEAFLET"
     DATATABLE = "DATATABLE"
+    MARKDOWN = "MARKDOWN"
     CUSTOM = "CUSTOM"
 
 class ChartType(Enum):

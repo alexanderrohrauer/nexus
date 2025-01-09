@@ -18,6 +18,7 @@ import { EChartsVisualization } from "~/components/charts/echarts-visualization.
 import { LeafletVisualization } from "~/components/charts/leaflet-visualization.client";
 import { EditVisualizationDialog } from "~/components/templates/edit-visualization-dialog";
 import { DataTableVisualization } from "~/components/charts/data-table.client";
+import { MarkdownVisualization } from "~/components/charts/markdown.client";
 
 export interface VisualizationFrameProps {
   visualization?: SchemaVisualization;
@@ -137,15 +138,27 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
             ref={divRef}
           />
         )}
-        {props.response.chart_template === "DATATABLE" && (
-          <DataTableVisualization
-            visualization={props.visualization}
-            options={options}
-            response={props.response}
-            ref={divRef}
-          />
+        {options && (
+          <>
+            {props.response.chart_template === "DATATABLE" && (
+              <DataTableVisualization
+                visualization={props.visualization}
+                options={options}
+                response={props.response}
+                ref={divRef}
+              />
+            )}
+            {props.response.chart_template === "MARKDOWN" && (
+              <MarkdownVisualization
+                visualization={props.visualization}
+                options={options}
+                response={props.response}
+                ref={divRef}
+              />
+            )}
+            {props.children?.({ options, response: props.response })}
+          </>
         )}
-        {options && props.children?.({ options, response: props.response })}
       </div>
     </div>
   );
