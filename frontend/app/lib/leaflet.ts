@@ -1,4 +1,5 @@
 import L from "leaflet";
+import { getNexusLink } from "~/lib/link-util";
 
 export const applyLeafletOptions = (options: any, map: L.Map) => {
   let firstSkipped = false;
@@ -22,10 +23,19 @@ export const applyLeafletOptions = (options: any, map: L.Map) => {
   });
 };
 
+function customTip(marker, content: string) {
+  if (!marker.isPopupOpen()) marker.bindTooltip(content).openTooltip();
+}
+
+function customPop(marker, nexusMeta) {
+  const url = getNexusLink(nexusMeta);
+  if (url) window.open(url, "_blank");
+}
+
 const addMarkerSeries = (series: any, map: L.Map) => {
   // TODO add correct icons
   series.data.forEach((point: any) => {
-    L.marker(
+    const marker = L.marker(
       { lng: point.position[0], lat: point.position[1] },
       {
         icon: new L.Icon({
@@ -34,9 +44,10 @@ const addMarkerSeries = (series: any, map: L.Map) => {
           iconAnchor: [12, 36],
         }),
       },
-    )
-      .addTo(map)
-      .bindPopup(point.name ?? point.id);
+    );
+    marker.on("mouseover", () => customTip(marker, point.name ?? point.id));
+    marker.on("click", () => customPop(marker, point.$nexus));
+    marker.addTo(map);
   });
 };
 

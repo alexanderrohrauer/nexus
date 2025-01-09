@@ -54,9 +54,11 @@ class InstitutionsMap(Chart):
                                               chart_input.get_series_query("institutions"), nesting_depth=2,
                                               fetch_links=True).to_list()
         series = {"type": "marker",
-                  "data": [{"id": i.uuid, "name": i.name, "position": i.location} for i in institutions]}
+                  "data": [{"id": i.uuid, "name": i.name, "position": i.location,
+                            "$nexus": {"type": EntityType.INSTITUTION, "id": i.uuid}} for i in institutions]}
         result.add("institutions", Series(data=series, entity_type=EntityType.INSTITUTION))
         return result
+
 
 # TODO remove
 class Bubble(Chart):
@@ -103,6 +105,7 @@ class WorksGeoHeatmap(Chart):
         result.add("works", Series(data=data, entity_type=EntityType.WORK))
         return result
 
+
 class TopResearcherWorksCount(Chart):
     identifier = "top_researcher_works_count"
     name = "Top Researcher works count"
@@ -122,6 +125,7 @@ class TopResearcherWorksCount(Chart):
         points = list(reversed(sorted(points, key=lambda row: row[-1])))[:20]
         result.add("researchers", Series(data=points, entity_type=EntityType.RESEARCHER))
         return result
+
 
 class BasicStats(Chart):
     identifier = "basic_stats"
