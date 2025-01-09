@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import type {
   SchemaInstitution,
   SchemaResearcher,
-  SchemaWork,
+  SchemaWorkOutput,
 } from "~/lib/api/types";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
@@ -15,11 +15,11 @@ import { client } from "~/lib/api/api-client";
 import { useToast } from "~/lib/toast";
 
 interface DuplicationSectionProps {
-  entity: SchemaResearcher | SchemaWork | SchemaInstitution;
-  duplicates: (SchemaResearcher | SchemaWork | SchemaInstitution)[];
+  entity: SchemaResearcher | SchemaWorkOutput | SchemaInstitution;
+  duplicates: (SchemaResearcher | SchemaWorkOutput | SchemaInstitution)[];
   mutateUrl: string;
   renderName: (
-    entity: SchemaResearcher | SchemaWork | SchemaInstitution,
+    entity: SchemaResearcher | SchemaWorkOutput | SchemaInstitution,
   ) => string;
 }
 
