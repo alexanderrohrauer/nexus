@@ -5,6 +5,7 @@ from uuid import uuid4, UUID
 import beanie
 from pydantic import Field, BaseModel, PlainSerializer
 
+# TODO fix date in db
 UTCDateTime = Annotated[
     datetime,
     PlainSerializer(

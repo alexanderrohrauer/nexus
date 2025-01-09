@@ -2,10 +2,9 @@ import logging
 from typing import Optional
 from uuid import UUID
 
-from beanie.odm.operators.find.comparison import In
 from pydantic import BaseModel, Field
 
-from app.models import Work, Researcher, Institution, Affiliation
+from app.models import Work, Researcher, Institution
 from app.services import merge_service
 
 logger = logging.getLogger("uvicorn.error")
@@ -36,7 +35,6 @@ async def eliminate_work_duplicates():
                         should_clear_key = False
             if should_clear_key:
                 await merged.set({Work.duplication_key: None})
-    await Work.find(Work.marked_for_removal == True).delete()
     logger.info("Work duplicate elimination finished...")
 
 
@@ -60,11 +58,6 @@ async def eliminate_researcher_duplicates():
                         should_clear_key = False
             if should_clear_key:
                 await merged.set({Researcher.duplication_key: None})
-    researchers_to_delete = await Researcher.find(Researcher.marked_for_removal == True).to_list()
-    for researcher in researchers_to_delete:
-        await researcher.delete()
-        if researcher.affiliations is not None:
-            await Affiliation.find(In(Affiliation.id, list(map(lambda a: a.ref.id, researcher.affiliations)))).delete()
     logger.info("Researcher duplicate elimination finished...")
 
 
@@ -88,5 +81,4 @@ async def eliminate_institutions_duplicates():
                         should_clear_key = False
             if should_clear_key:
                 await merged.set({Institution.duplication_key: None})
-    await Institution.find(Institution.marked_for_removal == True).delete()
     logger.info("Institution duplicate elimination finished...")

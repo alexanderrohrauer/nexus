@@ -7,6 +7,7 @@ from fastapi import APIRouter, HTTPException, BackgroundTasks
 
 from app.dtos.import_task import ImportJob, ImportTask, CreateImportTaskRequest, UpdateImportTaskRequest, \
     ResetCursorsRequest
+from app.models import Researcher, Work, Institution
 from app.scheduled.import_jobs import import_job_map
 from app.scheduled.models import ImportJobId, ImportCursor
 from app.scheduled.scheduler import scheduler
@@ -127,6 +128,13 @@ async def deduplication_elimination():
     await duplicate_elimination_service.eliminate_institutions_duplicates()
     await duplicate_elimination_service.eliminate_researcher_duplicates()
     await duplicate_elimination_service.eliminate_work_duplicates()
+
+    await Institution.find(Institution.marked_for_removal == True).delete()
+    await Researcher.find(Researcher.marked_for_removal == True).delete()
+    # TODO cleanup if possible if researcher.affiliations is not None:
+    #     ids = [a.ref.id for a in researcher.affiliations]
+    #     await Affiliation.find(In(Affiliation.id, ids)).delete()
+    await Work.find(Work.marked_for_removal == True).delete()
 
     logger.info("Deduplication elimination finished.")
 

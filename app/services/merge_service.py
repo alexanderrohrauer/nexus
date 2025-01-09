@@ -31,7 +31,7 @@ async def merge_researchers(r1: Researcher, r2: Researcher) -> Researcher:
     r1 = r2.model_copy(
         update=r1.model_dump(exclude_none=True, exclude={"external_id", "affiliations", "institution"}))
     r1.external_id = external_id
-    # dblp does not return institutions so we do not need to merge them here
+    # TODO some researchers do not have affiliations after deduplication
     r1.affiliations = r1.affiliations or r2.affiliations
     r1.institution = r1.institution or r2.institution
     assigned_works = await Work.find(Work.authors.id == r2.id).to_list()

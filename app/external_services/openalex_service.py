@@ -101,7 +101,7 @@ async def fetch_institutions_for_authors(authors: list[dict], batch_id: int) -> 
         map(lambda a: [parse_openalex_id(a["institution"]["id"]) for a in a["affiliations"]],
             authors)))
     last_institution_authors = filter(lambda a: len(a["last_known_institutions"]) > 0, authors)
-    institution_ids = institution_ids + [a["last_known_institutions"][0]["id"] for a in last_institution_authors]
+    institution_ids = institution_ids + [parse_openalex_id(a["last_known_institutions"][0]["id"]) for a in last_institution_authors]
     institution_id_chunks = _.chunk(institution_ids, OPENALEX_INSTITUTION_BATCH_SIZE)
     for chunk in institution_id_chunks:
         chunk_expr = "|".join(chunk)
