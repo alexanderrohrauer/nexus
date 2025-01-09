@@ -26,9 +26,10 @@ export function ProfileVisualization(props: ProfileVisualizationProps) {
   const queryKey = useMemo(
     () => [
       props.entityType.toLowerCase() + "_visualizations",
+      props.uuid,
       props.identifier,
     ],
-    [props.entityType, props.identifier],
+    [props.entityType, props.identifier, props.uuid],
   );
   const { data } = useQuery({
     queryKey: queryKey,
