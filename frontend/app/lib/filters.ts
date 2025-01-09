@@ -105,6 +105,18 @@ export const WORK_FIELDS = registerFilter("work", [
   { name: "duplication_key", label: "Duplication key", type: "string" },
   { name: "marked_for_removal", label: "Marked for removal", type: "boolean" },
 ]);
+
+export const AFFILIATION_FIELDS = registerFilter("affiliations", [
+  { name: "years", label: "Years", type: "number" },
+  { name: "type", label: "Type", type: "string" },
+  {
+    name: "institution",
+    label: "Institution",
+    isRelation: true,
+    children: resolveFilter("institution"),
+  },
+]);
+
 export const RESEARCHER_FIELDS = registerFilter("researcher", [
   { name: "uuid", label: "ID", type: "researcher" },
   {
@@ -124,16 +136,7 @@ export const RESEARCHER_FIELDS = registerFilter("researcher", [
     name: "affiliations",
     label: "Affiliations",
     isRelation: true,
-    children: [
-      { name: "years", label: "Years", type: "number" },
-      { name: "type", label: "Type", type: "string" },
-      {
-        name: "institution",
-        label: "Institution",
-        isRelation: true,
-        children: resolveFilter("institution"),
-      },
-    ],
+    children: resolveFilter("affiliations"),
   },
   { name: "topic_keywords", label: "Keywords", type: "string" },
   {

@@ -8,6 +8,7 @@ import {
 import { ChevronRight } from "lucide-react";
 import Filter from "~/components/molecules/filter";
 import {
+  AFFILIATION_FIELDS,
   INSTITUTION_FIELDS,
   RESEARCHER_FIELDS,
   WORK_FIELDS,
@@ -23,6 +24,7 @@ const FIELD_MAP = {
   WORK: WORK_FIELDS,
   RESEARCHER: RESEARCHER_FIELDS,
   INSTITUTION: INSTITUTION_FIELDS,
+  AFFILIATIONS: AFFILIATION_FIELDS,
 };
 
 export function VisualizationFilter(props: VisualizationFilterProps) {

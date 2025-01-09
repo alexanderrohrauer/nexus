@@ -7,6 +7,7 @@ import { Info, X } from "lucide-react";
 import { Form } from "formik";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
+import { ChartType } from "~/lib/api/types";
 
 interface VisualizationFormProps extends React.PropsWithChildren {
   typeDisabled?: boolean;
@@ -15,7 +16,12 @@ interface VisualizationFormProps extends React.PropsWithChildren {
 export function VisualizationForm(props: VisualizationFormProps) {
   const { data: mixedChartTypes } = useQuery({
     queryKey: ["mixed-chart-types"],
-    queryFn: () => client.GET("/charts/mixed").then((res) => res.data),
+    queryFn: () =>
+      client
+        .GET("/charts/{chart_type}", {
+          params: { path: { chart_type: ChartType.MIXED } },
+        })
+        .then((res) => res.data),
   });
   return (
     <Form className="space-y-3">

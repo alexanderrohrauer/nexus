@@ -12,7 +12,7 @@ router = APIRouter(
 class ChartInfo(BaseModel):
     value: str
     label: str
-@router.get("/mixed")
-async def get_mixed_charts() -> list[ChartInfo]:
-    mixed_charts = filter(lambda chart: chart.type == ChartType.MIXED, CHARTS)
+@router.get("/{chart_type}")
+async def get_mixed_charts(chart_type: ChartType) -> list[ChartInfo]:
+    mixed_charts = filter(lambda chart: chart.type == chart_type, CHARTS)
     return [ChartInfo(value=chart.identifier, label=chart.name) for chart in mixed_charts]

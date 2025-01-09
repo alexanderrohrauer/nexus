@@ -16,14 +16,19 @@ import { VisualizationFilter } from "~/components/templates/visualization-filter
 import { HighchartsVisualization } from "~/components/charts/highcharts-visualization.client";
 import { EChartsVisualization } from "~/components/charts/echarts-visualization.client";
 import { LeafletVisualization } from "~/components/charts/leaflet-visualization.client";
-import { useQueryClient } from "@tanstack/react-query";
 import { EditVisualizationDialog } from "~/components/templates/edit-visualization-dialog";
 
-interface VisualizationFrameProps {
-  visualization: SchemaVisualization;
+export interface VisualizationFrameProps {
+  visualization?: SchemaVisualization;
+  title?: string;
   response: SchemaVisualizationData;
   filters: any;
   onFiltersChange(filters: any): void;
+  onFiltersApply(): void;
+  children?: (props: {
+    options: any;
+    response: SchemaVisualizationData;
+  }) => React.ReactNode;
 }
 
 class Nexus {
@@ -33,8 +38,10 @@ class Nexus {
     this.seriesMap = seriesMap;
   }
 
-  public series(name: string, options: any) {
-    return { ...options, ...this.seriesMap[name].data };
+  public series(name: string, options?: any) {
+    return options
+      ? { ...options, ...this.seriesMap[name].data }
+      : this.seriesMap[name].data;
   }
 }
 
@@ -61,12 +68,13 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
       divRef.current.style.height = `${frameRef.current.clientHeight}px`;
     }
   }, [divRef, frameRef]);
-  const queryClient = useQueryClient();
 
   return (
     <div className="flex flex-col h-full p-3 space-y-1">
       <div className="flex items-center justify-between">
-        <h1 className="font-medium">{props.visualization.title}</h1>
+        <h1 className="font-medium">
+          {props.visualization ? props.visualization.title : props.title}
+        </h1>
         <div className="space-x-1">
           <Dialog>
             <DialogTrigger asChild>
@@ -90,26 +98,17 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
               />
               <DialogFooter>
                 <DialogTrigger asChild>
-                  <Button
-                    onClick={() =>
-                      queryClient.invalidateQueries({
-                        queryKey: [
-                          "visualization_data",
-                          props.visualization.uuid,
-                        ],
-                      })
-                    }
-                  >
-                    Apply
-                  </Button>
+                  <Button onClick={() => props.onFiltersApply()}>Apply</Button>
                 </DialogTrigger>
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <EditVisualizationDialog
-            visualization={props.visualization}
-            response={props.response}
-          />
+          {props.visualization && (
+            <EditVisualizationDialog
+              visualization={props.visualization}
+              response={props.response}
+            />
+          )}
         </div>
       </div>
       <div className="flex-1" ref={frameRef}>
@@ -137,6 +136,7 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
             ref={divRef}
           />
         )}
+        {options && props.children?.({ options, response: props.response })}
       </div>
     </div>
   );

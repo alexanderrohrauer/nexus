@@ -46,8 +46,8 @@ export function DuplicationSection(props: DuplicationSectionProps) {
   });
 
   return (
-    <div className="max-h-52 overflow-y-auto space-y-2">
-      <div>
+    <div className="space-y-2">
+      <div className="max-h-52 overflow-y-auto">
         {props.duplicates.map((duplicate) => (
           <div key={duplicate.uuid} className="flex">
             <div

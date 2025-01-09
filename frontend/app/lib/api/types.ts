@@ -231,15 +231,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/researchers/{uuid}/visualizations": {
+    "/researchers/{uuid}/visualizations/{chart_identifier}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Researcher Visualizations */
-        get: operations["get_researcher_visualizations_researchers__uuid__visualizations_get"];
+        /** Get Researcher Visualization Data */
+        get: operations["get_researcher_visualization_data_researchers__uuid__visualizations__chart_identifier__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -401,7 +401,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/charts/mixed": {
+    "/charts/{chart_type}": {
         parameters: {
             query?: never;
             header?: never;
@@ -409,7 +409,7 @@ export interface paths {
             cookie?: never;
         };
         /** Get Mixed Charts */
-        get: operations["get_mixed_charts_charts_mixed_get"];
+        get: operations["get_mixed_charts_charts__chart_type__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -422,38 +422,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** Affiliation */
-        Affiliation: {
-            /**
-             *  Id
-             * @description MongoDB document ObjectID
-             */
-            _id?: string | null;
-            /**
-             * Uuid
-             * Format: uuid
-             */
-            uuid?: string;
-            /** Imported At */
-            imported_at?: string;
-            /** Manually Updated At */
-            manually_updated_at?: string | null;
-            /** Years */
-            years: number[];
-            type?: components["schemas"]["AffiliationType"] | null;
-            /** Institution */
-            institution: {
-                /** Id */
-                id: string;
-                /** Collection */
-                collection: string;
-            };
-        };
-        /**
-         * AffiliationType
-         * @enum {string}
-         */
-        AffiliationType: AffiliationType;
         /** ChartInfo */
         ChartInfo: {
             /** Value */
@@ -461,6 +429,11 @@ export interface components {
             /** Label */
             label: string;
         };
+        /**
+         * ChartType
+         * @enum {string}
+         */
+        ChartType: ChartType;
         /** CreateDashboardRequest */
         CreateDashboardRequest: {
             /** Title */
@@ -690,11 +663,6 @@ export interface components {
             /** Wikipedia */
             wikipedia?: string | null;
         };
-        /** ResearcherVisualizations */
-        ResearcherVisualizations: {
-            /** Affiliations */
-            affiliations?: components["schemas"]["Affiliation"][] | null;
-        };
         /** ResetCursorsRequest */
         ResetCursorsRequest: {
             /** Jobs */
@@ -703,7 +671,7 @@ export interface components {
         /** Series */
         Series: {
             /** Data */
-            data: Record<string, never>;
+            data: unknown;
             entity_type: components["schemas"]["EntityType"];
         };
         /** SeriesMap */
@@ -918,9 +886,8 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-export type SchemaAffiliation = components['schemas']['Affiliation'];
-export type SchemaAffiliationType = components['schemas']['AffiliationType'];
 export type SchemaChartInfo = components['schemas']['ChartInfo'];
+export type SchemaChartType = components['schemas']['ChartType'];
 export type SchemaCreateDashboardRequest = components['schemas']['CreateDashboardRequest'];
 export type SchemaCreateImportTaskRequest = components['schemas']['CreateImportTaskRequest'];
 export type SchemaCreateVisualizationRequest = components['schemas']['CreateVisualizationRequest'];
@@ -934,7 +901,6 @@ export type SchemaInstitutionExternalId = components['schemas']['InstitutionExte
 export type SchemaMarkDuplicates = components['schemas']['MarkDuplicates'];
 export type SchemaResearcher = components['schemas']['Researcher'];
 export type SchemaResearcherExternalId = components['schemas']['ResearcherExternalId'];
-export type SchemaResearcherVisualizations = components['schemas']['ResearcherVisualizations'];
 export type SchemaResetCursorsRequest = components['schemas']['ResetCursorsRequest'];
 export type SchemaSeries = components['schemas']['Series'];
 export type SchemaSeriesMap = components['schemas']['SeriesMap'];
@@ -1497,12 +1463,15 @@ export interface operations {
             };
         };
     };
-    get_researcher_visualizations_researchers__uuid__visualizations_get: {
+    get_researcher_visualization_data_researchers__uuid__visualizations__chart_identifier__get: {
         parameters: {
-            query?: never;
+            query?: {
+                q?: string | null;
+            };
             header?: never;
             path: {
                 uuid: string;
+                chart_identifier: string;
             };
             cookie?: never;
         };
@@ -1514,7 +1483,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ResearcherVisualizations"];
+                    "application/json": components["schemas"]["VisualizationData"];
                 };
             };
             /** @description Validation Error */
@@ -1827,11 +1796,13 @@ export interface operations {
             };
         };
     };
-    get_mixed_charts_charts_mixed_get: {
+    get_mixed_charts_charts__chart_type__get: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                chart_type: components["schemas"]["ChartType"];
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -1845,17 +1816,29 @@ export interface operations {
                     "application/json": components["schemas"]["ChartInfo"][];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
 }
-export enum AffiliationType {
-    EDUCATION = "EDUCATION",
-    EMPLOYMENT = "EMPLOYMENT"
+export enum ChartType {
+    MIXED = "MIXED",
+    RESEARCHER = "RESEARCHER",
+    WORK = "WORK",
+    INSTITUTION = "INSTITUTION"
 }
 export enum EntityType {
     RESEARCHER = "RESEARCHER",
     WORK = "WORK",
-    INSTITUTION = "INSTITUTION"
+    INSTITUTION = "INSTITUTION",
+    AFFILIATIONS = "AFFILIATIONS"
 }
 export enum ImportJobId {
     openalex_import_job = "openalex_import_job",

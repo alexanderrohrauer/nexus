@@ -1,19 +1,19 @@
 import React from "react";
-import type { SchemaAffiliation, SchemaResearcher } from "~/lib/api/types";
-import { TextTooltip } from "~/components/molecules/text-tooltip";
+import type { SchemaVisualizationData } from "~/lib/api/types";
 import { NavLink } from "@remix-run/react";
 import { mapParams } from "~/lib/links";
 import { Routes } from "~/routes";
+import { TextTooltip } from "~/components/molecules/text-tooltip";
 
-interface DuplicationSectionProps {
-  entity: SchemaResearcher;
-  affiliations: SchemaAffiliation[];
+interface AffiliationsSectionProps {
+  options: ChartOptions<[any]>;
+  response: SchemaVisualizationData;
 }
 // TODO maybe extract to grid chart
-export function AffiliationsSection(props: DuplicationSectionProps) {
+export function AffiliationsVisualization(props: AffiliationsSectionProps) {
   return (
     <div className="max-h-96 overflow-y-auto space-y-4">
-      {props.affiliations
+      {props.options.series[0]
         .sort((a1, a2) => {
           const yearsMaxA1 = Math.max(...a1.years);
           const yearsMaxA2 = Math.max(...a2.years);
@@ -43,6 +43,11 @@ export function AffiliationsSection(props: DuplicationSectionProps) {
             </NavLink>
           );
         })}
+      {props.options.series[0].length == 0 && (
+        <span className="text-muted-foreground text-sm">
+          No affiliations found
+        </span>
+      )}
     </div>
   );
 }

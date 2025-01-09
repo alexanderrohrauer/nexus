@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { SchemaDashboard, SchemaVisualization } from "~/lib/api/types";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
 import { VisualizationFrame } from "~/components/molecules/visualization-frame";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -12,6 +12,7 @@ interface VisualizationProps {
 
 export function Visualization(props: VisualizationProps) {
   const [filters, setFilters] = useState({});
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["visualization_data", props.visualization.uuid],
@@ -53,6 +54,11 @@ export function Visualization(props: VisualizationProps) {
               response={data.data!}
               filters={filters}
               onFiltersChange={(filters) => setFilters(filters)}
+              onFiltersApply={() =>
+                queryClient.invalidateQueries({
+                  queryKey: ["visualization_data", props.visualization.uuid],
+                })
+              }
             />
           )}
         </div>

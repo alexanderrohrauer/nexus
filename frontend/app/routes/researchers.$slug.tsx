@@ -3,9 +3,11 @@ import { client } from "~/lib/api/api-client";
 import { useLoaderData } from "@remix-run/react";
 import { DuplicationSection } from "~/components/templates/duplication-section";
 import type { SchemaResearcher } from "~/lib/api/types";
+import { ChartType, EntityType } from "~/lib/api/types";
 import React from "react";
-import { AffiliationsSection } from "~/components/templates/affiliations-section";
-import { Separator } from "~/components/ui/separator";
+import { ProfileVisualization } from "~/components/templates/profile-visualization";
+import { ProfileSection } from "~/components/molecules/profile-section";
+import { AffiliationsVisualization } from "~/components/charts/affiliations-visualization";
 
 interface ResearcherProps {}
 
@@ -21,8 +23,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     })
     .then((res) => res.data);
   const visualizations = await client
-    .GET("/researchers/{uuid}/visualizations", {
-      params: { path: { uuid: params.slug } },
+    .GET("/charts/{chart_type}", {
+      params: { path: { chart_type: ChartType.RESEARCHER } },
     })
     .then((res) => res.data);
   return { researcher, duplicates, visualizations };
@@ -31,31 +33,42 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export default function Researcher(props: ResearcherProps) {
   const { researcher, duplicates, visualizations } =
     useLoaderData<typeof loader>();
-  console.log(visualizations);
   return (
     <div className="space-y-6">
-      <span>{researcher.full_name}</span>
-      {visualizations?.affiliations && (
-        <section>
-          <div className="mb-2">
-            <h1 className="text-xl font-semibold mb-1">Affiliations</h1>
-            <Separator />
-          </div>
-          <AffiliationsSection
-            entity={researcher}
-            affiliations={visualizations.affiliations}
-          />
-        </section>
-      )}
+      <span className="text-2xl">{researcher.full_name}</span>
+      <ProfileSection title="Visualizations">
+        <div className="space-y-2">
+          {visualizations.map((visualization) => (
+            <ProfileVisualization
+              key={visualization.value}
+              identifier={visualization.value}
+              title={visualization.label}
+              entityType={EntityType.RESEARCHER}
+              uuid={researcher.uuid}
+            >
+              {({ options, response }) => (
+                <>
+                  {visualization.value === "researcher_affiliations" && (
+                    <AffiliationsVisualization
+                      options={options}
+                      response={response}
+                    />
+                  )}
+                </>
+              )}
+            </ProfileVisualization>
+          ))}
+        </div>
+      </ProfileSection>
       {duplicates.length > 0 && (
-        <section>
+        <ProfileSection title="Duplicates">
           <DuplicationSection
             entity={researcher}
             duplicates={duplicates}
             mutateUrl="/researchers/{uuid}/mark-for-removal"
             renderName={(entity: SchemaResearcher) => entity.full_name}
           />
-        </section>
+        </ProfileSection>
       )}
     </div>
   );

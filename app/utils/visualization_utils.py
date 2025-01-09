@@ -1,11 +1,13 @@
 from abc import abstractmethod
 from dataclasses import dataclass
 from enum import Enum
+from typing import Optional, Any
 
 import importlib_resources
 import pydash as _
 from pydantic import BaseModel
 
+from app.models import Researcher, Work, Institution
 from app.utils.api_utils import transform_filter_field
 
 
@@ -13,6 +15,7 @@ class ChartTemplates:
     ECHARTS = "ECHARTS"
     HIGHCHARTS = "HIGHCHARTS"
     LEAFLET = "LEAFLET"
+    CUSTOM = "CUSTOM"
 
 class ChartType(Enum):
     MIXED = "MIXED"
@@ -24,9 +27,10 @@ class EntityType(Enum):
     RESEARCHER = "RESEARCHER"
     WORK = "WORK"
     INSTITUTION = "INSTITUTION"
+    AFFILIATIONS = "AFFILIATIONS"
 
 class Series(BaseModel):
-    data: dict
+    data: Any
     entity_type: EntityType
 
 class SeriesMap(BaseModel):
@@ -39,11 +43,27 @@ def read_generator(filename: str):
     with importlib_resources.path("app.resources.charts", filename) as file:
         return open(file, "r").read()
 
+def create_basic_generator(series_names: list[str]):
+    series = ["nexus.series(\""+name+"\")" for name in series_names]
+    joined = ",\n".join(series)
+    return f"""
+        export default function(nexus) {{
+            return {{
+                series: [
+                    {joined}
+                ]
+            }}
+        }}
+    """
+
 @dataclass
 class ChartInput:
     queries: dict
     pre_filters: dict
-    # TODO researcher, institution etc.
+    work: Optional[Work] = None
+    researcher: Optional[Researcher] = None
+    institution: Optional[Institution] = None
+
 
     def get_series_query(self, series: str):
         query = self.queries[series] if series in self.queries else []
