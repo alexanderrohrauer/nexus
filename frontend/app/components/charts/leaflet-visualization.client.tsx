@@ -9,6 +9,7 @@ import "@luomus/leaflet-smooth-wheel-zoom";
 import "leaflet-geosearch/dist/geosearch.css";
 import "leaflet.fullscreen/Control.FullScreen";
 import "leaflet.fullscreen/Control.FullScreen.css";
+import "leaflet.heat";
 import { applyLeafletOptions } from "~/lib/leaflet";
 import { OpenStreetMapProvider, SearchControl } from "leaflet-geosearch";
 

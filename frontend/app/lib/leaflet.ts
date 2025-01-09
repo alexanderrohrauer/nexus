@@ -15,6 +15,9 @@ export const applyLeafletOptions = (options: any, map: L.Map) => {
       case "marker":
         addMarkerSeries(series, map);
         break;
+      case "heatmap":
+        addHeatmapSeries(series, map);
+        break;
     }
   });
 };
@@ -35,4 +38,10 @@ const addMarkerSeries = (series: any, map: L.Map) => {
       .addTo(map)
       .bindPopup(point.name ?? point.id);
   });
+};
+
+const addHeatmapSeries = (series: any, map: L.Map) => {
+  const { data, ...config } = series.data;
+  // @ts-ignore
+  L.heatLayer(data, config).addTo(map);
 };

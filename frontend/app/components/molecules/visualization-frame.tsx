@@ -17,6 +17,7 @@ import { HighchartsVisualization } from "~/components/charts/highcharts-visualiz
 import { EChartsVisualization } from "~/components/charts/echarts-visualization.client";
 import { LeafletVisualization } from "~/components/charts/leaflet-visualization.client";
 import { EditVisualizationDialog } from "~/components/templates/edit-visualization-dialog";
+import { DataTableVisualization } from "~/components/charts/data-table.client";
 
 export interface VisualizationFrameProps {
   visualization?: SchemaVisualization;
@@ -130,6 +131,14 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
         )}
         {props.response.chart_template === "LEAFLET" && (
           <LeafletVisualization
+            visualization={props.visualization}
+            options={options}
+            response={props.response}
+            ref={divRef}
+          />
+        )}
+        {props.response.chart_template === "DATATABLE" && (
+          <DataTableVisualization
             visualization={props.visualization}
             options={options}
             response={props.response}

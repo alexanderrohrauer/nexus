@@ -49,14 +49,11 @@ export function EditVisualizationDialog(props: EditVisualizationProps) {
         },
       }),
     onSuccess: async () => {
+      toast.success("Visualization successfully updated");
       await queryClient.invalidateQueries({
         queryKey: ["visualization_data", props.visualization.uuid],
       });
       revalidator.revalidate();
-      setTimeout(
-        () => toast.success("Visualization successfully updated"),
-        200,
-      );
     },
     onError: async () => {
       setTimeout(() => toast.error("Visualization update failed"), 200);
