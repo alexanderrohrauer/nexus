@@ -114,7 +114,7 @@ export const WorkPicker = ({ value, onChange }) => {
       pagination.data?.pages.flat().map((r) => ({
         value: r.uuid,
         label: r.title,
-        link: mapParams(Routes.Institution, { uuid: r.uuid }),
+        link: mapParams(Routes.Work, { uuid: r.uuid }),
       })) ?? [],
     [pagination.data],
   );
