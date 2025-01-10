@@ -86,8 +86,8 @@ class WorksGeoHeatmap(Chart):
         lng_lat_map = {}
         for work in works:
             for author in work.authors:
-                # TODO maybe add affiliations too
-                if author.institution is not None and author.institution.location is not None:
+                # TODO maybe add affiliations too, fix:
+                if  isinstance(author.institution, Institution) and author.institution.location is not None:
                     lng_lat = author.institution.location
                     inst_id = str(author.institution.id)
                     try:

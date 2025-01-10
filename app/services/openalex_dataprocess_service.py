@@ -48,9 +48,9 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
 
 def restructure_authors(authors: list[dict], institutions: list[Institution]):
     result = []
-    affiliations = []
-    institution = None
     for author in authors:
+        institution = None
+        affiliations = []
         for affiliation in author["affiliations"]:
             institution_id = parse_openalex_id(affiliation["institution"]["id"])
             try:
