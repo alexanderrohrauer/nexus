@@ -3,9 +3,9 @@ from typing import Optional, Annotated
 from uuid import uuid4, UUID
 
 import beanie
+import pytz
 from pydantic import Field, BaseModel, PlainSerializer
 
-# TODO fix date in db
 UTCDateTime = Annotated[
     datetime,
     PlainSerializer(
@@ -19,9 +19,7 @@ class Document(beanie.Document):
 
 
 class EditableDocument(Document):
-    imported_at: UTCDateTime = Field(default_factory=datetime.now)
-    # TODO set at manual write
-    manually_updated_at: Optional[UTCDateTime] = None
+    imported_at: UTCDateTime = Field(default_factory=lambda: datetime.now(tz=pytz.UTC))
 
 
 class SNMEntity(BaseModel):
