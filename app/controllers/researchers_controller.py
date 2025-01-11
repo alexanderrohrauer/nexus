@@ -31,7 +31,7 @@ async def get_researchers(params: Annotated[ResearcherSearchParams, Depends(Rese
 
 @router.get("/{uuid}")
 async def get_researcher(uuid: UUID) -> Researcher:
-    return await researchers_service.find_by_id(uuid)
+    return await researchers_service.find_by_id(uuid, fetch_links=True, nesting_depth=2)
 
 @router.get("/{uuid}/duplicates")
 async def get_researcher_duplicates(uuid: UUID) -> list[Researcher]:

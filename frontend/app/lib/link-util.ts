@@ -17,3 +17,19 @@ export const getNexusLink = (meta) => {
     return null;
   }
 };
+
+export const getExternalUrl = (source: string, id: string | number) => {
+  if (id.toString().startsWith("https://")) {
+    return id as string;
+  } else if (source === "openalex") {
+    return `https://openalex.org/${id}`;
+  } else if (source === "orcid") {
+    return `https://orcid.org/${id}`;
+  } else if (source === "doi") {
+    return `https://doi.org/${id}`;
+  } else if (source === "ror") {
+    return `https://ror.org/${id}`;
+  } else if (source === "dblp") {
+    return `https://dblp.org/pid/${id}.html`;
+  }
+};

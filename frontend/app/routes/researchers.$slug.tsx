@@ -8,6 +8,7 @@ import React from "react";
 import { ProfileVisualization } from "~/components/templates/profile-visualization";
 import { ProfileSection } from "~/components/molecules/profile-section";
 import { AffiliationsVisualization } from "~/components/charts/affiliations-visualization";
+import { ResearcherProfile } from "~/components/charts/researcher-profile";
 
 interface ResearcherProps {}
 
@@ -35,7 +36,7 @@ export default function Researcher(props: ResearcherProps) {
     useLoaderData<typeof loader>();
   return (
     <div className="space-y-6">
-      <span className="text-2xl">{researcher.full_name}</span>
+      <ResearcherProfile researcher={researcher} />
       <ProfileSection title="Visualizations">
         <div className="space-y-2">
           {visualizations.map((visualization) => (

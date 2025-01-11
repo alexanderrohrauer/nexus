@@ -1,16 +1,17 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { clsx } from "clsx";
 import { mapParams } from "~/lib/links";
 import type { Routes } from "~/routes";
 import { NavLink, useSearchParams } from "@remix-run/react";
-import { TextTooltip } from "~/components/molecules/text-tooltip";
+import { Sources } from "~/components/molecules/sources";
+import type { Entity } from "../../../custom-types";
 
 interface OverviewListItemProps {
   uuid: string;
   route: Routes;
   title: string;
   subTitle?: string | null;
-  item: { dblp_meta?: any; openalex_meta?: any; imported_at?: string };
+  item: Entity;
 }
 
 export function OverviewListItem({
@@ -21,13 +22,6 @@ export function OverviewListItem({
   item,
 }: OverviewListItemProps) {
   const [searchParams] = useSearchParams();
-  const sources = useMemo(
-    () =>
-      Object.keys(item)
-        .filter((i) => i.endsWith("_meta") && item[i])
-        .map((i) => i.replace("_meta", "")),
-    [item],
-  );
 
   return (
     <NavLink
@@ -41,16 +35,7 @@ export function OverviewListItem({
       to={mapParams(route, { uuid: uuid }) + `?${searchParams}`}
     >
       <div className="flex w-full items-center gap-2">
-        <div className="text-xs flex space-x-1 items-center">
-          {sources.map((source) => (
-            <TextTooltip text={source} key={source}>
-              <img
-                src={`/icons/sources/${source}.png`}
-                className="h-4 w-4 bg-muted rounded-sm border border-border"
-              />
-            </TextTooltip>
-          ))}
-        </div>{" "}
+        <Sources item={item} />{" "}
         <span className="ml-auto text-xs" suppressHydrationWarning>
           {new Date(item.imported_at!).toLocaleString()}
         </span>
