@@ -5,12 +5,12 @@ import { mapParams } from "~/lib/links";
 import { Routes } from "~/routes";
 import { TextTooltip } from "~/components/molecules/text-tooltip";
 import type { ChartOptions } from "../../../custom-types";
+import { Flag } from "~/components/molecules/misc";
 
 interface AffiliationsSectionProps {
   options: ChartOptions<[any]>;
   response: SchemaVisualizationData;
 }
-// TODO maybe extract to grid chart
 export function AffiliationsVisualization(props: AffiliationsSectionProps) {
   return (
     <div className="max-h-96 overflow-y-auto space-y-4">
@@ -32,7 +32,14 @@ export function AffiliationsVisualization(props: AffiliationsSectionProps) {
               target="_blank"
               className="flex space-y-2 flex-col whitespace-nowrap border-b p-4 leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             >
-              <span className="font-bold">{affiliation.institution.name}</span>
+              <div className="flex space-x-1 items-center">
+                {affiliation.institution.country && (
+                  <Flag code={affiliation.institution.country} />
+                )}
+                <span className="font-bold">
+                  {affiliation.institution.name}
+                </span>
+              </div>
               <span className="text-xs text-muted-foreground">
                 {firstYears}{" "}
                 {plusMore > 0 && (

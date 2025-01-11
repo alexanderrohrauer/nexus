@@ -106,7 +106,7 @@ export function WorkProfile({ work }: WorkProfileProps) {
               {workTypes.map(
                 (type) =>
                   work.type[type] && (
-                    <Badge variant="outline" className="space-x-1">
+                    <Badge variant="outline" className="space-x-1" key={type}>
                       <Source source={type} />
                       <span>{work.type[type]}</span>
                     </Badge>
