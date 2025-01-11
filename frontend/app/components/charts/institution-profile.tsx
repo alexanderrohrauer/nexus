@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import type { SchemaInstitution } from "~/lib/api/types";
+import { EntityType } from "~/lib/api/types";
 import { Source, Sources } from "~/components/molecules/sources";
 import { Badge } from "~/components/ui/badge";
 import { getExternalUrl } from "~/lib/link-util";
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import { Flag, IconText } from "~/components/molecules/misc";
 import { getCountryName } from "~/lib/text-util";
+import { KeywordSection } from "~/components/molecules/keyword-section";
 
 interface InstitutionProfileProps {
   institution: SchemaInstitution;
@@ -91,6 +93,7 @@ export function InstitutionProfile({ institution }: InstitutionProfileProps) {
               (id) =>
                 institution.external_id[id] && (
                   <a
+                    key={id}
                     href={getExternalUrl(id, institution.external_id[id])}
                     target="_blank"
                     rel="noreferrer"
@@ -134,15 +137,11 @@ export function InstitutionProfile({ institution }: InstitutionProfileProps) {
         {institution.topic_keywords && (
           <div>
             <IconText icon={Tags}>Keywords</IconText>
-            {/*  TODO maybe add link to search after keywords*/}
-            <span>
-              {institution.topic_keywords.map((kw) => (
-                <React.Fragment key={kw}>
-                  <span>{kw}</span>
-                  {", "}
-                </React.Fragment>
-              ))}
-            </span>
+            <KeywordSection
+              keywords={institution.topic_keywords}
+              type={EntityType.INSTITUTION}
+              fieldName={"topic_keywords"}
+            />
           </div>
         )}
       </div>

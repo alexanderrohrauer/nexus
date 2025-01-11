@@ -4,6 +4,7 @@ import { EntityType } from "~/lib/api/types";
 import { client } from "~/lib/api/api-client";
 import type { VisualizationFrameProps } from "~/components/molecules/visualization-frame";
 import { VisualizationFrame } from "~/components/molecules/visualization-frame";
+import { Card } from "~/components/ui/card";
 
 interface ProfileVisualizationProps {
   identifier: string;
@@ -46,7 +47,7 @@ export function ProfileVisualization(props: ProfileVisualizationProps) {
   const queryClient = useQueryClient();
 
   return (
-    <div className="rounded-lg border-border border-2">
+    <Card>
       {data && (
         <VisualizationFrame
           title={props.title}
@@ -59,6 +60,6 @@ export function ProfileVisualization(props: ProfileVisualizationProps) {
           children={props.children}
         />
       )}
-    </div>
+    </Card>
   );
 }

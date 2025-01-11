@@ -23,7 +23,10 @@ export const getExternalUrl = (
   id: string | number,
   entityType = EntityType.RESEARCHER,
 ) => {
-  if (id.toString().startsWith("https://")) {
+  if (
+    id.toString().startsWith("https://") ||
+    id.toString().startsWith("http://")
+  ) {
     return id as string;
   } else if (source === "openalex") {
     return `https://openalex.org/${id}`;

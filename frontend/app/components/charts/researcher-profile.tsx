@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import type { SchemaResearcher } from "~/lib/api/types";
+import { EntityType } from "~/lib/api/types";
 import { Source, Sources } from "~/components/molecules/sources";
 import { Badge } from "~/components/ui/badge";
 import { getExternalUrl } from "~/lib/link-util";
@@ -15,6 +16,7 @@ import { Flag, IconText } from "~/components/molecules/misc";
 import { NavLink } from "@remix-run/react";
 import { mapParams } from "~/lib/links";
 import { Routes } from "~/routes";
+import { KeywordSection } from "~/components/molecules/keyword-section";
 
 interface ProfileVisualizationProps {
   researcher: SchemaResearcher;
@@ -79,6 +81,7 @@ export function ResearcherProfile({ researcher }: ProfileVisualizationProps) {
               (id) =>
                 researcher.external_id[id] && (
                   <a
+                    key={id}
                     href={getExternalUrl(id, researcher.external_id[id])}
                     target="_blank"
                     rel="noreferrer"
@@ -99,15 +102,11 @@ export function ResearcherProfile({ researcher }: ProfileVisualizationProps) {
         {researcher.topic_keywords && (
           <div>
             <IconText icon={Tags}>Keywords</IconText>
-            {/*  TODO maybe add link to search after keywords*/}
-            <span>
-              {researcher.topic_keywords.map((kw) => (
-                <React.Fragment key={kw}>
-                  <span>{kw}</span>
-                  {", "}
-                </React.Fragment>
-              ))}
-            </span>
+            <KeywordSection
+              keywords={researcher.topic_keywords}
+              type={EntityType.RESEARCHER}
+              fieldName="topic_keywords"
+            />
           </div>
         )}
       </div>

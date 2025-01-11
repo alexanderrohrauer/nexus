@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { IconText } from "~/components/molecules/misc";
 import { getLanguageName } from "~/lib/text-util";
+import { KeywordSection } from "~/components/molecules/keyword-section";
 
 interface WorkProfileProps {
   work: SchemaWorkOutput;
@@ -76,6 +77,7 @@ export function WorkProfile({ work }: WorkProfileProps) {
               (id) =>
                 work.external_id[id] && (
                   <a
+                    key={id}
                     href={getExternalUrl(
                       id,
                       work.external_id[id],
@@ -131,15 +133,11 @@ export function WorkProfile({ work }: WorkProfileProps) {
         {work.keywords && (
           <div>
             <IconText icon={Tags}>Keywords</IconText>
-            {/*  TODO maybe add link to search after keywords*/}
-            <span>
-              {work.keywords.map((kw) => (
-                <React.Fragment key={kw}>
-                  <span>{kw}</span>
-                  {", "}
-                </React.Fragment>
-              ))}
-            </span>
+            <KeywordSection
+              keywords={work.keywords}
+              type={EntityType.WORK}
+              fieldName={"keywords"}
+            />
           </div>
         )}
       </div>

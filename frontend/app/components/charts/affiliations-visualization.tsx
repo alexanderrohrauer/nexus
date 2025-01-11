@@ -4,6 +4,7 @@ import { NavLink } from "@remix-run/react";
 import { mapParams } from "~/lib/links";
 import { Routes } from "~/routes";
 import { TextTooltip } from "~/components/molecules/text-tooltip";
+import type { ChartOptions } from "../../../custom-types";
 
 interface AffiliationsSectionProps {
   options: ChartOptions<[any]>;
@@ -44,9 +45,7 @@ export function AffiliationsVisualization(props: AffiliationsSectionProps) {
           );
         })}
       {props.options.series[0].length == 0 && (
-        <span className="text-muted-foreground text-sm">
-          No affiliations found
-        </span>
+        <span className="empty-state">No affiliations found</span>
       )}
     </div>
   );
