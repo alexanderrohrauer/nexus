@@ -13,7 +13,7 @@ import {
   SquareArrowOutUpRight,
   Tags,
 } from "lucide-react";
-import { IconText } from "~/components/molecules/misc";
+import { Flag, IconText } from "~/components/molecules/misc";
 import { getCountryName } from "~/lib/text-util";
 
 interface InstitutionProfileProps {
@@ -111,13 +111,16 @@ export function InstitutionProfile({ institution }: InstitutionProfileProps) {
         <div className="flex space-x-10">
           {institution.country && (
             <div>
-              <IconText icon={MapPinned}>Country</IconText>
-              <span>{getCountryName(institution.country)}</span>
+              <IconText>Country</IconText>
+              <div className="flex space-x-1 items-center">
+                <Flag code={institution.country} />
+                <span>{getCountryName(institution.country)}</span>
+              </div>
             </div>
           )}
           {institution.city && (
             <div>
-              <IconText icon={MapPinned}>City</IconText>
+              <IconText>City</IconText>
               <span>{getCountryName(institution.city)}</span>
             </div>
           )}

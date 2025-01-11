@@ -3,6 +3,8 @@ import { client } from "~/lib/api/api-client";
 import { useLoaderData } from "@remix-run/react";
 import { DuplicationSection } from "~/components/templates/duplication-section";
 import type { SchemaWorkOutput } from "~/lib/api/types";
+import { ProfileSection } from "~/components/molecules/profile-section";
+import { WorkProfile } from "~/components/charts/work-profile";
 
 interface WorkProps {}
 
@@ -23,17 +25,17 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export default function Work(props: WorkProps) {
   const { work, duplicates } = useLoaderData<typeof loader>();
   return (
-    <div>
-      <span>{work.title}</span>
+    <div className="space-y-6 h-full overflow-y-auto pr-3">
+      <WorkProfile work={work} />
       {duplicates.length > 0 && (
-        <section>
+        <ProfileSection title="Duplicates">
           <DuplicationSection
             entity={work}
             duplicates={duplicates}
             mutateUrl="/works/{uuid}/mark-for-removal"
             renderName={(entity: SchemaWorkOutput) => entity.title}
           />
-        </section>
+        </ProfileSection>
       )}
     </div>
   );

@@ -38,3 +38,8 @@ Make sure to deploy the output of `npm run build`
 ## Styling
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+
+
+## Sources
+Flag data: https://stefangabos.github.io/world_countries/
+Language data: https://raw.githubusercontent.com/ihmpavel/all-iso-language-codes/refs/heads/master/data/en/639-1.json

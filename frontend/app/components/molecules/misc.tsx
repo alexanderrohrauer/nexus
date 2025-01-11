@@ -1,8 +1,10 @@
 import React from "react";
 import { clsx } from "clsx";
+import { TextTooltip } from "~/components/molecules/text-tooltip";
+import { getCountryName } from "~/lib/text-util";
 
 interface IconTextProps extends React.HTMLProps<HTMLDivElement> {
-  icon: any;
+  icon?: any;
 }
 
 export function IconText({
@@ -16,8 +18,16 @@ export function IconText({
       className={clsx("flex space-x-1 items-center mb-1", className)}
       {...props}
     >
-      {React.createElement(icon, { size: 16, strokeWidth: 2.5 })}{" "}
+      {icon && React.createElement(icon, { size: 16, strokeWidth: 2.5 })}{" "}
       <span className="font-bold">{children}</span>
     </div>
+  );
+}
+
+export function Flag({ code }) {
+  return (
+    <TextTooltip text={getCountryName(code)}>
+      <img src={`/public/flags/${code.toLowerCase()}.png`} className="h-5" />
+    </TextTooltip>
   );
 }

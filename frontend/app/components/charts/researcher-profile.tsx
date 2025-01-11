@@ -11,7 +11,7 @@ import {
   SquareArrowOutUpRight,
   Tags,
 } from "lucide-react";
-import { IconText } from "~/components/molecules/misc";
+import { Flag, IconText } from "~/components/molecules/misc";
 import { NavLink } from "@remix-run/react";
 import { mapParams } from "~/lib/links";
 import { Routes } from "~/routes";
@@ -57,15 +57,18 @@ export function ResearcherProfile({ researcher }: ProfileVisualizationProps) {
           {researcher.institution && (
             <div>
               <IconText icon={Landmark}>Institution</IconText>
-              <NavLink
-                className="link"
-                to={mapParams(Routes.Institution, {
-                  uuid: researcher.institution.uuid,
-                })}
-                target="_blank"
-              >
-                {researcher.institution.name}
-              </NavLink>
+              <div className="flex space-x-1 items-center">
+                <Flag code={researcher.institution.country} />
+                <NavLink
+                  className="link"
+                  to={mapParams(Routes.Institution, {
+                    uuid: researcher.institution.uuid,
+                  })}
+                  target="_blank"
+                >
+                  {researcher.institution.name}
+                </NavLink>
+              </div>
             </div>
           )}
         </div>

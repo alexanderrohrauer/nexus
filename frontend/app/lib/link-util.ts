@@ -18,8 +18,11 @@ export const getNexusLink = (meta) => {
   }
 };
 
-export const getExternalUrl = (source: string, id: string | number) => {
-  console.log(id);
+export const getExternalUrl = (
+  source: string,
+  id: string | number,
+  entityType = EntityType.RESEARCHER,
+) => {
   if (id.toString().startsWith("https://")) {
     return id as string;
   } else if (source === "openalex") {
@@ -30,7 +33,7 @@ export const getExternalUrl = (source: string, id: string | number) => {
     return `https://doi.org/${id}`;
   } else if (source === "ror") {
     return `https://ror.org/${id}`;
-  } else if (source === "dblp") {
+  } else if (source === "dblp" && entityType === EntityType.RESEARCHER) {
     return `https://dblp.org/pid/${id}.html`;
   }
 };
