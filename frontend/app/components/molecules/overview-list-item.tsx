@@ -22,7 +22,7 @@ export function OverviewListItem({
   item,
 }: OverviewListItemProps) {
   const [searchParams] = useSearchParams();
-
+  // TODO maybe truncate + tooltip on work titles
   return (
     <NavLink
       key={uuid}

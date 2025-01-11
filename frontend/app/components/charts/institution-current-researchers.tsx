@@ -37,9 +37,15 @@ export function InstitutionCurrentResearchers(
                     code={researcher.institution.country}
                     className="!w-4"
                   />
-                  <span className="text-muted-foreground text-sm">
+                  <NavLink
+                    to={mapParams(Routes.Institution, {
+                      uuid: researcher.institution.uuid,
+                    })}
+                    target="_blank"
+                    className="text-muted-foreground text-sm underline hover:no-underline"
+                  >
                     {researcher.institution.name}
-                  </span>
+                  </NavLink>
                 </div>
               )}
             </div>
