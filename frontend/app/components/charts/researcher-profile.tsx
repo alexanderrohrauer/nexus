@@ -8,7 +8,7 @@ import {
   CaseSensitive,
   Database,
   Landmark,
-  SquareArrowUpRight,
+  SquareArrowOutUpRight,
   Tags,
 } from "lucide-react";
 import { IconText } from "~/components/molecules/misc";
@@ -70,7 +70,7 @@ export function ResearcherProfile({ researcher }: ProfileVisualizationProps) {
           )}
         </div>
         <div>
-          <IconText icon={SquareArrowUpRight}>External IDs</IconText>
+          <IconText icon={SquareArrowOutUpRight}>External IDs</IconText>
           <div className="space-x-2">
             {externalIds.map(
               (id) =>
