@@ -82,7 +82,11 @@ export function ResearcherProfile({ researcher }: ProfileVisualizationProps) {
                   >
                     <Badge variant="outline" className="space-x-1">
                       <Source source={id} />
-                      <span>{researcher.external_id[id]}</span>
+                      <span>
+                        {researcher.external_id[id].startsWith("http")
+                          ? id
+                          : researcher.external_id[id]}
+                      </span>
                     </Badge>
                   </a>
                 ),

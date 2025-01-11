@@ -35,7 +35,7 @@ export default function Researcher(props: ResearcherProps) {
   const { researcher, duplicates, visualizations } =
     useLoaderData<typeof loader>();
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 h-full overflow-y-auto pr-3">
       <ResearcherProfile researcher={researcher} />
       <ProfileSection title="Visualizations">
         <div className="space-y-2">

@@ -8,6 +8,7 @@ import { Routes } from "~/routes";
 import type { SchemaInstitution } from "~/lib/api/types";
 import { INSTITUTION_FIELDS } from "~/lib/filters";
 import { OverviewListItem } from "~/components/molecules/overview-list-item";
+import { getCountryName } from "~/lib/text-util";
 
 interface ResearchersProps {}
 
@@ -33,7 +34,7 @@ export default function Researchers(props: ResearchersProps) {
           route={Routes.Institution}
           title={institution.name}
           item={institution}
-          subTitle={institution.country}
+          subTitle={getCountryName(institution.country)}
           key={institution.uuid}
         />
       )}

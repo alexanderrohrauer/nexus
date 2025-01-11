@@ -19,6 +19,7 @@ export const getNexusLink = (meta) => {
 };
 
 export const getExternalUrl = (source: string, id: string | number) => {
+  console.log(id);
   if (id.toString().startsWith("https://")) {
     return id as string;
   } else if (source === "openalex") {

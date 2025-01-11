@@ -3,6 +3,8 @@ import { client } from "~/lib/api/api-client";
 import { useLoaderData } from "@remix-run/react";
 import { DuplicationSection } from "~/components/templates/duplication-section";
 import type { SchemaInstitution } from "~/lib/api/types";
+import { InstitutionProfile } from "~/components/charts/institution-profile";
+import { ProfileSection } from "~/components/molecules/profile-section";
 
 interface InstitutionProps {}
 
@@ -23,17 +25,17 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export default function Institution(props: InstitutionProps) {
   const { institution, duplicates } = useLoaderData<typeof loader>();
   return (
-    <div>
-      <span>{institution.name}</span>
+    <div className="space-y-6 h-full overflow-y-auto pr-3">
+      <InstitutionProfile institution={institution} />
       {duplicates.length > 0 && (
-        <section>
+        <ProfileSection title="Duplicates">
           <DuplicationSection
             entity={institution}
             duplicates={duplicates}
             mutateUrl="/institutions/{uuid}/mark-for-removal"
             renderName={(entity: SchemaInstitution) => entity.name}
           />
-        </section>
+        </ProfileSection>
       )}
     </div>
   );

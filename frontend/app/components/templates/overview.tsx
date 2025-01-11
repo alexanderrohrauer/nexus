@@ -96,7 +96,7 @@ export function Overview({
           </Button>
         </SidebarContent>
       </Sidebar>
-      <div className="flex-1 px-3">
+      <div className="flex-1 pl-3">
         <Outlet />
       </div>
     </div>
