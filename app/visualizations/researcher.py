@@ -18,7 +18,7 @@ class ResearcherAffiliations(Chart):
         researcher = chart_input.researcher
         affiliations = researcher.affiliations or []
         ids = [a.ref.id for a in affiliations]
-        affiliations = await Affiliation.find(query, In(Affiliation.id, ids), fetch_links=True, nesting_depth=2).to_list()
+        affiliations = await Affiliation.find(query, In(Affiliation.id, ids), fetch_links=True, nesting_depth=3).to_list()
 
         result.add("affiliations", Series(data=affiliations, entity_type=EntityType.AFFILIATIONS))
         return result

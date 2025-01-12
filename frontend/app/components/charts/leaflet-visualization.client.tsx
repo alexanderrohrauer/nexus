@@ -12,6 +12,7 @@ import "leaflet.fullscreen/Control.FullScreen.css";
 import "leaflet.heat";
 import { applyLeafletOptions } from "~/lib/leaflet";
 import { OpenStreetMapProvider, SearchControl } from "leaflet-geosearch";
+import { useTheme } from "~/lib/theme";
 
 interface LeafletVisualizationProps {
   visualization: SchemaVisualization;
@@ -25,6 +26,7 @@ export const LeafletVisualization = React.forwardRef(function (
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const mapRef = useRef<L.Map>();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (ref.current && props.options && !mapRef.current) {
@@ -45,10 +47,15 @@ export const LeafletVisualization = React.forwardRef(function (
         },
       });
 
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(mapRef.current);
+      L.tileLayer(
+        theme === "dark"
+          ? "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png"
+          : "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        },
+      ).addTo(mapRef.current);
 
       // Docs: https://github.com/smeijer/leaflet-geosearch/blob/develop/src/SearchControl.ts
       // @ts-ignore

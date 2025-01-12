@@ -32,27 +32,48 @@ function customPop(marker, nexusMeta) {
   if (url) window.open(url, "_blank");
 }
 
+const MARKER_SIZES = {
+  "dot.svg": { iconSize: [24, 24], iconAnchor: [12, 16] },
+  "marker-icon.png": { iconSize: [24, 36], iconAnchor: [12, 36] },
+};
+
 const addMarkerSeries = (series: any, map: L.Map) => {
   // TODO add correct icons
+  const markers = [];
   series.data.forEach((point: any) => {
-    const marker = L.marker(
-      { lng: point.position[0], lat: point.position[1] },
-      {
-        icon: new L.Icon({
-          iconUrl: "/icons/marker-icon.png",
-          iconSize: [24, 36],
-          iconAnchor: [12, 36],
-        }),
-      },
-    );
+    const latLng = L.latLng(point.position[1], point.position[0]);
+    const icon = point.icon ?? "marker-icon.png";
+    const marker = L.marker(latLng, {
+      icon: new L.Icon({
+        iconUrl: `/icons/maps/${icon}`,
+        ...MARKER_SIZES[icon],
+      }),
+    });
     marker.on("mouseover", () => customTip(marker, point.name ?? point.id));
     marker.on("click", () => customPop(marker, point.$nexus));
     marker.addTo(map);
+    markers.push(latLng);
   });
+  const bounds = L.latLngBounds(markers);
+  // @ts-ignore
+  if (bounds.isValid() && !map.centered) {
+    map.fitBounds(bounds);
+    // @ts-ignore
+    map.centered = true;
+  }
 };
 
 const addHeatmapSeries = (series: any, map: L.Map) => {
   const { data, ...config } = series.data;
+  const markers = data.map((point) => L.latLng(point[0], point[1]));
+  const bounds = L.latLngBounds(markers);
+  // @ts-ignore
+  if (bounds.isValid() && !map.centered) {
+    map.fitBounds(bounds);
+    // @ts-ignore
+    map.centered = true;
+  }
+
   // @ts-ignore
   L.heatLayer(data, config).addTo(map);
 };

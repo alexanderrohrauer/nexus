@@ -16,7 +16,7 @@ class InstitutionCurrentResearchers(Chart):
         result = SeriesMap()
         query = chart_input.get_series_query("researchers")
         institution = chart_input.institution
-        researchers = await Researcher.find(query, Researcher.institution.id == PydanticObjectId(institution.id), fetch_links=True, nesting_depth=2).to_list()
+        researchers = await Researcher.find(query, Researcher.institution.id == PydanticObjectId(institution.id), fetch_links=True, nesting_depth=3).to_list()
 
         result.add("researchers", Series(data=researchers, entity_type=EntityType.RESEARCHER))
         return result

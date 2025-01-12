@@ -41,6 +41,11 @@ class SeriesMap(BaseModel):
     def add(self, identifier: str, series: Series):
         self.data[identifier] = series
 
+    def __add__(self, other):
+        if isinstance(other, SeriesMap):
+            self.data = self.data | other.data
+            return self
+
 def read_generator(filename: str):
     with importlib_resources.path("app.resources.charts", filename) as file:
         return open(file, "r").read()

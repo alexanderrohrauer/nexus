@@ -25,13 +25,13 @@ logger = logging.getLogger("uvicorn.error")
 async def get_researchers(params: Annotated[ResearcherSearchParams, Depends(ResearcherSearchParams)]) -> list[Researcher]:
     query = params.get_filter()
     logger.debug(query)
-    result = await Researcher.find(query, nesting_depth=2, fetch_links=True).limit(params.limit).skip(params.offset).to_list()
+    result = await Researcher.find(query, nesting_depth=3, fetch_links=True).limit(params.limit).skip(params.offset).to_list()
     return result
 
 
 @router.get("/{uuid}")
 async def get_researcher(uuid: UUID) -> Researcher:
-    return await researchers_service.find_by_id(uuid, fetch_links=True, nesting_depth=2)
+    return await researchers_service.find_by_id(uuid, fetch_links=True, nesting_depth=3)
 
 @router.get("/{uuid}/duplicates")
 async def get_researcher_duplicates(uuid: UUID) -> list[Researcher]:
