@@ -40,6 +40,7 @@ const MARKER_SIZES = {
 const addMarkerSeries = (series: any, map: L.Map) => {
   // TODO add correct icons
   const markers = [];
+  const layerGroup = new L.LayerGroup();
   series.data.forEach((point: any) => {
     const latLng = L.latLng(point.position[1], point.position[0]);
     const icon = point.icon ?? "marker-icon.png";
@@ -51,7 +52,7 @@ const addMarkerSeries = (series: any, map: L.Map) => {
     });
     marker.on("mouseover", () => customTip(marker, point.name ?? point.id));
     marker.on("click", () => customPop(marker, point.$nexus));
-    marker.addTo(map);
+    marker.addTo(layerGroup);
     markers.push(latLng);
   });
   const bounds = L.latLngBounds(markers);
@@ -60,6 +61,17 @@ const addMarkerSeries = (series: any, map: L.Map) => {
     map.fitBounds(bounds);
     // @ts-ignore
     map.centered = true;
+  }
+  if (!series.showAtZoom && map.getZoom() >= series.showAtZoom) {
+    layerGroup.addTo(map);
+  } else {
+    map.addEventListener("zoom", () => {
+      if (map.getZoom() >= series.showAtZoom) {
+        layerGroup.addTo(map);
+      } else {
+        layerGroup.remove();
+      }
+    });
   }
 };
 

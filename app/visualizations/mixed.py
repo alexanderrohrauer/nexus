@@ -48,6 +48,7 @@ class InstitutionsMap(Chart):
                                               chart_input.get_series_query("institutions"), nesting_depth=3,
                                               fetch_links=True).to_list()
         series = {"type": "marker",
+                  "showAtZoom": 3,
                   "data": [{"id": i.uuid, "name": i.name, "position": i.location, "icon": kwargs.get("icon"),
                             "$nexus": {"type": EntityType.INSTITUTION, "id": i.uuid}} for i in institutions]}
         result.add("institutions", Series(data=series, entity_type=EntityType.INSTITUTION))
