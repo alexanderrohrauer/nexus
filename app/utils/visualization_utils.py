@@ -33,7 +33,7 @@ class EntityType(Enum):
 
 class Series(BaseModel):
     data: Any
-    entity_type: EntityType
+    entity_type: Optional[EntityType] = None
 
 class SeriesMap(BaseModel):
     data: dict[str, Series] = {}

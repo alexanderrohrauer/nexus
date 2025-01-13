@@ -316,6 +316,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/institutions/{uuid}/visualizations/{chart_identifier}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Institution Visualization Data */
+        get: operations["get_institution_visualization_data_institutions__uuid__visualizations__chart_identifier__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/institutions/{uuid}/mark-for-removal": {
         parameters: {
             query?: never;
@@ -376,6 +393,23 @@ export interface paths {
         };
         /** Get Work Duplicates */
         get: operations["get_work_duplicates_works__uuid__duplicates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/works/{uuid}/visualizations/{chart_identifier}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Institution Visualization Data */
+        get: operations["get_institution_visualization_data_works__uuid__visualizations__chart_identifier__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -528,8 +562,6 @@ export interface components {
             uuid?: string;
             /** Imported At */
             imported_at?: string;
-            /** Manually Updated At */
-            manually_updated_at?: string | null;
             external_id: components["schemas"]["InstitutionExternalId"];
             /** Name */
             name: string;
@@ -618,8 +650,6 @@ export interface components {
             uuid?: string;
             /** Imported At */
             imported_at?: string;
-            /** Manually Updated At */
-            manually_updated_at?: string | null;
             external_id: components["schemas"]["ResearcherExternalId"];
             /** Full Name */
             full_name: string;
@@ -672,7 +702,7 @@ export interface components {
         Series: {
             /** Data */
             data: unknown;
-            entity_type: components["schemas"]["EntityType"];
+            entity_type?: components["schemas"]["EntityType"] | null;
         };
         /** SeriesMap */
         SeriesMap: {
@@ -772,8 +802,6 @@ export interface components {
              * Format: date-time
              */
             imported_at?: string;
-            /** Manually Updated At */
-            manually_updated_at?: string | null;
             external_id: components["schemas"]["WorkExternalId"];
             /** Title */
             title: string;
@@ -825,8 +853,6 @@ export interface components {
             uuid?: string;
             /** Imported At */
             imported_at?: string;
-            /** Manually Updated At */
-            manually_updated_at?: string | null;
             external_id: components["schemas"]["WorkExternalId"];
             /** Title */
             title: string;
@@ -1629,6 +1655,40 @@ export interface operations {
             };
         };
     };
+    get_institution_visualization_data_institutions__uuid__visualizations__chart_identifier__get: {
+        parameters: {
+            query?: {
+                q?: string | null;
+            };
+            header?: never;
+            path: {
+                uuid: string;
+                chart_identifier: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VisualizationData"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     mark_institution_duplicates_institutions__uuid__mark_for_removal_put: {
         parameters: {
             query?: never;
@@ -1748,6 +1808,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Work-Output"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_institution_visualization_data_works__uuid__visualizations__chart_identifier__get: {
+        parameters: {
+            query?: {
+                q?: string | null;
+            };
+            header?: never;
+            path: {
+                uuid: string;
+                chart_identifier: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VisualizationData"];
                 };
             };
             /** @description Validation Error */

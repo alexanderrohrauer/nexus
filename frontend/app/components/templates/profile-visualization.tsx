@@ -50,6 +50,7 @@ export function ProfileVisualization(props: ProfileVisualizationProps) {
     <Card>
       {data && (
         <VisualizationFrame
+          className="min-h-[24rem] max-h-[26rem] overflow-y-auto"
           title={props.title}
           response={data}
           filters={filters}

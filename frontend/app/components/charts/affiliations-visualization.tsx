@@ -13,7 +13,7 @@ interface AffiliationsSectionProps {
 }
 export function AffiliationsVisualization(props: AffiliationsSectionProps) {
   return (
-    <div className="max-h-96 overflow-y-auto space-y-4">
+    <div className="space-y-4">
       {props.options.series[0]
         .sort((a1, a2) => {
           const yearsMaxA1 = Math.max(...a1.years);

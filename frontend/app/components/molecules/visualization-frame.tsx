@@ -19,8 +19,10 @@ import { LeafletVisualization } from "~/components/charts/leaflet-visualization.
 import { EditVisualizationDialog } from "~/components/templates/edit-visualization-dialog";
 import { DataTableVisualization } from "~/components/charts/data-table.client";
 import { MarkdownVisualization } from "~/components/charts/markdown.client";
+import { clsx } from "clsx";
 
 export interface VisualizationFrameProps {
+  className?: string;
   visualization?: SchemaVisualization;
   title?: string;
   response: SchemaVisualizationData;
@@ -113,7 +115,7 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
           )}
         </div>
       </div>
-      <div className="flex-1" ref={frameRef}>
+      <div className={clsx("flex-1", props.className)} ref={frameRef}>
         {props.response.chart_template === "ECHARTS" && (
           <EChartsVisualization
             visualization={props.visualization}

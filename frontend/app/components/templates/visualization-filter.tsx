@@ -42,24 +42,27 @@ export function VisualizationFilter(props: VisualizationFilterProps) {
   }, [filters]);
   return (
     <div className="min-w-[800px]">
-      {filterNames.map((filter) => (
-        <VisualizationFilterRow
-          key={filter.name}
-          name={filter.name}
-          entityType={filter.entityType}
-          filter={filters[filter.name] ?? []}
-          onChange={(f) =>
-            setFilters((prev) => {
-              if (f.length > 0) {
-                return { ...prev, [filter.name]: f };
-              } else {
-                delete prev[filter.name];
-                return prev;
+      {filterNames.map(
+        (filter) =>
+          filter.entityType && (
+            <VisualizationFilterRow
+              key={filter.name}
+              name={filter.name}
+              entityType={filter.entityType}
+              filter={filters[filter.name] ?? []}
+              onChange={(f) =>
+                setFilters((prev) => {
+                  if (f.length > 0) {
+                    return { ...prev, [filter.name]: f };
+                  } else {
+                    delete prev[filter.name];
+                    return prev;
+                  }
+                })
               }
-            })
-          }
-        />
-      ))}
+            />
+          ),
+      )}
     </div>
   );
 }
