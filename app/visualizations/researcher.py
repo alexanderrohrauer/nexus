@@ -73,7 +73,6 @@ class ResearcherRelationGraph(Chart):
         researcher = chart_input.researcher
 
         l1 = await Work.find(query, Work.authors.id == PydanticObjectId(researcher.id), fetch_links=True, nesting_depth=3).to_list()
-
         nodes1, links1 = self.get_nodes_and_links(l1, lambda a: 0 if a.uuid == researcher.uuid else 1, lambda a: 60 if a.uuid == researcher.uuid else 25)
 
         l2_nodes = filter(lambda a: a["category"] == 1, nodes1)

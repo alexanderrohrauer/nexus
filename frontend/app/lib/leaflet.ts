@@ -62,7 +62,7 @@ const addMarkerSeries = (series: any, map: L.Map) => {
     // @ts-ignore
     map.centered = true;
   }
-  if (!series.showAtZoom && map.getZoom() >= series.showAtZoom) {
+  if (!series.showAtZoom || map.getZoom() >= series.showAtZoom) {
     layerGroup.addTo(map);
   } else {
     map.addEventListener("zoom", () => {

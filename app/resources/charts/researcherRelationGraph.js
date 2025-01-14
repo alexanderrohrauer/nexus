@@ -1,28 +1,19 @@
 export default function (nexus) {
-    const categories = ["L0", "L1", "L2"]
+    const categories = ["Level 0", "Level 1", "Level 2"]
     return {
-        title: {
-            text: 'Les Miserables',
-            subtext: 'Default layout',
-            top: 'bottom',
-            left: 'right'
-        },
         tooltip: {},
         legend: [
             {
                 data: categories
             }
         ],
-        animationDuration: 1500,
-        animationEasingUpdate: 'quinticInOut',
         series: [
            nexus.series("works",  {
-               name: 'Les Miserables',
                type: 'graph',
                legendHoverLink: false,
                layout: 'force',
                roam: true,
-               categories,
+               categories: categories.map(c => ({name: c})),
                label: {
                    position: 'right',
                    formatter: '{b}'
@@ -39,7 +30,7 @@ export default function (nexus) {
                },
                force: {
                    repulsion: 300,
-                   edgeLength: 200,
+                   edgeLength: 100,
                },
            })
         ]
