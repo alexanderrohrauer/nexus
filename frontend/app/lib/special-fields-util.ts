@@ -20,5 +20,16 @@ export const getSpecialFieldOptions = (
       { value: "city", label: "City" },
       { value: "region", label: "Region" },
     ];
+  } else if (
+    chartName == "mixed_work_aggregation" &&
+    fieldName === "aggregate_field_name"
+  ) {
+    return [
+      { value: "publication_year", label: "Publication year" },
+      { value: "dblp_type", label: "Type (DBLP)" },
+      { value: "openalex_type", label: "Type (OpenAlex)" },
+      { value: "language", label: "Language" },
+      { value: "region", label: "Region" },
+    ];
   }
 };

@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from app.dtos.visualizations import VisualizationData
 from app.models import Visualization
 from app.utils.visualization_utils import ChartInput
+from app.visualizations import MixedWorkAggregation
 from app.visualizations.mixed import MixedInstitutionAggregation
 
 
@@ -22,4 +23,6 @@ async def parse_visualization_data(chart_cls, queries: dict, query_preset: dict,
 def get_special_field_default_values(visualization: Visualization):
     if visualization.chart == MixedInstitutionAggregation.identifier:
         return {MixedInstitutionAggregation.INSTITUTION_FIELD_NAME: "type"}
+    if visualization.chart == MixedWorkAggregation.identifier:
+        return {MixedWorkAggregation.WORK_FIELD_NAME: "publication_year"}
     return {}

@@ -172,7 +172,6 @@ class BasicStats(Chart):
         result.add("institutions", Series(data=institutions_md, entity_type=EntityType.INSTITUTION))
         return result
 
-#TODO complete
 class MixedInstitutionAggregation(Chart):
     identifier = "mixed_institution_aggregation"
     name = "Institution aggregation"
@@ -182,6 +181,13 @@ class MixedInstitutionAggregation(Chart):
 
     INSTITUTION_FIELD_NAME = "aggregate_field_name"
 
+    @classmethod
+    def to_table_series(cls, dataframe: pd.DataFrame, field_name: str):
+        headers = [str(c) for c in dataframe.columns]
+        headers.insert(0, field_name)
+        rows = [[index] + row for index, row in zip(dataframe.index, dataframe.values.tolist())]
+        return {"header": headers, "rows": rows}
+
     async def get_series(self, chart_input: ChartInput) -> SeriesMap:
         result = SeriesMap()
         institution_query = chart_input.get_series_query("institutions")
@@ -189,12 +195,44 @@ class MixedInstitutionAggregation(Chart):
 
         institutions = await Institution.find(institution_query, nesting_depth=3, fetch_links=True).to_list()
         institutions = pd.DataFrame([i.model_dump() for i in institutions])
+        institutions["avg_h_index"] = institutions["openalex_meta"].apply(lambda inst: inst.get("summary_stats").get("h_index"))
+
         grouped = institutions.groupby([field_name])
+
         count_series = grouped.count().rename(columns={"uuid": "count"})["count"]
-        final_df = pd.DataFrame(count_series)
-        # TODO eventually add other aggregates
-        headers = [str(c) for c in final_df.columns]
-        headers.insert(0, field_name)
-        rows = [[index] + row for index, row in zip(final_df.index, final_df.values.tolist())]
-        result.add("institutions", Series(data={"header": headers, "rows": rows}, entity_type=EntityType.INSTITUTION))
+        avg_h_index_series = grouped["avg_h_index"].mean()
+
+        final_df = pd.concat([count_series, avg_h_index_series], axis=1)
+
+        result.add("institutions", Series(data=MixedInstitutionAggregation.to_table_series(final_df, field_name), entity_type=EntityType.INSTITUTION))
+        return result
+
+class MixedWorkAggregation(Chart):
+    identifier = "mixed_work_aggregation"
+    name = "Work aggregation"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.DATATABLE
+    generator = create_basic_generator(["works"])
+
+    WORK_FIELD_NAME = "aggregate_field_name"
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        result = SeriesMap()
+        work_query = chart_input.get_series_query("works")
+        field_name = chart_input.special_fields.get(MixedWorkAggregation.WORK_FIELD_NAME)
+
+        works = await Work.find(work_query, nesting_depth=3, fetch_links=True).to_list()
+        works = pd.DataFrame([i.model_dump() for i in works])
+        works["avg_citations"] = works["openalex_meta"].apply(lambda meta: int(meta.get("cited_by_count")) if meta is not None else None)
+        works["dblp_type"] = works["type"].apply(lambda inst: inst.get("dblp"))
+        works["openalex_type"] = works["type"].apply(lambda inst: inst.get("openalex"))
+
+        grouped = works.groupby([field_name])
+
+        count_series = grouped.count().rename(columns={"uuid": "count"})["count"]
+        avg_h_index_series = grouped["avg_citations"].mean()
+
+        final_df = pd.concat([count_series, avg_h_index_series], axis=1)
+
+        result.add("works", Series(data=MixedInstitutionAggregation.to_table_series(final_df, field_name), entity_type=EntityType.WORK))
         return result

@@ -41,7 +41,11 @@ export const DataTableVisualization = React.forwardRef(function (
         {series.rows.map((row, j) => (
           <tr key={`${props.visualization.uuid}-tr-${j}`}>
             {row.map((col, k) => (
-              <td key={`${props.visualization.uuid}-td-${k}`}>{col}</td>
+              <td key={`${props.visualization.uuid}-td-${k}`}>
+                {typeof col === "number"
+                  ? col.toFixed(col % 1 === 0 ? undefined : 2)
+                  : col}
+              </td>
             ))}
           </tr>
         ))}
