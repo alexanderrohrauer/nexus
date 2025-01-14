@@ -7,11 +7,8 @@ import type {
 import "highcharts/modules/accessibility";
 import "highcharts/highcharts-more";
 import "highcharts/modules/mouse-wheel-zoom";
-import "highcharts/modules/exporting";
-import "highcharts/modules/networkgraph";
 import "highcharts/modules/venn";
 import "highcharts/modules/wordcloud";
-import "highcharts/modules/boost";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
@@ -42,10 +39,6 @@ export const HighchartsVisualization = React.forwardRef(function (
                 mouseWheel: { enabled: true },
               },
               height: ref.current.clientHeight,
-            },
-            boost: {
-              useGPUTranslations: true,
-              usePreAllocated: true,
             },
           }}
         />
