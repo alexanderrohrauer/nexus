@@ -1,7 +1,5 @@
 export default function(nexus, echarts) {
     const {years, data} = nexus.series("works")
-    // const years = [2024, 2023]
-    // const data = {email: [33, 22], union: [55, 66], video: [77, 88]}
 
     return {
         tooltip: {
@@ -25,7 +23,10 @@ export default function(nexus, echarts) {
         ],
         yAxis: [
             {
-                type: 'value'
+                type: 'value',
+                name: "Publications",
+                nameLocation: 'middle',
+                nameRotate: 90,
             }
         ],
         series: Object.entries(data).map(([key, value]) => ({

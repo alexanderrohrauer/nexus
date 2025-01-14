@@ -25,7 +25,9 @@ export default function(nexus, echarts) {
         yAxis: {
             type: 'value',
             boundaryGap: [0, '100%'],
-            name: "Publications"
+            name: "Publications",
+            nameLocation: 'middle',
+            nameRotate: 90,
         },
         dataZoom: [
             {
