@@ -1,5 +1,5 @@
 from app.visualizations.institution import InstitutionCurrentResearchers
-from app.visualizations.mixed import ResearcherEdgeBundling, InstitutionsMap, Bubble, WorksGeoHeatmap, \
+from app.visualizations.mixed import ResearcherEdgeBundling, InstitutionsMap, WorksGeoHeatmap, \
     TopResearcherWorksCount, BasicStats, MixedInstitutionAggregation, MixedWorkAggregation, MixedResearchActivity, \
     MixedActivityYearsTypes, KeywordCloud
 from app.visualizations.researcher import ResearcherAffiliations, ResearcherPerformance, ResearcherRelationGraph, \
@@ -10,7 +10,6 @@ CHARTS = [
     # Mixed
     ResearcherEdgeBundling,
     InstitutionsMap,
-    Bubble,
     WorksGeoHeatmap,
     TopResearcherWorksCount,
     BasicStats,

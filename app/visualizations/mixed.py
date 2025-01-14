@@ -24,7 +24,8 @@ class ResearcherEdgeBundling(Chart):
         nodes = []
         links = []
         for w in works:
-            author_nodes = [{"id": a.uuid, "name": a.full_name} for a in w.authors]
+            author_nodes = [{"id": a.uuid, "name": a.full_name, "$nexus": {"type": EntityType.RESEARCHER, "id": a.uuid}}
+                            for a in w.authors]
             nodes = nodes + author_nodes
             author_ids = [a.uuid for a in w.authors]
             pairs = list(combinations(author_ids, 2))
@@ -55,18 +56,6 @@ class InstitutionsMap(Chart):
         return result
 
 
-# TODO remove
-class Bubble(Chart):
-    identifier = "bubble"
-    name = "Bubble"
-    type = ChartType.MIXED
-    chart_template = ChartTemplates.HIGHCHARTS
-    generator = read_generator("bubble.js")
-
-    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
-        return SeriesMap()
-
-
 class WorksGeoHeatmap(Chart):
     identifier = "works_geo_heatmap"
     name = "Works Geo-Heatmap"
@@ -83,7 +72,8 @@ class WorksGeoHeatmap(Chart):
             for author in work.authors:
                 affiliations = filter(lambda a: work.publication_year in a.years, author.affiliations or [])
                 for affiliation in affiliations:
-                    if isinstance(affiliation.institution, Institution) and affiliation.institution.location is not None:
+                    if isinstance(affiliation.institution,
+                                  Institution) and affiliation.institution.location is not None:
                         lng_lat = affiliation.institution.location
                         inst_id = str(affiliation.institution.id)
                         try:
@@ -129,10 +119,11 @@ class TopResearcherWorksCount(Chart):
         researchers = await Researcher.find(query, nesting_depth=3, fetch_links=True).to_list()
         points = []
         for researcher in researchers:
-            points.append([researcher.full_name, len(researcher.works)])
+            points.append([researcher.full_name, {"value": len(researcher.works),
+                                        "$nexus": {"type": EntityType.RESEARCHER, "id": researcher.uuid}}])
         #     TODO limit could be dynamic
         # TODO maybe set color?
-        points = list(reversed(sorted(points, key=lambda row: row[-1])))[:20]
+        points = list(reversed(sorted(points, key=lambda row: row[-1]["value"])))[:20]
         result.add("researchers", Series(data=points, entity_type=EntityType.RESEARCHER))
         return result
 
@@ -172,6 +163,7 @@ class BasicStats(Chart):
         result.add("institutions", Series(data=institutions_md, entity_type=EntityType.INSTITUTION))
         return result
 
+
 class MixedInstitutionAggregation(Chart):
     identifier = "mixed_institution_aggregation"
     name = "Institution aggregation"
@@ -195,7 +187,8 @@ class MixedInstitutionAggregation(Chart):
 
         institutions = await Institution.find(institution_query, nesting_depth=3, fetch_links=True).to_list()
         institutions = pd.DataFrame([i.model_dump() for i in institutions])
-        institutions["avg_h_index"] = institutions["openalex_meta"].apply(lambda inst: inst.get("summary_stats").get("h_index"))
+        institutions["avg_h_index"] = institutions["openalex_meta"].apply(
+            lambda inst: inst.get("summary_stats").get("h_index"))
 
         grouped = institutions.groupby([field_name])
 
@@ -204,8 +197,10 @@ class MixedInstitutionAggregation(Chart):
 
         final_df = pd.concat([count_series, avg_h_index_series], axis=1)
 
-        result.add("institutions", Series(data=MixedInstitutionAggregation.to_table_series(final_df, field_name), entity_type=EntityType.INSTITUTION))
+        result.add("institutions", Series(data=MixedInstitutionAggregation.to_table_series(final_df, field_name),
+                                          entity_type=EntityType.INSTITUTION))
         return result
+
 
 class MixedWorkAggregation(Chart):
     identifier = "mixed_work_aggregation"
@@ -223,7 +218,8 @@ class MixedWorkAggregation(Chart):
 
         works = await Work.find(work_query, nesting_depth=3, fetch_links=True).to_list()
         works = pd.DataFrame([i.model_dump() for i in works])
-        works["avg_citations"] = works["openalex_meta"].apply(lambda meta: int(meta.get("cited_by_count")) if meta is not None else None)
+        works["avg_citations"] = works["openalex_meta"].apply(
+            lambda meta: int(meta.get("cited_by_count")) if meta is not None else None)
         works["dblp_type"] = works["type"].apply(lambda inst: inst.get("dblp"))
         works["openalex_type"] = works["type"].apply(lambda inst: inst.get("openalex"))
 
@@ -234,8 +230,10 @@ class MixedWorkAggregation(Chart):
 
         final_df = pd.concat([count_series, avg_h_index_series], axis=1)
 
-        result.add("works", Series(data=MixedInstitutionAggregation.to_table_series(final_df, field_name), entity_type=EntityType.WORK))
+        result.add("works", Series(data=MixedInstitutionAggregation.to_table_series(final_df, field_name),
+                                   entity_type=EntityType.WORK))
         return result
+
 
 class MixedResearchActivity(Chart):
     identifier = "mixed_research_activity"
@@ -259,12 +257,14 @@ class MixedResearchActivity(Chart):
         result = SeriesMap()
         work_query = chart_input.get_series_query("works")
 
-        works = await Work.find(work_query, Not(Work.publication_date == None), nesting_depth=3, fetch_links=True).to_list()
+        works = await Work.find(work_query, Not(Work.publication_date == None), nesting_depth=3,
+                                fetch_links=True).to_list()
 
         chart_data = MixedResearchActivity.get_chart_data(works)
 
         result.add("works", Series(data=chart_data, entity_type=EntityType.WORK))
         return result
+
 
 class MixedActivityYearsTypes(Chart):
     identifier = "mixed_activity_years_types"
@@ -281,7 +281,8 @@ class MixedActivityYearsTypes(Chart):
 
         field_name = chart_input.special_fields.get(MixedActivityYearsTypes.TYPE_FIELD_NAME)
 
-        works = await Work.find(work_query, Not(Work.publication_year == None), nesting_depth=3, fetch_links=True).to_list()
+        works = await Work.find(work_query, Not(Work.publication_year == None), nesting_depth=3,
+                                fetch_links=True).to_list()
         works_df = pd.DataFrame([i.model_dump() for i in works])
         works_df["dblp_type"] = works_df["type"].apply(lambda inst: inst.get("dblp"))
         works_df["openalex_type"] = works_df["type"].apply(lambda inst: inst.get("openalex"))
@@ -295,13 +296,13 @@ class MixedActivityYearsTypes(Chart):
         result.add("works", Series(data={"data": data, "years": years}, entity_type=EntityType.WORK))
         return result
 
+
 class KeywordCloud(Chart):
     identifier = "keyword_cloud"
     name = "Keywords (Cloud)"
     type = ChartType.MIXED
     chart_template = ChartTemplates.HIGHCHARTS
     generator = read_generator("keywordCloud.js")
-
 
     async def get_series(self, chart_input: ChartInput) -> SeriesMap:
         result = SeriesMap()

@@ -11,6 +11,7 @@ import "highcharts/modules/venn";
 import "highcharts/modules/wordcloud";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { getNexusLink } from "~/lib/link-util";
 
 interface HighchartsVisualizationProps {
   visualization: SchemaVisualization;
@@ -39,6 +40,21 @@ export const HighchartsVisualization = React.forwardRef(function (
                 mouseWheel: { enabled: true },
               },
               height: ref.current.clientHeight,
+              series: props.options.series.map((series) => {
+                series.point = {
+                  events: {
+                    click: (value) => {
+                      if ("$nexus" in value.point.options) {
+                        window.open(
+                          getNexusLink(value.point.options["$nexus"]),
+                          "_blank",
+                        );
+                      }
+                    },
+                  },
+                };
+                return series;
+              }),
             },
           }}
         />

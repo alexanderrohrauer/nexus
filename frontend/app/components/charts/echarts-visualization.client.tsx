@@ -4,6 +4,7 @@ import type {
   SchemaVisualizationData,
 } from "~/lib/api/types";
 import * as echarts from "echarts";
+import { getNexusLink } from "~/lib/link-util";
 
 interface EChartsVisualizationProps {
   visualization: SchemaVisualization;
@@ -27,6 +28,12 @@ export const EChartsVisualization = React.forwardRef(function (
         resizeObserver.observe(ref.current);
         window.addEventListener("resize", () => chart.resize());
       }, 1000);
+      chart.on("click", (target) => {
+        console.log(target);
+        if (typeof target.data === "object" && "$nexus" in target.data) {
+          window.open(getNexusLink(target.data["$nexus"]), "_blank");
+        }
+      });
       chart.setOption(props.options);
     }
   }, [ref, props.options]);
