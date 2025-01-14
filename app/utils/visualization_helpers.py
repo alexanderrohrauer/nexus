@@ -10,7 +10,7 @@ from app.visualizations.mixed import MixedInstitutionAggregation
 async def parse_visualization_data(chart_cls, queries: dict, query_preset: dict, **kwargs):
     try:
         chart_instance = chart_cls()
-        chart_input = ChartInput(queries=queries, pre_filters=query_preset, **kwargs)
+        chart_input = ChartInput(queries=queries, pre_filters=query_preset, special_fields=kwargs.get("special_fields") or {}, **kwargs)
         return VisualizationData(
             series=await chart_instance.get_series(chart_input),
             generator=chart_instance.generator,

@@ -20,6 +20,7 @@ import { EditVisualizationDialog } from "~/components/templates/edit-visualizati
 import { DataTableVisualization } from "~/components/charts/data-table.client";
 import { MarkdownVisualization } from "~/components/charts/markdown.client";
 import { clsx } from "clsx";
+import * as echarts from "echarts";
 
 export interface VisualizationFrameProps {
   className?: string;
@@ -62,7 +63,7 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
       "data:text/javascript;base64," + btoa(props.response.generator);
     import(b64module)
       .then((module) => {
-        setOptions(module.default(nexus));
+        setOptions(module.default(nexus, echarts));
       })
       .catch(console.error);
   }, [props.response, nexus]);

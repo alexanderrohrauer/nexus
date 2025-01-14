@@ -7,6 +7,7 @@ from beanie.odm.operators.find.comparison import In
 from app.models import Affiliation, Work
 from app.utils.visualization_utils import Chart, ChartType, ChartTemplates, ChartInput, SeriesMap, \
     create_basic_generator, EntityType, Series, read_generator
+from app.visualizations import MixedResearchActivity
 
 
 class ResearcherAffiliations(Chart):
@@ -85,4 +86,23 @@ class ResearcherRelationGraph(Chart):
 
         result.add("works", Series(data={"data": nodes, "links": links}, entity_type=EntityType.WORK))
 
+        return result
+
+class ResearcherActivity(Chart):
+    identifier = "researcher_activity"
+    name = "Publication activity"
+    type = ChartType.RESEARCHER
+    chart_template = ChartTemplates.ECHARTS
+    generator = read_generator("mixedResearchActivity.js")
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        result = SeriesMap()
+        work_query = chart_input.get_series_query("works")
+        researcher = chart_input.researcher
+
+        works = await Work.find(work_query, Work.authors.id == PydanticObjectId(researcher.id), nesting_depth=3, fetch_links=True).to_list()
+
+        chart_data = MixedResearchActivity.get_chart_data(works)
+
+        result.add("works", Series(data=chart_data, entity_type=EntityType.WORK))
         return result

@@ -236,3 +236,32 @@ class MixedWorkAggregation(Chart):
 
         result.add("works", Series(data=MixedInstitutionAggregation.to_table_series(final_df, field_name), entity_type=EntityType.WORK))
         return result
+
+class MixedResearchActivity(Chart):
+    identifier = "mixed_research_activity"
+    name = "Research activity"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.ECHARTS
+    generator = read_generator("mixedResearchActivity.js")
+
+    @classmethod
+    def get_chart_data(cls, works: list[Work]):
+        df = pd.DataFrame([w.model_dump() for w in works])
+
+        grouped = df.groupby(["publication_date"])
+        count_series = grouped.count().rename(columns={"uuid": "count"})
+        dates = count_series.index.tolist()
+        data = count_series["count"].tolist()
+
+        return {"data": data, "date": dates}
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        result = SeriesMap()
+        work_query = chart_input.get_series_query("works")
+
+        works = await Work.find(work_query, Not(Work.publication_date == None), nesting_depth=3, fetch_links=True).to_list()
+
+        chart_data = MixedResearchActivity.get_chart_data(works)
+
+        result.add("works", Series(data=chart_data, entity_type=EntityType.WORK))
+        return result
