@@ -265,3 +265,32 @@ class MixedResearchActivity(Chart):
 
         result.add("works", Series(data=chart_data, entity_type=EntityType.WORK))
         return result
+
+class MixedActivityYearsTypes(Chart):
+    identifier = "mixed_activity_years_types"
+    name = "Publication activity (years/types)"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.ECHARTS
+    generator = read_generator("researchActivityYearsTypes.js")
+
+    TYPE_FIELD_NAME = "activity_field_name"
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        result = SeriesMap()
+        work_query = chart_input.get_series_query("works")
+
+        field_name = chart_input.special_fields.get(MixedActivityYearsTypes.TYPE_FIELD_NAME)
+
+        works = await Work.find(work_query, Not(Work.publication_year == None), nesting_depth=3, fetch_links=True).to_list()
+        works_df = pd.DataFrame([i.model_dump() for i in works])
+        works_df["dblp_type"] = works_df["type"].apply(lambda inst: inst.get("dblp"))
+        works_df["openalex_type"] = works_df["type"].apply(lambda inst: inst.get("openalex"))
+
+        grouped = works_df.groupby(['publication_year', field_name]).size().unstack(fill_value=0)
+
+        data = grouped.to_dict(orient='list')
+
+        years = grouped.index.tolist()
+
+        result.add("works", Series(data={"data": data, "years": years}, entity_type=EntityType.WORK))
+        return result

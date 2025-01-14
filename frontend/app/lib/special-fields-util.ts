@@ -1,6 +1,8 @@
 export const getSpecialFieldLabel = (fieldName: string) => {
   if (fieldName === "aggregate_field_name") {
     return "Group by";
+  } else if (fieldName === "activity_field_name") {
+    return "Type";
   } else {
     return "INVALID_FIELD";
   }
@@ -31,5 +33,15 @@ export const getSpecialFieldOptions = (
       { value: "language", label: "Language" },
       { value: "region", label: "Region" },
     ];
+  } else if (
+    chartName == "mixed_activity_years_types" &&
+    fieldName === "activity_field_name"
+  ) {
+    return [
+      { value: "openalex_type", label: "OpenAlex" },
+      { value: "dblp_type", label: "DBLP" },
+    ];
+  } else {
+    return [];
   }
 };
