@@ -13,8 +13,7 @@ export default function(nexus, echarts) {
                 dataZoom: {
                     yAxisIndex: 'none'
                 },
-                restore: {},
-                saveAsImage: {}
+                restore: {}
             }
         },
         xAxis: {

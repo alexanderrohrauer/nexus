@@ -294,3 +294,25 @@ class MixedActivityYearsTypes(Chart):
 
         result.add("works", Series(data={"data": data, "years": years}, entity_type=EntityType.WORK))
         return result
+
+class KeywordCloud(Chart):
+    identifier = "keyword_cloud"
+    name = "Keywords (Cloud)"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.HIGHCHARTS
+    generator = read_generator("keywordCloud.js")
+
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        result = SeriesMap()
+        work_query = chart_input.get_series_query("works")
+
+        works = await Work.find(work_query, Not(Work.keywords == None), nesting_depth=3, fetch_links=True).to_list()
+        df = pd.DataFrame([i.model_dump() for i in works])
+
+        df = df.explode("keywords")
+        grouped = df.groupby(["keywords"])
+        count_df = grouped.count().rename(columns={"uuid": "weight"})
+        data = count_df[["weight"]].to_dict(orient='index')
+        result.add("works", Series(data=data, entity_type=EntityType.WORK))
+        return result

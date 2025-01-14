@@ -18,7 +18,7 @@ export const EChartsVisualization = React.forwardRef(function (
 ) {
   useEffect(() => {
     if (ref.current && props.options) {
-      console.log(props.options);
+      console.log("echarts", props.options);
       const chart = echarts.init(ref.current);
       const resizeObserver = new ResizeObserver(() => {
         chart.resize();

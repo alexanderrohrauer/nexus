@@ -11,7 +11,7 @@ async def parse_visualization_data(chart_cls, queries: dict, query_preset: dict,
     try:
         chart_instance = chart_cls()
         special_fields = kwargs.get("special_fields") or {}
-        kwargs.pop("special_fields")
+        kwargs.pop("special_fields") if "special_fields" in kwargs else None
         chart_input = ChartInput(queries=queries, pre_filters=query_preset, special_fields=special_fields, **kwargs)
         return VisualizationData(
             series=await chart_instance.get_series(chart_input),
