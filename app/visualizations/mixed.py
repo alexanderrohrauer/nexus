@@ -171,3 +171,30 @@ class BasicStats(Chart):
         """
         result.add("institutions", Series(data=institutions_md, entity_type=EntityType.INSTITUTION))
         return result
+
+#TODO complete
+class MixedInstitutionAggregation(Chart):
+    identifier = "mixed_institution_aggregation"
+    name = "Institution aggregation"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.DATATABLE
+    generator = create_basic_generator(["institutions"])
+
+    INSTITUTION_FIELD_NAME = "aggregate_field_name"
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        result = SeriesMap()
+        institution_query = chart_input.get_series_query("institutions")
+        field_name = chart_input.special_fields.get(MixedInstitutionAggregation.INSTITUTION_FIELD_NAME)
+
+        institutions = await Institution.find(institution_query, nesting_depth=3, fetch_links=True).to_list()
+        institutions = pd.DataFrame([i.model_dump() for i in institutions])
+        grouped = institutions.groupby([field_name])
+        count_series = grouped.count().rename(columns={"uuid": "count"})["count"]
+        final_df = pd.DataFrame(count_series)
+        # TODO eventually add other aggregates
+        headers = [str(c) for c in final_df.columns]
+        headers.insert(0, field_name)
+        rows = [[index] + row for index, row in zip(final_df.index, final_df.values.tolist())]
+        result.add("institutions", Series(data={"header": headers, "rows": rows}, entity_type=EntityType.INSTITUTION))
+        return result

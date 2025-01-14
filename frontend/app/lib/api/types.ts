@@ -494,6 +494,8 @@ export interface components {
             columns: number;
             /** Query Preset */
             query_preset: Record<string, never>;
+            /** Special Fields */
+            special_fields: Record<string, never>;
             /** Chart */
             chart: string;
         };
@@ -735,6 +737,8 @@ export interface components {
             columns: number;
             /** Query Preset */
             query_preset: Record<string, never>;
+            /** Special Fields */
+            special_fields: Record<string, never>;
         };
         /** ValidationError */
         ValidationError: {
@@ -765,6 +769,11 @@ export interface components {
              * @default {}
              */
             query_preset: Record<string, never>;
+            /**
+             * Special Fields
+             * @default {}
+             */
+            special_fields: Record<string, never>;
         };
         /** VisualizationData */
         VisualizationData: {

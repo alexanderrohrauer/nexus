@@ -6,6 +6,7 @@ from fastapi import HTTPException
 from app.dtos.dashboard import CreateDashboardRequest, CreateVisualizationRequest, UpdateVisualizationRequest
 from app.models import Dashboard, Visualization
 from app.utils.db_utils import require_instance
+from app.utils.visualization_helpers import get_special_field_default_values
 
 
 async def add(request: CreateDashboardRequest):
@@ -28,6 +29,7 @@ async def find_by_uuid(uuid: UUID) -> Dashboard:
 
 async def add_visualization(dashboard: Dashboard, visualization: CreateVisualizationRequest):
     vis = Visualization(**visualization.model_dump())
+    vis.special_fields = get_special_field_default_values(vis)
     dashboard.visualizations.append(vis)
     return await Dashboard.save(dashboard)
 

@@ -67,10 +67,10 @@ def create_basic_generator(series_names: list[str]):
 class ChartInput:
     queries: dict
     pre_filters: dict
+    special_fields: dict
     work: Optional[Work] = None
     researcher: Optional[Researcher] = None
     institution: Optional[Institution] = None
-
 
     def get_series_query(self, series: str):
         query = self.queries[series] if series in self.queries else []

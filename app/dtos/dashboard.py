@@ -11,6 +11,7 @@ class UpdateVisualizationRequest(BaseModel):
     rows: int = Field(gt=1)
     columns: int = Field(gt=1)
     query_preset: dict
+    special_fields: dict
 
 
 class CreateVisualizationRequest(UpdateVisualizationRequest):

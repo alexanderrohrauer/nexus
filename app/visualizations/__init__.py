@@ -1,6 +1,6 @@
 from app.visualizations.institution import InstitutionCurrentResearchers
 from app.visualizations.mixed import ResearcherEdgeBundling, InstitutionsMap, Bubble, WorksGeoHeatmap, \
-    TopResearcherWorksCount, BasicStats
+    TopResearcherWorksCount, BasicStats, MixedInstitutionAggregation
 from app.visualizations.researcher import ResearcherAffiliations, ResearcherPerformance, ResearcherRelationGraph
 from app.visualizations.work import WorkAuthors
 
@@ -12,6 +12,7 @@ CHARTS = [
     WorksGeoHeatmap,
     TopResearcherWorksCount,
     BasicStats,
+    MixedInstitutionAggregation,
     # Works
     WorkAuthors,
     # Researchers

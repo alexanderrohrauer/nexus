@@ -94,7 +94,7 @@ export function EditVisualizationDialog(props: EditVisualizationProps) {
           initialValues={props.visualization}
           onSubmit={(values) => mutation.mutateAsync(values)}
         >
-          <VisualizationForm typeDisabled>
+          <VisualizationForm typeDisabled chartName={props.visualization.chart}>
             <div>
               <Label htmlFor="chart">Pre-Filters</Label>
               <FastField name="query_preset">

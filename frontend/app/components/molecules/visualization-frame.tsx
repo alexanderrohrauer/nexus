@@ -69,6 +69,7 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
 
   useEffect(() => {
     if (divRef.current && frameRef.current) {
+      console.log("divref", divRef.current);
       divRef.current.style.height = `${frameRef.current.clientHeight}px`;
     }
   }, [divRef, frameRef]);
@@ -140,16 +141,17 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
             ref={divRef}
           />
         )}
+        {props.response.chart_template === "DATATABLE" && (
+          <DataTableVisualization
+            visualization={props.visualization}
+            options={options}
+            response={props.response}
+            ref={frameRef}
+          />
+        )}
+
         {options && (
           <>
-            {props.response.chart_template === "DATATABLE" && (
-              <DataTableVisualization
-                visualization={props.visualization}
-                options={options}
-                response={props.response}
-                ref={divRef}
-              />
-            )}
             {props.response.chart_template === "MARKDOWN" && (
               <MarkdownVisualization
                 visualization={props.visualization}

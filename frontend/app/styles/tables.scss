@@ -1,0 +1,49 @@
+.datatable {
+  font-family: Verdana, sans-serif;
+  border-collapse: collapse;
+  border: 1px solid theme("colors.border");
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.datatable caption {
+  padding: 1em 0;
+  font-size: 1.2em;
+  color: #555;
+}
+
+.datatable th {
+  font-weight: 600;
+  padding: 0.5em;
+}
+
+.datatable td,
+.datatable th,
+.datatable caption {
+  padding: 0.5em;
+}
+
+.datatable thead tr,
+.datatable tbody tr:nth-child(even) {
+  background: theme("colors.background");
+}
+
+.datatable tbody tr:nth-child(odd) {
+  background: transparent;
+}
+
+.datatable tbody {
+  display: block;
+  overflow:auto;
+}
+
+.datatable thead, tbody tr {
+  display:table;
+  width:100%;
+  table-layout:fixed;
+}
+
+.datatable tbody tr td:first-child {
+  font-weight: 600;
+}

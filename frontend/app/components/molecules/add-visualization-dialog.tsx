@@ -32,6 +32,7 @@ const initialValues: SchemaCreateVisualizationRequest = {
   rows: 2,
   columns: 2,
   query_preset: {},
+  special_fields: {},
 };
 
 export function AddVisualizationDialog(props: AddVisualizationDialogProps) {

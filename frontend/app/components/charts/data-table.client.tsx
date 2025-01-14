@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import type {
   SchemaVisualization,
   SchemaVisualizationData,
@@ -10,27 +10,42 @@ interface DataTableVisualizationProps {
   response: SchemaVisualizationData;
 }
 
-// TODO fix this visualization template
 export const DataTableVisualization = React.forwardRef(function (
   props: DataTableVisualizationProps,
-  ref: React.ForwardedRef<HTMLDivElement>,
+  frameRef: React.ForwardedRef<HTMLDivElement>,
 ) {
+  const tbodyRef = useRef<HTMLTableSectionElement | null>(null);
+
+  const series = useMemo(
+    () => props.options?.series[0] ?? { header: [], rows: [] },
+    [props.options],
+  );
+
+  useEffect(() => {
+    if (frameRef.current && tbodyRef.current) {
+      const newHeight = frameRef.current.clientHeight - 40;
+      tbodyRef.current.style.maxHeight = newHeight + "px";
+    }
+  }, [frameRef, tbodyRef]);
+
   return (
-    <div ref={ref} className="w-full">
-      <table>
+    <table className="datatable">
+      <thead>
         <tr>
-          {props.options.header.map((header) => (
-            <th>{header}</th>
+          {series.header.map((header, hi) => (
+            <th key={`${props.visualization.uuid}-th-${hi}`}>{header}</th>
           ))}
         </tr>
-        {props.options.rows.map((row) => (
-          <tr>
-            {row.map((col) => (
-              <td>{col}</td>
+      </thead>
+      <tbody ref={tbodyRef}>
+        {series.rows.map((row, j) => (
+          <tr key={`${props.visualization.uuid}-tr-${j}`}>
+            {row.map((col, k) => (
+              <td key={`${props.visualization.uuid}-td-${k}`}>{col}</td>
             ))}
           </tr>
         ))}
-      </table>
-    </div>
+      </tbody>
+    </table>
   );
 });

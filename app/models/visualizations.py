@@ -8,11 +8,11 @@ from app.db.models import Document
 class Visualization(BaseModel):
     uuid: UUID = Field(default_factory=uuid4)
     title: str = Field(min_length=1)
-    # TODO max 12
     rows: int = Field(gt=1)
     columns: int = Field(gt=1)
     chart: str = Field(min_length=1)
     query_preset: dict = Field(default={})
+    special_fields: dict = Field(default={})
 
 
 class Dashboard(Document):
