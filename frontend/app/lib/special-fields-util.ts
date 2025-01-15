@@ -31,7 +31,6 @@ export const getSpecialFieldOptions = (
       { value: "dblp_type", label: "Type (DBLP)" },
       { value: "openalex_type", label: "Type (OpenAlex)" },
       { value: "language", label: "Language" },
-      { value: "region", label: "Region" },
     ];
   } else if (
     chartName == "mixed_activity_years_types" &&
