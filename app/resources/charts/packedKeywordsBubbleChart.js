@@ -14,13 +14,12 @@ export default function (nexus) {
         },
         "plotOptions": {
             "packedbubble": {
-                "animation": false,
-                "minSize": "20%",
+                "minSize": "50%",
                 "maxSize": "100%",
-                "zMin": 0,
-                "zMax": 1000,
+                "zMin": 10,
+                "zMax": 100,
                 "layoutAlgorithm": {
-                    "gravitationalConstant": 0.05,
+                    "gravitationalConstant": 0.08,
                     "splitSeries": true,
                     "seriesInteraction": false,
                     "dragBetweenSeries": true,
@@ -29,15 +28,7 @@ export default function (nexus) {
                 "dataLabels": {
                     "enabled": true,
                     "format": "{point.name}",
-                    "filter": {
-                        "property": "y",
-                        "operator": ">",
-                        "value": 250
-                    }
                 }
-            },
-            series: {
-                animation: false
             }
         },
         "series": data.map(el => ({...el, animation: false}))
