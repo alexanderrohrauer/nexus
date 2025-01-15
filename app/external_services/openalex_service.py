@@ -3,12 +3,15 @@ import logging
 import pydash as _
 from aiohttp_client_cache import CachedSession, SQLiteBackend
 
+from app.settings import get_settings
 from app.utils.text_utils import parse_openalex_id
 from evaluation.test_data import TestDataInjector
 
+settings = get_settings()
+
 OPENALEX_URL = "https://api.openalex.org"
-OPENALEX_AUTHOR_BATCH_SIZE = 10
-OPENALEX_INSTITUTION_BATCH_SIZE = 10
+OPENALEX_AUTHOR_BATCH_SIZE = settings.openalex_batch_size
+OPENALEX_INSTITUTION_BATCH_SIZE = settings.openalex_batch_size
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -71,7 +74,6 @@ async def fetch_works(topic_ids_or_kws: list[dict | str], page: int, page_size: 
             logger.debug(f"Fetching keyword works ({response.url})...")
             body = await response.json()
             result = result + body["results"]
-    # TODO extract
     works_test_data.inject(page - 1, "openalex_works.json", result)
     return result
 
@@ -90,7 +92,6 @@ async def fetch_authors_for_works(works: list[dict], batch_id: int) -> list[dict
             logger.debug(f"Fetching authors ({response.url})...")
             body = await response.json()
         authors = authors + body["results"]
-    # TODO extract
     authors_test_data.inject(batch_id, "openalex_authors.json", authors)
     return authors
 
@@ -111,6 +112,5 @@ async def fetch_institutions_for_authors(authors: list[dict], batch_id: int) -> 
             logger.debug(f"Fetching institutions ({response.url})...")
             body = await response.json()
         institutions = institutions + body["results"]
-    # TODO extract
     institutions_test_data.inject(batch_id, "openalex_institutions.json", institutions)
     return institutions
