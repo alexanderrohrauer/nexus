@@ -26,7 +26,7 @@ async def get_institutions(params: Annotated[InstitutionSearchParams, Depends(In
     Institution]:
     query = params.get_filter()
     logger.debug(query)
-    result = await Institution.find(query, nesting_depth=3, fetch_links=True).limit(params.limit).skip(
+    result = await Institution.find(query, nesting_depth=2, fetch_links=True).limit(params.limit).skip(
         params.offset).to_list()
     return result
 

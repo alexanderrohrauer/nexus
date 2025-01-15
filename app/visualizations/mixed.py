@@ -5,7 +5,7 @@ import pandas as pd
 import pydash as _
 from beanie.odm.operators.find.logical import Not
 
-from app.models import Work, Institution, Researcher
+from app.models import Work, Institution, Researcher, Affiliation
 from app.utils.visualization_utils import Chart, ChartType, ChartTemplates, read_generator, SeriesMap, ChartInput, \
     Series, EntityType, create_basic_generator
 
@@ -20,7 +20,7 @@ class ResearcherEdgeBundling(Chart):
     async def get_series(self, chart_input: ChartInput) -> SeriesMap:
         result = SeriesMap()
         query = chart_input.get_series_query("researchers")
-        works = await Work.find(query, nesting_depth=3, fetch_links=True).limit(30).to_list()
+        works = await Work.find(query, nesting_depth=2, fetch_links=True).limit(30).to_list()
         nodes = []
         links = []
         for w in works:
@@ -46,7 +46,7 @@ class InstitutionsMap(Chart):
     async def get_series(self, chart_input: ChartInput, **kwargs) -> SeriesMap:
         result = SeriesMap()
         institutions = await Institution.find(Not(Institution.location == None),
-                                              chart_input.get_series_query("institutions"), nesting_depth=3,
+                                              chart_input.get_series_query("institutions"), nesting_depth=2,
                                               fetch_links=True).to_list()
         icon = kwargs.get("icon") or "institution.png"
         series = {"type": "marker",
@@ -67,12 +67,14 @@ class WorksGeoHeatmap(Chart):
     async def get_series(self, chart_input: ChartInput) -> SeriesMap:
         result = SeriesMap()
         query = chart_input.get_series_query("works")
-        works = await Work.find(query, nesting_depth=3, fetch_links=True).to_list()
+        works = await Work.find(query, nesting_depth=2, fetch_links=True).to_list()
         lng_lat_map = {}
         for work in works:
             for author in work.authors:
+                await author.fetch_link(Researcher.affiliations)
                 affiliations = filter(lambda a: work.publication_year in a.years, author.affiliations or [])
                 for affiliation in affiliations:
+                    await affiliation.fetch_link(Affiliation.institution)
                     if isinstance(affiliation.institution,
                                   Institution) and affiliation.institution.location is not None:
                         lng_lat = affiliation.institution.location
@@ -84,15 +86,20 @@ class WorksGeoHeatmap(Chart):
 
         heatmap_data = list(lng_lat_map.values())
         np_data = np.array(heatmap_data)
-        series = pd.Series(np_data[:, 2])
-        scaled = series / series.abs().max()
-        np_data[:, 2] = scaled
-        q2 = str(scaled.quantile(.5))
-        q3 = str(scaled.quantile(.75))
+        series_data = []
+        q2 = 1
+        q3 = 1
+        if len(np_data)> 0:
+            series = pd.Series(np_data[:, 2])
+            scaled = series / series.abs().max()
+            np_data[:, 2] = scaled
+            q2 = str(scaled.quantile(.5))
+            q3 = str(scaled.quantile(.75))
+            series_data = np_data.tolist()
 
         data = {"type": "heatmap",
                 "data": {
-                    "data": np_data.tolist(),
+                    "data": series_data,
                     "gradient": {"0.0": "blue", q2: "lime", q3: "red"},
                     "radius": 15,
                     "minOpacity": .2
@@ -117,7 +124,7 @@ class TopResearcherWorksCount(Chart):
     async def get_series(self, chart_input: ChartInput) -> SeriesMap:
         result = SeriesMap()
         query = chart_input.get_series_query("researchers")
-        researchers = await Researcher.find(query, nesting_depth=3, fetch_links=True).to_list()
+        researchers = await Researcher.find(query, nesting_depth=2, fetch_links=True).to_list()
         points = []
         for researcher in researchers:
             points.append([researcher.full_name, {"value": len(researcher.works),
@@ -142,9 +149,9 @@ class BasicStats(Chart):
         researcher_query = chart_input.get_series_query("researchers")
         institution_query = chart_input.get_series_query("institutions")
 
-        works_count = await Work.find(works_query, nesting_depth=3, fetch_links=True).count()
-        researchers_count = await Researcher.find(researcher_query, nesting_depth=3, fetch_links=True).count()
-        institutions_count = await Institution.find(institution_query, nesting_depth=3, fetch_links=True).count()
+        works_count = await Work.find(works_query, nesting_depth=2, fetch_links=True).count()
+        researchers_count = await Researcher.find(researcher_query, nesting_depth=2, fetch_links=True).count()
+        institutions_count = await Institution.find(institution_query, nesting_depth=2, fetch_links=True).count()
 
         # TODO maybe add some more stats...
         works_md = f"""
@@ -186,7 +193,7 @@ class MixedInstitutionAggregation(Chart):
         institution_query = chart_input.get_series_query("institutions")
         field_name = chart_input.special_fields.get(MixedInstitutionAggregation.INSTITUTION_FIELD_NAME)
 
-        institutions = await Institution.find(institution_query, nesting_depth=3, fetch_links=True).to_list()
+        institutions = await Institution.find(institution_query, nesting_depth=2, fetch_links=True).to_list()
         institutions = pd.DataFrame([i.model_dump() for i in institutions])
         institutions["avg_h_index"] = institutions["openalex_meta"].apply(
             lambda inst: inst.get("summary_stats").get("h_index"))
@@ -217,7 +224,7 @@ class MixedWorkAggregation(Chart):
         work_query = chart_input.get_series_query("works")
         field_name = chart_input.special_fields.get(MixedWorkAggregation.WORK_FIELD_NAME)
 
-        works = await Work.find(work_query, nesting_depth=3, fetch_links=True).to_list()
+        works = await Work.find(work_query, nesting_depth=2, fetch_links=True).to_list()
         works = pd.DataFrame([i.model_dump() for i in works])
         works["avg_citations"] = works["openalex_meta"].apply(
             lambda meta: int(meta.get("cited_by_count")) if meta is not None else None)
@@ -258,7 +265,7 @@ class MixedResearchActivity(Chart):
         result = SeriesMap()
         work_query = chart_input.get_series_query("works")
 
-        works = await Work.find(work_query, Not(Work.publication_date == None), nesting_depth=3,
+        works = await Work.find(work_query, Not(Work.publication_date == None), nesting_depth=2,
                                 fetch_links=True).to_list()
 
         chart_data = MixedResearchActivity.get_chart_data(works)
@@ -282,7 +289,7 @@ class MixedActivityYearsTypes(Chart):
 
         field_name = chart_input.special_fields.get(MixedActivityYearsTypes.TYPE_FIELD_NAME)
 
-        works = await Work.find(work_query, Not(Work.publication_year == None), nesting_depth=3,
+        works = await Work.find(work_query, Not(Work.publication_year == None), nesting_depth=2,
                                 fetch_links=True).to_list()
         works_df = pd.DataFrame([i.model_dump() for i in works])
         works_df["dblp_type"] = works_df["type"].apply(lambda inst: inst.get("dblp"))
@@ -309,7 +316,7 @@ class KeywordCloud(Chart):
         result = SeriesMap()
         work_query = chart_input.get_series_query("works")
 
-        works = await Work.find(work_query, Not(Work.keywords == None), nesting_depth=3, fetch_links=True).to_list()
+        works = await Work.find(work_query, Not(Work.keywords == None), nesting_depth=2, fetch_links=True).to_list()
         df = pd.DataFrame([i.model_dump() for i in works])
 
         df = df.explode("keywords")
@@ -331,7 +338,7 @@ class PackedKeywordsBubbleChart(Chart):
         result = SeriesMap()
         work_query = chart_input.get_series_query("works")
 
-        works = await Work.find(work_query, Not(Work.keywords == None), nesting_depth=3, fetch_links=True).to_list()
+        works = await Work.find(work_query, Not(Work.keywords == None), nesting_depth=2, fetch_links=True).to_list()
         df = pd.DataFrame([i.model_dump() for i in works])
 
         df_exploded = df.explode("keywords")

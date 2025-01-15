@@ -17,7 +17,7 @@ class WorkAuthors(Chart):
         query = chart_input.get_series_query("authors")
         work = chart_input.work
         ids = [a.ref.id for a in work.authors] if work.authors is not None else []
-        researchers = await Researcher.find(query, In(Researcher.id, ids), fetch_links=True, nesting_depth=3).to_list()
+        researchers = await Researcher.find(query, In(Researcher.id, ids), fetch_links=True, nesting_depth=2).to_list()
 
         result.add("authors", Series(data=researchers, entity_type=EntityType.RESEARCHER))
         return result

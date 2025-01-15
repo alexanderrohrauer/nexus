@@ -75,7 +75,7 @@ const operators = [
   { value: "$regex", label: "Matches (Regex)", applicableTo: ["string"] },
 ];
 
-const flattenFields = (fields: any[], prefix = "", depth = 3) => {
+const flattenFields = (fields: any[], prefix = "", depth = 2) => {
   return fields.flatMap((option) => {
     if ((option.isRelation && depth > 0) || option.type === "multi") {
       return flattenFields(
@@ -123,7 +123,7 @@ const DynamicFilter = ({ fields }: DynamicFilterProps) => {
     }
   };
 
-  const renderAddItems = (options: any[], prefix = "", depth = 3) => {
+  const renderAddItems = (options: any[], prefix = "", depth = 2) => {
     return options.map((option) => {
       if ((option.isRelation && depth > 0) || option.type === "multi") {
         return (

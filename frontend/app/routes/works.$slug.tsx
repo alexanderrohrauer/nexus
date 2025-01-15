@@ -36,6 +36,16 @@ export default function Work(props: WorkProps) {
   return (
     <div className="space-y-6 h-full overflow-y-auto pr-3">
       <WorkProfile work={work} />
+      {duplicates.length > 0 && (
+        <ProfileSection title="Duplicates">
+          <DuplicationSection
+            entity={work}
+            duplicates={duplicates}
+            mutateUrl="/works/{uuid}/mark-for-removal"
+            renderName={(entity: SchemaWorkOutput) => entity.title}
+          />
+        </ProfileSection>
+      )}
       <ProfileSection title="Visualizations">
         <div className="space-y-2">
           {visualizations.map((visualization) => (
@@ -61,16 +71,6 @@ export default function Work(props: WorkProps) {
           ))}
         </div>
       </ProfileSection>
-      {duplicates.length > 0 && (
-        <ProfileSection title="Duplicates">
-          <DuplicationSection
-            entity={work}
-            duplicates={duplicates}
-            mutateUrl="/works/{uuid}/mark-for-removal"
-            renderName={(entity: SchemaWorkOutput) => entity.title}
-          />
-        </ProfileSection>
-      )}
     </div>
   );
 }

@@ -23,7 +23,7 @@ class ResearcherAffiliations(Chart):
         researcher = chart_input.researcher
         affiliations = researcher.affiliations or []
         ids = [a.ref.id for a in affiliations]
-        affiliations = await Affiliation.find(query, In(Affiliation.id, ids), fetch_links=True, nesting_depth=3).to_list()
+        affiliations = await Affiliation.find(query, In(Affiliation.id, ids), fetch_links=True, nesting_depth=2).to_list()
 
         result.add("affiliations", Series(data=affiliations, entity_type=EntityType.AFFILIATIONS))
         return result
@@ -73,11 +73,11 @@ class ResearcherRelationGraph(Chart):
         query = chart_input.get_series_query("works")
         researcher = chart_input.researcher
 
-        l1 = await Work.find(query, Work.authors.id == PydanticObjectId(researcher.id), fetch_links=True, nesting_depth=3).to_list()
+        l1 = await Work.find(query, Work.authors.id == PydanticObjectId(researcher.id), fetch_links=True, nesting_depth=2).to_list()
         nodes1, links1 = self.get_nodes_and_links(l1, lambda a: 0 if a.uuid == researcher.uuid else 1, lambda a: 60 if a.uuid == researcher.uuid else 25)
 
         l2_nodes = filter(lambda a: a["category"] == 1, nodes1)
-        l2 = await Work.find(query, In(Work.authors.uuid, [n["id"] for n in l2_nodes]), fetch_links=True, nesting_depth=3).to_list()
+        l2 = await Work.find(query, In(Work.authors.uuid, [n["id"] for n in l2_nodes]), fetch_links=True, nesting_depth=2).to_list()
         nodes2, links2 = self.get_nodes_and_links(l2, lambda a: 2, lambda a: 10)
 
         nodes = nodes1 + nodes2
@@ -100,7 +100,7 @@ class ResearcherActivity(Chart):
         work_query = chart_input.get_series_query("works")
         researcher = chart_input.researcher
 
-        works = await Work.find(work_query, Work.authors.id == PydanticObjectId(researcher.id), nesting_depth=3, fetch_links=True).to_list()
+        works = await Work.find(work_query, Work.authors.id == PydanticObjectId(researcher.id), nesting_depth=2, fetch_links=True).to_list()
 
         chart_data = MixedResearchActivity.get_chart_data(works)
 

@@ -37,6 +37,16 @@ export default function Researcher(props: ResearcherProps) {
   return (
     <div className="space-y-6 h-full overflow-y-auto pr-3">
       <ResearcherProfile researcher={researcher} />
+      {duplicates.length > 0 && (
+        <ProfileSection title="Duplicates">
+          <DuplicationSection
+            entity={researcher}
+            duplicates={duplicates}
+            mutateUrl="/researchers/{uuid}/mark-for-removal"
+            renderName={(entity: SchemaResearcher) => entity.full_name}
+          />
+        </ProfileSection>
+      )}
       <ProfileSection title="Visualizations">
         <div className="space-y-2">
           {visualizations.map((visualization) => (
@@ -61,16 +71,6 @@ export default function Researcher(props: ResearcherProps) {
           ))}
         </div>
       </ProfileSection>
-      {duplicates.length > 0 && (
-        <ProfileSection title="Duplicates">
-          <DuplicationSection
-            entity={researcher}
-            duplicates={duplicates}
-            mutateUrl="/researchers/{uuid}/mark-for-removal"
-            renderName={(entity: SchemaResearcher) => entity.full_name}
-          />
-        </ProfileSection>
-      )}
     </div>
   );
 }
