@@ -1,39 +1,36 @@
-from itertools import combinations
-
 import numpy as np
 import pandas as pd
-import pydash as _
 from beanie.odm.operators.find.logical import Not
 
-from app.models import Work, Institution, Researcher, Affiliation
+from app.models import Work, Institution, Researcher
 from app.utils.visualization_utils import Chart, ChartType, ChartTemplates, read_generator, SeriesMap, ChartInput, \
     Series, EntityType, create_basic_generator
 
 
-class ResearcherEdgeBundling(Chart):
-    identifier = "researcher_edge_bundling"
-    name = "Researcher Edge-Bundling"
-    type = ChartType.MIXED
-    chart_template = ChartTemplates.ECHARTS
-    generator = read_generator("relations.js")
-
-    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
-        result = SeriesMap()
-        query = chart_input.get_series_query("researchers")
-        works = await Work.find(query, nesting_depth=2, fetch_links=True).limit(30).to_list()
-        nodes = []
-        links = []
-        for w in works:
-            author_nodes = [{"id": a.uuid, "name": a.full_name, "$nexus": {"type": EntityType.RESEARCHER, "id": a.uuid}}
-                            for a in w.authors]
-            nodes = nodes + author_nodes
-            author_ids = [a.uuid for a in w.authors]
-            pairs = list(combinations(author_ids, 2))
-            pairs = [{"source": s, "target": t} for s, t in pairs]
-            links = links + pairs
-        nodes = _.uniq_by(nodes, lambda a: a["id"])
-        result.add("researchers", Series(data={"data": nodes, "links": links}, entity_type=EntityType.WORK))
-        return result
+# class ResearcherEdgeBundling(Chart):
+#     identifier = "researcher_edge_bundling"
+#     name = "Researcher Edge-Bundling"
+#     type = ChartType.MIXED
+#     chart_template = ChartTemplates.ECHARTS
+#     generator = read_generator("relations.js")
+#
+#     async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+#         result = SeriesMap()
+#         query = chart_input.get_series_query("researchers")
+#         works = await Work.find(query, nesting_depth=2, fetch_links=True).limit(30).to_list()
+#         nodes = []
+#         links = []
+#         for w in works:
+#             author_nodes = [{"id": a.uuid, "name": a.full_name, "$nexus": {"type": EntityType.RESEARCHER, "id": a.uuid}}
+#                             for a in w.authors]
+#             nodes = nodes + author_nodes
+#             author_ids = [a.uuid for a in w.authors]
+#             pairs = list(combinations(author_ids, 2))
+#             pairs = [{"source": s, "target": t} for s, t in pairs]
+#             links = links + pairs
+#         nodes = _.uniq_by(nodes, lambda a: a["id"])
+#         result.add("researchers", Series(data={"data": nodes, "links": links}, entity_type=EntityType.WORK))
+#         return result
 
 
 class InstitutionsMap(Chart):
@@ -71,18 +68,15 @@ class WorksGeoHeatmap(Chart):
         lng_lat_map = {}
         for work in works:
             for author in work.authors:
-                await author.fetch_link(Researcher.affiliations)
-                affiliations = filter(lambda a: work.publication_year in a.years, author.affiliations or [])
-                for affiliation in affiliations:
-                    await affiliation.fetch_link(Affiliation.institution)
-                    if isinstance(affiliation.institution,
-                                  Institution) and affiliation.institution.location is not None:
-                        lng_lat = affiliation.institution.location
-                        inst_id = str(affiliation.institution.id)
-                        try:
-                            lng_lat_map[inst_id][-1] = lng_lat_map[inst_id][-1] + 1
-                        except KeyError:
-                            lng_lat_map[inst_id] = [lng_lat[1], lng_lat[0], 1]
+                if isinstance(author.institution,
+                              Institution) and author.institution.location is not None:
+                    lng_lat = author.institution.location
+                    inst_id = str(author.institution.id)
+                    try:
+                        lng_lat_map[inst_id][-1] = lng_lat_map[inst_id][-1] + 1
+                    except KeyError:
+                        lng_lat_map[inst_id] = [lng_lat[1], lng_lat[0], 1]
+
 
         heatmap_data = list(lng_lat_map.values())
         np_data = np.array(heatmap_data)
@@ -94,14 +88,14 @@ class WorksGeoHeatmap(Chart):
             scaled = series / series.abs().max()
             np_data[:, 2] = scaled
             q2 = str(scaled.quantile(.5))
-            q3 = str(scaled.quantile(.75))
+            q3 = str(scaled.quantile(.9))
             series_data = np_data.tolist()
 
         data = {"type": "heatmap",
                 "data": {
                     "data": series_data,
                     "gradient": {"0.0": "blue", q2: "lime", q3: "red"},
-                    "radius": 15,
+                    "radius": 10,
                     "minOpacity": .2
                 }
                 }
