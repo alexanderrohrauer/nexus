@@ -121,7 +121,7 @@ class TopResearcherWorksCount(Chart):
         points = []
         for researcher in researchers:
             points.append([researcher.full_name, {"value": len(researcher.works),
-                                        "$nexus": {"type": EntityType.RESEARCHER, "id": researcher.uuid}}])
+                                                  "$nexus": {"type": EntityType.RESEARCHER, "id": researcher.uuid}}])
         #     TODO limit could be dynamic
         # TODO maybe set color?
         points = list(reversed(sorted(points, key=lambda row: row[-1]["value"])))[:20]
@@ -316,5 +316,45 @@ class KeywordCloud(Chart):
         grouped = df.groupby(["keywords"])
         count_df = grouped.count().rename(columns={"uuid": "weight"})
         data = count_df[["weight"]].to_dict(orient='index')
+        result.add("works", Series(data=data, entity_type=EntityType.WORK))
+        return result
+
+
+class PackedKeywordsBubbleChart(Chart):
+    identifier = "packed_keywords_bubble_chart"
+    name = "Top-10 Keywords Researchers (Bubble)"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.HIGHCHARTS
+    generator = read_generator("packedKeywordsBubbleChart.js")
+
+    async def get_series(self, chart_input: ChartInput) -> SeriesMap:
+        result = SeriesMap()
+        work_query = chart_input.get_series_query("works")
+
+        works = await Work.find(work_query, Not(Work.keywords == None), nesting_depth=3, fetch_links=True).to_list()
+        df = pd.DataFrame([i.model_dump() for i in works])
+
+        df_exploded = df.explode("keywords")
+        top_keywords = (
+            df_exploded["keywords"]
+            .value_counts()
+            .head(10)
+            .index
+        )
+        filtered_df = df_exploded[df_exploded["keywords"].isin(top_keywords)]
+
+        def get_author_stats(group):
+            authors = group.explode("authors")
+            author_counts = authors.value_counts()
+            return [{"name": author["full_name"], "value": count,
+                     "$nexus": {"type": EntityType.RESEARCHER, "id": author["uuid"]}} for author, count in
+                    author_counts.items()]
+
+        data = []
+        for keyword in top_keywords:
+            keyword_group = filtered_df[filtered_df["keywords"] == keyword]
+            author_stats = get_author_stats(keyword_group["authors"])
+            data.append({"name": keyword, "data": author_stats})
+
         result.add("works", Series(data=data, entity_type=EntityType.WORK))
         return result

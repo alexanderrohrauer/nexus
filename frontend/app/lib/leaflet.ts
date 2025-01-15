@@ -39,7 +39,6 @@ const MARKER_SIZES = {
 };
 
 const addMarkerSeries = (series: any, map: L.Map) => {
-  // TODO add correct icons
   const markers = [];
   const layerGroup = new L.LayerGroup();
   series.data.forEach((point: any) => {
