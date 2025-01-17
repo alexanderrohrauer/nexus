@@ -18,7 +18,11 @@ export default function(nexus, echarts) {
         xAxis: [
             {
                 type: 'category',
-                data: years
+                data: years,
+                axisLabel: {
+                    interval: 0,
+                    rotate: 90
+                }
             }
         ],
         yAxis: [
