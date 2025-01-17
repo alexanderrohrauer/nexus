@@ -1,15 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Blocks,
-  HomeIcon,
-  Landmark,
-  Library,
-  MessageCircleQuestion,
-  Settings2,
-  Users,
-} from "lucide-react";
+import { HomeIcon, Landmark, Library, Users } from "lucide-react";
 
 import { NavDashboards } from "~/components/nav/nav-dashboards";
 import { NavMain } from "~/components/nav/nav-main";
@@ -50,23 +42,7 @@ const data = {
       idPrefix: "institutions",
     },
   ],
-  navSecondary: [
-    {
-      title: "Templates",
-      url: "#",
-      icon: Blocks,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-    },
-    {
-      title: "Help",
-      url: "#",
-      icon: MessageCircleQuestion,
-    },
-  ],
+  navSecondary: [],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
