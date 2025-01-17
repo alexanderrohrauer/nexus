@@ -107,7 +107,6 @@ class WorksGeoHeatmap(Chart):
 
         return result + institution_map
 
-
 class TopResearcherWorksCount(Chart):
     identifier = "top_researcher_works_count"
     name = "Top Researcher works count"
@@ -132,7 +131,7 @@ class TopResearcherWorksCount(Chart):
 
 class BasicStats(Chart):
     identifier = "basic_stats"
-    name = "Basic stats"
+    name = "Summary chart"
     type = ChartType.MIXED
     chart_template = ChartTemplates.MARKDOWN
     generator = create_basic_generator(["researchers", "institutions", "works"])
@@ -147,15 +146,33 @@ class BasicStats(Chart):
         researchers_count = await Researcher.find(researcher_query, nesting_depth=2, fetch_links=True).count()
         institutions_count = await Institution.find(institution_query, nesting_depth=2, fetch_links=True).count()
 
-        # TODO maybe add some more stats...
+        works = await Work.find(works_query, nesting_depth=2, fetch_links=True).to_list()
+        works_df = pd.DataFrame([w.model_dump() for w in works])
+        highest_keywords = works_df.explode("keywords")["keywords"].value_counts().head(3)
+
+        researchers = await Researcher.find(researcher_query, nesting_depth=2, fetch_links=True).to_list()
+        researchers_df = pd.DataFrame([r.model_dump() for r in researchers])
+        researchers_df["works_count"] = researchers_df["openalex_meta"].apply(lambda meta: meta["works_count"] if meta is not None else None)
+        highest_researchers = researchers_df.iloc[researchers_df["works_count"].sort_values(ascending=False).head(3).index]
+        highest_researchers = [f"<a href=\"/researchers/{r['uuid']}\" target=\"_blank\">{r['full_name']}</a>" for r in highest_researchers.to_dict(orient="records")]
+
+        researchers_df["h_index"] = researchers_df["openalex_meta"].apply(lambda meta: meta["summary_stats"]["h_index"] if meta is not None else None)
+        highest_h_score = researchers_df.iloc[researchers_df["h_index"].idxmax()]
+
         works_md = f"""
 ### Works
 **Total count:** {works_count}
+
+**Most used keywords:** {", ".join(highest_keywords.index)}
         """
         result.add("works", Series(data=works_md, entity_type=EntityType.WORK))
         researchers_md = f"""
 ### Researchers
 **Total count:** {researchers_count}
+
+**Most publications:** {", ".join(highest_researchers)}
+
+**Highest H-Index:** <a href=\"/researchers/{highest_h_score['uuid']}\" target=\"_blank\">{highest_h_score['full_name']}</a> ({highest_h_score["h_index"]})
         """
         result.add("researchers", Series(data=researchers_md, entity_type=EntityType.RESEARCHER))
         institutions_md = f"""

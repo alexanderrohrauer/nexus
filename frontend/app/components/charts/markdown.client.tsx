@@ -4,6 +4,8 @@ import type {
   SchemaVisualizationData,
 } from "~/lib/api/types";
 import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 
 interface MarkdownVisualizationProps {
   visualization: SchemaVisualization;
@@ -21,7 +23,13 @@ export const MarkdownVisualization = React.forwardRef(function (
   );
   return (
     <div ref={ref} className="w-full">
-      <Markdown className="react-markdown">{md}</Markdown>
+      <Markdown
+        className="react-markdown"
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
+      >
+        {md}
+      </Markdown>
     </div>
   );
 });
