@@ -60,7 +60,7 @@ class ResearcherRelationGraph(Chart):
         nodes = []
         links = []
         for w in l1:
-            author_nodes = [{"id": a.uuid, "name": a.full_name, "category": cat_func(a), "symbolSize": size_func(a)} for a in w.authors]
+            author_nodes = [{"id": a.uuid, "name": a.full_name, "category": cat_func(a), "symbolSize": size_func(a), "$nexus": {"type": EntityType.RESEARCHER, "id": a.uuid}} for a in w.authors]
             nodes = nodes + author_nodes
             author_ids = [a.uuid for a in w.authors]
             pairs = list(combinations(author_ids, 2))
