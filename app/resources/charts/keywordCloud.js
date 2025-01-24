@@ -2,8 +2,8 @@ export default function (nexus, echarts) {
     return {
         plotOptions: {
             wordcloud: {
-                maxFontSize: 50,
-                minFontSize: 20
+                maxFontSize: 55,
+                minFontSize: 30
             }
         },
         series: [{
