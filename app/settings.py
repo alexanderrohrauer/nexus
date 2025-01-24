@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     default_batch_size: int = 20
     openalex_batch_size: int = 20
     db: str = "nexus_dev"
+    optimized_insert: bool = False
 
     model_config = SettingsConfigDict(env_file=".env")
 

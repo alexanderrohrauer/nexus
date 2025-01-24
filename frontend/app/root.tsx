@@ -34,7 +34,17 @@ export const links: LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
-  const queryClient = useMemo(() => new QueryClient(), []);
+  const queryClient = useMemo(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false, // default: true
+          },
+        },
+      }),
+    [],
+  );
 
   return (
     <html lang="en" suppressHydrationWarning className={theme}>

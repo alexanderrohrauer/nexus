@@ -1,9 +1,15 @@
 export default function (nexus, echarts) {
     return {
+        plotOptions: {
+            wordcloud: {
+                maxFontSize: 50,
+                minFontSize: 20
+            }
+        },
         series: [{
             type: 'wordcloud',
             data: Object.entries(nexus.series("works")).map(([key, value]) => ({name: key, weight: value.weight})),
-            name: 'Occurrences'
+            name: 'Occurrences',
         }],
         title: {
             text: '',

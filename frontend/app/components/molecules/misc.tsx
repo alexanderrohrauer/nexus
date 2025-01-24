@@ -26,11 +26,15 @@ export function IconText({
 
 export function Flag({ code, className = "" }) {
   return (
-    <TextTooltip text={getCountryName(code)}>
-      <img
-        src={`/public/flags/${code.toLowerCase()}.png`}
-        className={clsx("h-5", className)}
-      />
-    </TextTooltip>
+    <>
+      {code && (
+        <TextTooltip text={getCountryName(code)}>
+          <img
+            src={`/public/flags/${code.toLowerCase()}.png`}
+            className={clsx("h-5", className)}
+          />
+        </TextTooltip>
+      )}
+    </>
   );
 }

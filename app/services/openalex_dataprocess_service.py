@@ -16,33 +16,34 @@ logger = logging.getLogger("uvicorn.error")
 def restructure_works(works: list[dict], authors: list[Researcher]):
     result = []
     for work in works:
-        keywords = [kw["display_name"] for kw in work["keywords"]]
-        # TODO implement a merger logic
-        author_links = []
-        for author in work["authorships"]:
-            author_id = parse_openalex_id(author["author"]["id"])
-            try:
-                author_links.append(next(a for a in authors if a.external_id.openalex == author_id).id)
-            except StopIteration:
-                logger.error(f"Author with id " + author_id + " not found in work " + work["id"])
-                continue
-        ids = work["ids"].copy()
-        ids["openalex"] = parse_openalex_id(ids["openalex"])
-        ids["doi"] = parse_doi(ids["doi"]) if "doi" in ids else None
-        parsed = Work(
-            external_id=WorkExternalId(**ids),
-            title=html.unescape(work["title"].strip()),
-            type=WorkType(openalex=work["type"]),
-            publication_year=int(work["publication_year"]),
-            publication_date=date.fromisoformat(work["publication_date"]),
-            keywords=keywords,
-            authors=author_links,
-            language=work["language"],
-            open_access=work["open_access"]["is_oa"],
-            openalex_meta=work
-        )
-        parsed.snm_key = compute_work_snm_key(parsed)
-        result.append(parsed)
+        if work["title"] is not None:
+            keywords = [kw["display_name"] for kw in work["keywords"]]
+            # TODO implement a merger logic
+            author_links = []
+            for author in work["authorships"]:
+                author_id = parse_openalex_id(author["author"]["id"])
+                try:
+                    author_links.append(next(a for a in authors if a.external_id.openalex == author_id).id)
+                except StopIteration:
+                    logger.error(f"Author with id " + author_id + " not found in work " + work["id"])
+                    continue
+            ids = work["ids"].copy()
+            ids["openalex"] = parse_openalex_id(ids["openalex"])
+            ids["doi"] = parse_doi(ids["doi"]) if "doi" in ids else None
+            parsed = Work(
+                external_id=WorkExternalId(**ids),
+                title=html.unescape(work["title"].strip()),
+                type=WorkType(openalex=work["type"]),
+                publication_year=int(work["publication_year"]),
+                publication_date=date.fromisoformat(work["publication_date"]),
+                keywords=keywords,
+                authors=author_links,
+                language=work["language"],
+                open_access=work["open_access"]["is_oa"],
+                openalex_meta=work
+            )
+            parsed.snm_key = compute_work_snm_key(parsed)
+            result.append(parsed)
     return result
 
 

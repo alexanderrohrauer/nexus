@@ -1,14 +1,24 @@
+import logging
 from uuid import UUID
 
 from app.models import Work
 
+WORKS_AUTHORS_MAX_LENGTH = 30
+
+logger = logging.getLogger("uvicorn.error")
+
 
 async def insert_many(works: list[Work]):
     for work in works:
-        await Work.insert_one(work)
+        if len(work.authors) > WORKS_AUTHORS_MAX_LENGTH:
+            await Work.insert_one(work)
+        else:
+            logger.error(f"Error while inserting work {work.external_id}: Validation failed")
+
 
 async def find_by_id(uuid: UUID):
     return await Work.find_one(Work.uuid == uuid)
+
 
 async def find_duplicates(uuid: UUID) -> list[Work]:
     entity = await find_by_id(uuid)

@@ -300,17 +300,20 @@ class MixedActivityYearsTypes(Chart):
 
         field_name = chart_input.special_fields.get(MixedActivityYearsTypes.TYPE_FIELD_NAME)
 
-        works = await Work.find(work_query, Not(Work.publication_year == None), nesting_depth=2,
-                                fetch_links=True).to_list()
-        works_df = pd.DataFrame([i.model_dump() for i in works])
-        works_df["dblp_type"] = works_df["type"].apply(lambda inst: inst.get("dblp"))
-        works_df["openalex_type"] = works_df["type"].apply(lambda inst: inst.get("openalex"))
+        works = await Work.find(work_query, Not(Work.publication_year == None), fetch_links=True, nesting_depth=2).to_list()
+        if len(works) > 0:
+            works_df = pd.DataFrame([i.model_dump() for i in works])
+            works_df["dblp_type"] = works_df["type"].apply(lambda inst: inst.get("dblp"))
+            works_df["openalex_type"] = works_df["type"].apply(lambda inst: inst.get("openalex"))
 
-        grouped = works_df.groupby(['publication_year', field_name]).size().unstack(fill_value=0)
+            grouped = works_df.groupby(['publication_year', field_name]).size().unstack(fill_value=0)
 
-        data = grouped.to_dict(orient='list')
+            data = grouped.to_dict(orient='list')
 
-        years = grouped.index.tolist()
+            years = grouped.index.tolist()
+        else:
+            data = []
+            years = []
 
         result.add("works", Series(data={"data": data, "years": years}, entity_type=EntityType.WORK))
         return result
