@@ -119,10 +119,10 @@ class TopResearcherWorksCount(Chart):
     async def get_series(self, chart_input: ChartInput) -> SeriesMap:
         result = SeriesMap()
         query = chart_input.get_series_query("researchers")
-        researchers = await Researcher.find(query, nesting_depth=2, fetch_links=True).to_list()
+        researchers = await Researcher.find(query, Not(Researcher.openalex_meta == None), nesting_depth=2, fetch_links=True).to_list()
         points = []
         for researcher in researchers:
-            points.append([researcher.full_name, {"value": len(researcher.works),
+            points.append([researcher.full_name, {"value": researcher.openalex_meta["works_count"],
                                                   "$nexus": {"type": EntityType.RESEARCHER, "id": researcher.uuid}}])
         #     TODO limit could be dynamic
         # TODO maybe set color?
