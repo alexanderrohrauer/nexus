@@ -3,6 +3,7 @@ import pandas as pd
 from beanie.odm.operators.find.logical import Not
 
 from app.models import Work, Institution, Researcher
+from app.utils.db_utils import fix_location_util
 from app.utils.visualization_utils import Chart, ChartType, ChartTemplates, read_generator, SeriesMap, ChartInput, \
     Series, EntityType, create_basic_generator
 
@@ -48,7 +49,7 @@ class InstitutionsMap(Chart):
         icon = kwargs.get("icon") or "institution.png"
         series = {"type": "marker",
                   "showAtZoom": kwargs.get("show_at_zoom"),
-                  "data": [{"id": i.uuid, "name": i.name, "position": i.location, "icon": icon,
+                  "data": [{"id": i.uuid, "name": i.name, "position": fix_location_util(i.location), "icon": icon,
                             "$nexus": {"type": EntityType.INSTITUTION, "id": i.uuid}} for i in institutions]}
         result.add("institutions", Series(data=series, entity_type=EntityType.INSTITUTION))
         return result
@@ -68,7 +69,7 @@ class ResearcherMap(Chart):
         icon = kwargs.get("icon") or "researcher.png"
         series = {"type": "marker",
                   "showAtZoom": kwargs.get("show_at_zoom"),
-                  "data": [{"id": r.uuid, "name": r.full_name, "position": r.institution.location, "icon": icon,
+                  "data": [{"id": r.uuid, "name": r.full_name, "position": fix_location_util(r.institution.location), "icon": icon,
                             "$nexus": {"type": EntityType.RESEARCHER, "id": r.uuid}} for r in researchers]}
         result.add("researchers", Series(data=series, entity_type=EntityType.RESEARCHER))
         return result

@@ -1,4 +1,5 @@
-from typing import Union
+import random
+from typing import Union, Tuple
 
 from beanie.odm.documents import FindType
 from beanie.odm.queries.find import FindOne
@@ -26,3 +27,7 @@ async def require_instance(result: Union[FindOne[FindType], FindOne["DocumentPro
         return result
     else:
         raise HTTPException(status_code=404, detail="This instance was not found!")
+
+
+def fix_location_util(location: Tuple[float, float]):
+    return location[0] + random.uniform(0.0002, 0.0003), location[1]
