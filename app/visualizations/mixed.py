@@ -53,6 +53,25 @@ class InstitutionsMap(Chart):
         result.add("institutions", Series(data=series, entity_type=EntityType.INSTITUTION))
         return result
 
+class ResearcherMap(Chart):
+    identifier = "researcher_map"
+    name = "Researcher map"
+    type = ChartType.MIXED
+    chart_template = ChartTemplates.LEAFLET
+    generator = create_basic_generator(["researchers"])
+
+    async def get_series(self, chart_input: ChartInput, **kwargs) -> SeriesMap:
+        result = SeriesMap()
+        researchers = await Researcher.find(Not(Researcher.institution == None),
+                                              chart_input.get_series_query("researchers"), nesting_depth=2,
+                                              fetch_links=True).to_list()
+        icon = kwargs.get("icon") or "researcher.png"
+        series = {"type": "marker",
+                  "showAtZoom": kwargs.get("show_at_zoom"),
+                  "data": [{"id": r.uuid, "name": r.full_name, "position": r.institution.location, "icon": icon,
+                            "$nexus": {"type": EntityType.RESEARCHER, "id": r.uuid}} for r in researchers]}
+        result.add("researchers", Series(data=series, entity_type=EntityType.RESEARCHER))
+        return result
 
 class WorksGeoHeatmap(Chart):
     identifier = "works_geo_heatmap"
