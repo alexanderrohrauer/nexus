@@ -36,6 +36,7 @@ const MARKER_SIZES = {
   "dot.svg": { iconSize: [24, 24], iconAnchor: [12, 16] },
   "marker-icon.png": { iconSize: [24, 36], iconAnchor: [12, 36] },
   "institution.png": { iconSize: [25, 38], iconAnchor: [12, 38] },
+  "researcher.png": { iconSize: [25, 38], iconAnchor: [12, 38] },
 };
 
 const addMarkerSeries = (series: any, map: L.Map) => {
