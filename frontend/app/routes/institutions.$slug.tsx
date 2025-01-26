@@ -9,6 +9,7 @@ import { ProfileSection } from "~/components/molecules/profile-section";
 import { ProfileVisualization } from "~/components/templates/profile-visualization";
 import React from "react";
 import { InstitutionCurrentResearchers } from "~/components/charts/institution-current-researchers";
+import { Routes } from "~/routes";
 
 interface InstitutionProps {}
 
@@ -44,6 +45,7 @@ export default function Institution(props: InstitutionProps) {
             duplicates={duplicates}
             mutateUrl="/institutions/{uuid}/mark-for-removal"
             renderName={(entity: SchemaInstitution) => entity.name}
+            route={Routes.Institution}
           />
         </ProfileSection>
       )}

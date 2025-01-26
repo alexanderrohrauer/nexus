@@ -10,7 +10,7 @@ logger = logging.getLogger("uvicorn.error")
 
 async def insert_many(works: list[Work]):
     for work in works:
-        if len(work.authors) > WORKS_AUTHORS_MAX_LENGTH:
+        if work.authors is None or len(work.authors) <= WORKS_AUTHORS_MAX_LENGTH:
             await Work.insert_one(work)
         else:
             logger.error(f"Error while inserting work {work.external_id}: Validation failed")

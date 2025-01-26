@@ -7,12 +7,12 @@ import type {
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
 import { mapParams } from "~/lib/links";
-import { Routes } from "~/routes";
 import { NavLink, useSearchParams } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
 import { useToast } from "~/lib/toast";
+import type { Routes } from "~/routes";
 
 interface DuplicationSectionProps {
   entity: SchemaResearcher | SchemaWorkOutput | SchemaInstitution;
@@ -21,6 +21,7 @@ interface DuplicationSectionProps {
   renderName: (
     entity: SchemaResearcher | SchemaWorkOutput | SchemaInstitution,
   ) => string;
+  route: Routes;
 }
 
 export function DuplicationSection(props: DuplicationSectionProps) {
@@ -57,7 +58,7 @@ export function DuplicationSection(props: DuplicationSectionProps) {
               <div className="flex space-x-3 items-center">
                 <NavLink
                   to={
-                    mapParams(Routes.Researcher, { uuid: duplicate.uuid }) +
+                    mapParams(props.route, { uuid: duplicate.uuid }) +
                     `?${searchParams}`
                   }
                   className="font-medium"

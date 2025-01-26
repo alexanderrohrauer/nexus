@@ -27,7 +27,7 @@ async def deduplicate_works():
         if len(works) > 0:
             current_work = works[-1]
             duplication_key = current_work.duplication_key or uuid4()
-            for prev_work in reversed(works[:1]):
+            for prev_work in reversed(works[:-1]):
                 if prev_work.uuid != current_work.uuid:
                     distance = nltk.edit_distance(prev_work.normalized_title, current_work.normalized_title)
                     id_match = prev_work.external_id.matches(current_work.external_id)

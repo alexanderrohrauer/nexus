@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Edit, Link, MoreHorizontal, Trash2 } from "lucide-react";
+import { ArrowUpRight, Link, MoreHorizontal, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -27,12 +27,10 @@ import { NavLink } from "@remix-run/react";
 import { mapParams } from "~/lib/links";
 import { Routes } from "~/routes";
 import { useLocation, useNavigate } from "react-router";
-import { SchemaDashboardMinimal } from "~/lib/api/types";
+import type { SchemaDashboardMinimal } from "~/lib/api/types";
 import { AddDashboardDialog } from "~/components/molecules/add-dashboard-dialog";
-import {
-  ConfirmationModal,
-  ConfirmationModalRef,
-} from "~/components/molecules/confirmation-modal";
+import type { ConfirmationModalRef } from "~/components/molecules/confirmation-modal";
+import { ConfirmationModal } from "~/components/molecules/confirmation-modal";
 import { useToast } from "~/lib/toast";
 
 export function NavDashboards() {
@@ -116,10 +114,10 @@ export function NavDashboards() {
                     </NavLink>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Edit className="text-muted-foreground" />
-                    <span>Edit</span>
-                  </DropdownMenuItem>
+                  {/*<DropdownMenuItem>*/}
+                  {/*  <Edit className="text-muted-foreground" />*/}
+                  {/*  <span>Edit</span>*/}
+                  {/*</DropdownMenuItem>*/}
                   <DropdownMenuItem
                     className="text-destructive"
                     onClick={() => deleteConf.current?.trigger(item)}

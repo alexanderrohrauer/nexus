@@ -71,30 +71,32 @@ class WorksGeoHeatmap(Chart):
                 if isinstance(author.institution,
                               Institution) and author.institution.location is not None:
                     lng_lat = author.institution.location
-                    inst_id = str(author.institution.id)
+                    key = str(author.institution.location)
                     try:
-                        lng_lat_map[inst_id][-1] = lng_lat_map[inst_id][-1] + 1
+                        lng_lat_map[key][-1] = lng_lat_map[key][-1] + 1
                     except KeyError:
-                        lng_lat_map[inst_id] = [lng_lat[1], lng_lat[0], 1]
+                        lng_lat_map[key] = [lng_lat[1], lng_lat[0], 1]
 
 
         heatmap_data = list(lng_lat_map.values())
         np_data = np.array(heatmap_data)
         series_data = []
+        q1 = 1
         q2 = 1
         q3 = 1
         if len(np_data)> 0:
             series = pd.Series(np_data[:, 2])
             scaled = series / series.abs().max()
             np_data[:, 2] = scaled
-            q2 = str(scaled.quantile(.5))
-            q3 = str(scaled.quantile(.9))
+            q1 = np.percentile(scaled, 25)
+            q2 = np.percentile(scaled, 50)
+            q3 = np.percentile(scaled, 80)
             series_data = np_data.tolist()
 
         data = {"type": "heatmap",
                 "data": {
                     "data": series_data,
-                    "gradient": {"0.0": "blue", q2: "lime", q3: "red"},
+                    "gradient": {q1: "blue", q2: "lime", q3: "red"},
                     "radius": 10,
                     "minOpacity": .2
                 }

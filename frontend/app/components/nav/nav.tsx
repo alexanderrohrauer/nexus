@@ -12,8 +12,6 @@ import {
   SidebarTrigger,
 } from "~/components/ui/sidebar";
 import { useNav } from "~/components/context/nav-context";
-import { Button } from "~/components/ui/button";
-import { Edit } from "lucide-react";
 import { AddVisualizationDialog } from "~/components/molecules/add-visualization-dialog";
 
 export function Nav(props: React.PropsWithChildren) {
@@ -39,9 +37,9 @@ export function Nav(props: React.PropsWithChildren) {
           </div>
           {dashboard && (
             <div className="flex space-x-3">
-              <Button variant="outline" size="icon">
-                <Edit />
-              </Button>
+              {/*<Button variant="outline" size="icon">*/}
+              {/*  <Edit />*/}
+              {/*</Button>*/}
               <AddVisualizationDialog dashboard={dashboard} />
             </div>
           )}

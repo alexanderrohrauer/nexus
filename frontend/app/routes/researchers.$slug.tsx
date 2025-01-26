@@ -9,6 +9,7 @@ import { ProfileVisualization } from "~/components/templates/profile-visualizati
 import { ProfileSection } from "~/components/molecules/profile-section";
 import { AffiliationsVisualization } from "~/components/charts/affiliations-visualization";
 import { ResearcherProfile } from "~/components/charts/researcher-profile";
+import { Routes } from "~/routes";
 
 interface ResearcherProps {}
 
@@ -44,6 +45,7 @@ export default function Researcher(props: ResearcherProps) {
             duplicates={duplicates}
             mutateUrl="/researchers/{uuid}/mark-for-removal"
             renderName={(entity: SchemaResearcher) => entity.full_name}
+            route={Routes.Researcher}
           />
         </ProfileSection>
       )}

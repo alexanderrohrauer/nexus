@@ -7,6 +7,8 @@ from beanie.odm.operators.find.comparison import In
 from app.models import Affiliation, Work
 from app.utils.visualization_utils import Chart, ChartType, ChartTemplates, ChartInput, SeriesMap, \
     create_basic_generator, EntityType, Series, read_generator
+
+
 # from app.visualizations import MixedResearchActivity
 
 

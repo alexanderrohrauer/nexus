@@ -9,6 +9,7 @@ import { WorkProfile } from "~/components/charts/work-profile";
 import { ProfileVisualization } from "~/components/templates/profile-visualization";
 import { InstitutionCurrentResearchers } from "~/components/charts/institution-current-researchers";
 import React from "react";
+import { Routes } from "~/routes";
 
 interface WorkProps {}
 
@@ -43,6 +44,7 @@ export default function Work(props: WorkProps) {
             duplicates={duplicates}
             mutateUrl="/works/{uuid}/mark-for-removal"
             renderName={(entity: SchemaWorkOutput) => entity.title}
+            route={Routes.Work}
           />
         </ProfileSection>
       )}

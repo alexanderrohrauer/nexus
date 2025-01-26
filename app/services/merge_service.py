@@ -31,7 +31,6 @@ async def merge_researchers(r1: Researcher, r2: Researcher) -> Researcher:
     r1 = r2.model_copy(
         update=r1.model_dump(exclude_none=True))
     r1.external_id = external_id
-    # TODO some researchers do not have affiliations after deduplication
     r1.affiliations = r1.affiliations or r2.affiliations
     r1.institution = r1.institution or r2.institution
     assigned_works = await Work.find(Work.authors.id == r2.id).to_list()
@@ -48,7 +47,7 @@ async def merge_works(w1: Work, w2: Work) -> Work:
     logger.info(f"Deduplicate works '{w1.title}' and '{w2.title}'")
     external_id = w2.external_id.model_copy(update=w1.external_id.model_dump(exclude_none=True))
     w_type = w2.type.model_copy(update=w1.type.model_dump(exclude_none=True))
-    w1 = w2.model_copy(update=w1.model_dump(exclude_none=True))
+    w1 = w2.model_copy(update=w1.model_dump(exclude_none=True, exclude={"authors"}))
     w1.external_id = external_id
     w1.type = w_type
     authors = []
