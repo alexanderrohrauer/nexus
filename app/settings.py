@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     openalex_batch_size: int = 20
     db: str = "nexus_dev"
     optimized_insert: bool = False
+    mongo_cache_minutes: int = 60
 
     model_config = SettingsConfigDict(env_file=".env")
 

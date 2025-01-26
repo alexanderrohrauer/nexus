@@ -1,3 +1,4 @@
+from datetime import timedelta
 from enum import Enum
 
 from beanie import Link, BackLink
@@ -6,6 +7,7 @@ from typing_extensions import Optional
 
 from app.db.models import EditableDocument, SNMEntity
 from app.models import Institution
+from app.settings import get_settings
 
 
 class ResearcherExternalId(BaseModel):
@@ -62,3 +64,5 @@ class Researcher(EditableDocument, SNMEntity):
 
     class Settings:
         validate_on_save = True
+        use_cache = True
+        cache_expiration_time = timedelta(minutes=get_settings().mongo_cache_minutes)

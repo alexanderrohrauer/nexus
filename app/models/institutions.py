@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Optional, Tuple, Annotated
 
 import pymongo
@@ -5,6 +6,7 @@ from beanie import Indexed, BackLink
 from pydantic import Field, HttpUrl, BaseModel
 
 from app.db.models import EditableDocument, SNMEntity
+from app.settings import get_settings
 
 
 class InstitutionExternalId(BaseModel):
@@ -55,3 +57,5 @@ class Institution(EditableDocument, SNMEntity):
 
     class Settings:
         validate_on_save = True
+        use_cache = True
+        cache_expiration_time = timedelta(minutes=get_settings().mongo_cache_minutes)

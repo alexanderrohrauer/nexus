@@ -144,10 +144,6 @@ class BasicStats(Chart):
         researcher_query = chart_input.get_series_query("researchers")
         institution_query = chart_input.get_series_query("institutions")
 
-        works_count = await Work.find(works_query, nesting_depth=2, fetch_links=True).count()
-        researchers_count = await Researcher.find(researcher_query, nesting_depth=2, fetch_links=True).count()
-        institutions_count = await Institution.find(institution_query, nesting_depth=2, fetch_links=True).count()
-
         works = await Work.find(works_query, nesting_depth=2, fetch_links=True).to_list()
         works_df = pd.DataFrame([w.model_dump() for w in works])
         highest_keywords = works_df.explode("keywords")["keywords"].value_counts().head(3)
@@ -161,16 +157,18 @@ class BasicStats(Chart):
         researchers_df["h_index"] = researchers_df["openalex_meta"].apply(lambda meta: meta["summary_stats"]["h_index"] if meta is not None else None)
         highest_h_score = researchers_df.iloc[researchers_df["h_index"].idxmax()]
 
+        institutions = await Institution.find(institution_query, nesting_depth=2, fetch_links=True).to_list()
+
         works_md = f"""
 ### Works
-**Total count:** {works_count}
+**Total count:** {len(works)}
 
 **Most used keywords:** {", ".join(highest_keywords.index)}
         """
         result.add("works", Series(data=works_md, entity_type=EntityType.WORK))
         researchers_md = f"""
 ### Researchers
-**Total count:** {researchers_count}
+**Total count:** {len(researchers)}
 
 **Most publications:** {", ".join(highest_researchers)}
 
@@ -179,7 +177,7 @@ class BasicStats(Chart):
         result.add("researchers", Series(data=researchers_md, entity_type=EntityType.RESEARCHER))
         institutions_md = f"""
 ### Institutions
-**Total count:** {institutions_count}
+**Total count:** {len(institutions)}
         """
         result.add("institutions", Series(data=institutions_md, entity_type=EntityType.INSTITUTION))
         return result

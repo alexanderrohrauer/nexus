@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from typing import Optional
 
 from beanie import Link
@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from app.db.models import EditableDocument, SNMEntity
 from app.models.researchers import Researcher
+from app.settings import get_settings
 
 
 class WorkExternalId(BaseModel):
@@ -66,3 +67,5 @@ class Work(EditableDocument, SNMEntity):
 
     class Settings:
         validate_on_save = True
+        use_cache = True
+        cache_expiration_time = timedelta(minutes=get_settings().mongo_cache_minutes)
