@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     db: str = "nexus_dev"
     optimized_insert: bool = False
     mongo_cache_minutes: int = 60
+    mongo_cache_enabled: bool = True
 
     model_config = SettingsConfigDict(env_file=".env")
 

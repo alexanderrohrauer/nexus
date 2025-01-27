@@ -64,5 +64,5 @@ class Researcher(EditableDocument, SNMEntity):
 
     class Settings:
         validate_on_save = True
-        use_cache = True
+        use_cache = get_settings().mongo_cache_enabled
         cache_expiration_time = timedelta(minutes=get_settings().mongo_cache_minutes)
