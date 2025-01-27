@@ -17,6 +17,7 @@ import { NavLink } from "@remix-run/react";
 import { mapParams } from "~/lib/links";
 import { Routes } from "~/routes";
 import { KeywordSection } from "~/components/molecules/keyword-section";
+import { clsx } from "clsx";
 
 interface ProfileVisualizationProps {
   researcher: SchemaResearcher;
@@ -77,16 +78,15 @@ export function ResearcherProfile({ researcher }: ProfileVisualizationProps) {
         <div>
           <IconText icon={SquareArrowOutUpRight}>External IDs</IconText>
           <div className="space-x-2">
-            {externalIds.map(
-              (id) =>
-                researcher.external_id[id] && (
-                  <a
-                    key={id}
-                    href={getExternalUrl(id, researcher.external_id[id])}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Badge variant="outline" className="space-x-1">
+            {externalIds.map((id) => {
+              if (researcher.external_id[id]) {
+                const url = getExternalUrl(id, researcher.external_id[id]);
+                return (
+                  <a key={id} href={url} target="_blank" rel="noreferrer">
+                    <Badge
+                      variant="outline"
+                      className={clsx("space-x-1", url && "hover:bg-muted")}
+                    >
                       <Source source={id} />
                       <span>
                         {researcher.external_id[id].startsWith("http")
@@ -95,8 +95,9 @@ export function ResearcherProfile({ researcher }: ProfileVisualizationProps) {
                       </span>
                     </Badge>
                   </a>
-                ),
-            )}
+                );
+              }
+            })}
           </div>
         </div>
         {researcher.topic_keywords && (

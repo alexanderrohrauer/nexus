@@ -78,7 +78,7 @@ export const VisualizationFrame = function (props: VisualizationFrameProps) {
   return (
     <div className="flex flex-col h-full p-3 space-y-1">
       <div className="flex items-center justify-between">
-        <h1 className="font-medium">
+        <h1 className="font-semibold">
           {props.visualization ? props.visualization.title : props.title}
         </h1>
         <div className="space-x-1">

@@ -17,6 +17,7 @@ import {
 import { Flag, IconText } from "~/components/molecules/misc";
 import { getCountryName } from "~/lib/text-util";
 import { KeywordSection } from "~/components/molecules/keyword-section";
+import { clsx } from "clsx";
 
 interface InstitutionProfileProps {
   institution: SchemaInstitution;
@@ -89,16 +90,15 @@ export function InstitutionProfile({ institution }: InstitutionProfileProps) {
         <div>
           <IconText icon={SquareArrowOutUpRight}>External IDs</IconText>
           <div className="space-x-2">
-            {externalIds.map(
-              (id) =>
-                institution.external_id[id] && (
-                  <a
-                    key={id}
-                    href={getExternalUrl(id, institution.external_id[id])}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Badge variant="outline" className="space-x-1">
+            {externalIds.map((id) => {
+              if (institution.external_id[id]) {
+                const url = getExternalUrl(id, institution.external_id[id]);
+                return (
+                  <a key={id} href={url} target="_blank" rel="noreferrer">
+                    <Badge
+                      variant="outline"
+                      className={clsx("space-x-1", url && "hover:bg-muted")}
+                    >
                       <Source source={id} />
                       <span>
                         {institution.external_id[id].startsWith("http")
@@ -107,8 +107,9 @@ export function InstitutionProfile({ institution }: InstitutionProfileProps) {
                       </span>
                     </Badge>
                   </a>
-                ),
-            )}
+                );
+              }
+            })}
           </div>
         </div>
         <div className="flex space-x-10">

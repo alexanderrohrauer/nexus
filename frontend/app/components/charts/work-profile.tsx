@@ -3,7 +3,6 @@ import type { SchemaWorkOutput } from "~/lib/api/types";
 import { EntityType } from "~/lib/api/types";
 import { Source, Sources } from "~/components/molecules/sources";
 import { Badge } from "~/components/ui/badge";
-import { getExternalUrl } from "~/lib/link-util";
 import { TextTooltip } from "~/components/molecules/text-tooltip";
 import {
   Box,
@@ -19,6 +18,8 @@ import {
 import { IconText } from "~/components/molecules/misc";
 import { getLanguageName } from "~/lib/text-util";
 import { KeywordSection } from "~/components/molecules/keyword-section";
+import { getExternalUrl } from "~/lib/link-util";
+import { clsx } from "clsx";
 
 interface WorkProfileProps {
   work: SchemaWorkOutput;
@@ -73,20 +74,19 @@ export function WorkProfile({ work }: WorkProfileProps) {
         <div>
           <IconText icon={SquareArrowOutUpRight}>External IDs</IconText>
           <div className="space-x-2">
-            {externalIds.map(
-              (id) =>
-                work.external_id[id] && (
-                  <a
-                    key={id}
-                    href={getExternalUrl(
-                      id,
-                      work.external_id[id],
-                      EntityType.WORK,
-                    )}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Badge variant="outline" className="space-x-1">
+            {externalIds.map((id) => {
+              if (work.external_id[id]) {
+                const url = getExternalUrl(
+                  id,
+                  work.external_id[id],
+                  EntityType.WORK,
+                );
+                return (
+                  <a key={id} href={url} target="_blank" rel="noreferrer">
+                    <Badge
+                      variant="outline"
+                      className={clsx("space-x-1", url && "hover:bg-muted")}
+                    >
                       <Source source={id} />
                       <span>
                         {work.external_id[id].startsWith("http")
@@ -95,8 +95,9 @@ export function WorkProfile({ work }: WorkProfileProps) {
                       </span>
                     </Badge>
                   </a>
-                ),
-            )}
+                );
+              }
+            })}
           </div>
         </div>
         <div className="flex space-x-10">
