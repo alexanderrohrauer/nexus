@@ -151,7 +151,7 @@ class TopResearcherWorksCount(Chart):
         return result
 
 
-class BasicStats(Chart):
+class SummaryChart(Chart):
     identifier = "basic_stats"
     name = "Summary chart"
     type = ChartType.MIXED
@@ -361,7 +361,7 @@ class KeywordCloud(Chart):
         return result
 
 
-class PackedKeywordsBubbleChart(Chart):
+"""class PackedKeywordsBubbleChart(Chart):
     identifier = "packed_keywords_bubble_chart"
     name = "Top-10 Keywords Researchers (Bubble)"
     type = ChartType.MIXED
@@ -399,3 +399,4 @@ class PackedKeywordsBubbleChart(Chart):
 
         result.add("works", Series(data=data, entity_type=EntityType.WORK))
         return result
+"""
