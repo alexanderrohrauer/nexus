@@ -19,6 +19,14 @@ The OpenAPI REST-API documentation is available at `http://localhost:8000/docs`
 5. Run `curl -X POST "http://127.0.0.1:8000/import-task/run-duplicate-elimination"`. This may take a while depending on the amount of data imported in the first step.
 6. Any duplicates which require manual duplicate elimination can be filtered in the Overview visualization with the filter set to `duplication_key not equals null`
 
+You can reset the cursor for the import-process with:
+```
+curl -X PUT "http://127.0.0.1:8000/import-task/reset-cursors" \
+     -H "Content-Type: application/json" \
+     -d '{
+        "jobs": ["openalex_import_job", "dblp_import_job"]
+     }';
+```
 ## Citation
 ```
 @mastersthesis{Rohrauer_2025a,

@@ -30,7 +30,7 @@ export function Flag({ code, className = "" }) {
       {code && (
         <TextTooltip text={getCountryName(code)}>
           <img
-            src={`/public/flags/${code.toLowerCase()}.png`}
+            src={`/flags/${code.toLowerCase()}.png`}
             className={clsx("h-5", className)}
           />
         </TextTooltip>
