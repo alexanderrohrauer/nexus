@@ -4,7 +4,7 @@ This repository includes the source code for the prototype _Nexus_ of my Bachelo
 
 ## Installation
 1. Install Docker
-2. If cached example-data is needed you can copy the *.sqlite cache files into the "app" folder of this repository
+2. If cached example-data is needed you can copy the *.sqlite cache files from `caches` folder into the `app` folder of this repository
 3. Make sure, nothing runs on ports 3000, 8000 and 27017
 4. Run `docker compose up -d`
 5. After the startup was complete (~10sec), you can access the UI at `http://localhost:3000` and the REST-API at `http://localhost:8000`
