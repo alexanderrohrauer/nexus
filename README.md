@@ -27,6 +27,7 @@ curl -X PUT "http://127.0.0.1:8000/import-task/reset-cursors" \
         "jobs": ["openalex_import_job", "dblp_import_job"]
      }';
 ```
+Alternatively, you can insert example-data directly into your mongo database with the dumps at https://jkulinz-my.sharepoint.com/:f:/g/personal/k12105578_students_jku_at/Eo__4iwSOtpJrOX4FQy8ANEBVuVVOYmvlhB0KZM4oy7wGA?e=SWnF6f. Use the script `mongo_import.sh` and adapt it to the name of your used database schema (modify `--db` argument).
 ## Citation
 ```
 @mastersthesis{Rohrauer_2025a,
