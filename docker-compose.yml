@@ -19,7 +19,7 @@ services:
       EVALUATION_MODE: false
       DEFAULT_BATCH_SIZE: 20
       OPENALEX_BATCH_SIZE: 20
-      DB: nexus_final
+      DB: nexus_prod
       OPTIMIZED_INSERT: true
       MONGO_CACHE_MINUTES: 60
       MONGO_CACHE_ENABLED: true
