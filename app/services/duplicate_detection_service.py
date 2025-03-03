@@ -14,9 +14,6 @@ RESEARCHERS_LEVENSHTEIN_THRESHOLD = 3
 INSTITUTIONS_LEVENSHTEIN_THRESHOLD = 3
 
 
-# TODO maybe some day only deduplicate newly added records...
-# TODO extract mongo calls to service
-# TODO generalize methods
 async def deduplicate_works():
     works = None
     skip = 0

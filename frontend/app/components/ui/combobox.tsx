@@ -36,7 +36,6 @@ interface ComboboxProps {
 export function Combobox(props: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
-  // TODO fix combobox
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <div className="relative">

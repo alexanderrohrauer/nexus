@@ -41,7 +41,6 @@ export function NavDashboards() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  // TODO error handler
   const { data: dashboards, error } = useQuery({
     queryKey: ["dashboards"],
     queryFn: () => client.GET("/dashboards").then((r) => r.data),
@@ -74,7 +73,6 @@ export function NavDashboards() {
     toast.info("Link copied!", { duration: 2000 });
   };
 
-  // TODO fix error/loading handling
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Dashboards</SidebarGroupLabel>

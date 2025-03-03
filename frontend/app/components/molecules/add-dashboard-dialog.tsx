@@ -10,7 +10,7 @@ import {
 } from "~/components/ui/dialog";
 import { InputField } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { SchemaCreateDashboardRequest } from "~/lib/api/types";
+import type { SchemaCreateDashboardRequest } from "~/lib/api/types";
 import { Plus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { client } from "~/lib/api/api-client";
@@ -35,7 +35,6 @@ export function AddDashboardDialog(props: AddDashboardDialogProps) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  // TODO error handler
   const addMutation = useMutation({
     mutationFn: (data: SchemaCreateDashboardRequest) =>
       client.POST("/dashboards", {
@@ -70,7 +69,6 @@ export function AddDashboardDialog(props: AddDashboardDialogProps) {
           onSubmit={addMutation.mutateAsync}
         >
           <Form className="space-y-3">
-            {/*TODO maybe create a separate component for this div...*/}
             <div>
               <Label htmlFor="title">Title</Label>
               <InputField name="title" placeholder="Title" required />

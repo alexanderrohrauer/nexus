@@ -36,7 +36,6 @@ class WorkType(BaseModel):
     dblp: Optional[str] = None
 
 
-# TODO maybe related works...
 class Work(EditableDocument, SNMEntity):
     external_id: WorkExternalId
     title: str
@@ -53,7 +52,6 @@ class Work(EditableDocument, SNMEntity):
 
     @property
     def normalized_title(self):
-        # TODO normalize eventually...
         return self.title.lower()
 
     def replace_author(self, researcher: Researcher, replacement: Researcher):

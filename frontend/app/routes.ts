@@ -1,5 +1,4 @@
 export enum Routes {
-  //   TODO maybe do slugs?
   Home = "/",
   Works = "/works",
   Work = "/works/{uuid}",

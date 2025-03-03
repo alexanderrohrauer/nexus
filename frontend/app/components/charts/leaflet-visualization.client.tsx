@@ -20,7 +20,6 @@ interface LeafletVisualizationProps {
   response: SchemaVisualizationData;
 }
 
-// TODO maybe fix resize window some day...
 export const LeafletVisualization = React.forwardRef(function (
   props: LeafletVisualizationProps,
   ref: React.ForwardedRef<HTMLDivElement>,

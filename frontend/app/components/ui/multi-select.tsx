@@ -106,7 +106,6 @@ interface MultiSelectProps
   onSearch?: (search: string) => void;
   selectedValue: Option[];
 }
-// TODO duplicate items hover bug in options
 export const MultiSelect: React.FC<MultiSelectProps> = ({
   options,
   onValueChange,

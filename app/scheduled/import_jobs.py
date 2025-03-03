@@ -40,7 +40,7 @@ async def openalex_import_job(n_batches: int, keywords: list[str], cursor: Curso
 
 def orcid_import_job(n_batches: int, keywords: list[str], cursor: Cursor, cron_expr: str):
     print(f"run orcid job with {n_batches} and {keywords} and {cursor}")
-    # TODO eventually...
+    # This job was omitted, since OpenAlex includes ORCID data...
     increase_cursor(ImportJobId.ORCID_IMPORT_JOB)
 
 

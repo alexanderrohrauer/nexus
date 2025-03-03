@@ -8,5 +8,4 @@ from app.utils.api_utils import SearchAndFilterParams
 
 class InstitutionSearchParams(SearchAndFilterParams):
     def get_search_beanie_operator(self):
-        # TODO implement proper search
         return RegEx(Institution.name, re.compile(self.search, flags=re.IGNORECASE))

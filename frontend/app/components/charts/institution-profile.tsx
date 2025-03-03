@@ -53,7 +53,6 @@ export function InstitutionProfile({ institution }: InstitutionProfileProps) {
         </div>
         {institution.alternative_names && (
           <div>
-            {/*TODO maybe get better icon*/}
             <IconText icon={CaseSensitive}>Alternative names</IconText>
             <ul className="pl-4">
               {institution.alternative_names.map((name) => (

@@ -8,7 +8,6 @@ interface LoaderProps extends React.PropsWithChildren {
 
 function Loader(props: LoaderProps) {
   const [success, setSuccess] = useState(false);
-  //   TODO implement error eventually
   useEffect(() => {
     if (props.task.isSuccess) {
       setSuccess(true);

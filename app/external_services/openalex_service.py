@@ -4,8 +4,8 @@ import pydash as _
 from aiohttp_client_cache import CachedSession, SQLiteBackend
 
 from app.settings import get_settings
+from app.test_data import TestDataInjector
 from app.utils.text_utils import parse_openalex_id
-from evaluation.test_data import TestDataInjector
 
 settings = get_settings()
 
@@ -20,14 +20,12 @@ authors_test_data = TestDataInjector()
 institutions_test_data = TestDataInjector()
 
 
-# TODO config (1day * 7)
 class OpenAlexSession(CachedSession):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs, headers={"User-Agent": "mailto:k12105578@students.jku.at"},
                          cache=SQLiteBackend('openalex_cache', expire_after=-1))
 
 
-# TODO maybe we get similar results between openalex and dblp if we dont search by topic - search by normal search instead
 async def fetch_topics(keywords: list[str]):
     result = []
     for keyword in keywords:

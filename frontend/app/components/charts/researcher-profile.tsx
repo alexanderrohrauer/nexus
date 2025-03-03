@@ -41,7 +41,6 @@ export function ResearcherProfile({ researcher }: ProfileVisualizationProps) {
         </div>
         {researcher.alternative_names && (
           <div>
-            {/*TODO maybe get better icon*/}
             <IconText icon={CaseSensitive}>Alternative names</IconText>
             <ul className="pl-4">
               {researcher.alternative_names.map((name) => (

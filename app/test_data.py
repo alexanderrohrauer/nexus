@@ -16,7 +16,7 @@ class TestDataInjector:
             self.batches_cache[f"{json_path}.{batch_id}"] = results
             # TODO configure
             docs = json.loads(
-                open(path.join("/Users/alexanderrohrauer/IdeaProjects/nexus/evaluation/data", json_path), "r").read())
+                open(path.join(get_settings().evaluation_path, json_path), "r").read())
             mutations = docs[batch_id]
             for mutation in mutations:
                 source = self.batches_cache[f"{json_path}.{mutation['batchId']}"]

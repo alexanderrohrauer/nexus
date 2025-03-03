@@ -3,7 +3,7 @@ import logging
 import pydash as _
 from aiohttp_client_cache import CachedSession, SQLiteBackend
 
-from evaluation.test_data import TestDataInjector
+from app.test_data import TestDataInjector
 
 DBLP_URL = "https://dblp.org"
 
@@ -13,7 +13,6 @@ works_test_data = TestDataInjector()
 authors_test_data = TestDataInjector()
 
 
-# TODO config (1day * 7)
 class DBLPSession(CachedSession):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs, headers={"User-Agent": "mailto:k12105578@students.jku.at"},
@@ -30,7 +29,6 @@ async def fetch_works(keywords: list[str], page: int, page_size: int):
             logger.debug(f"Fetching DBLP works({response.url})...")
             body = await response.json()
             hits = body["result"]["hits"]["hit"] if "hit" in body["result"]["hits"] else []
-            # TODO extract
             works_test_data.inject(page, "dblp_works.json", hits)
             result = result + hits
 
@@ -41,6 +39,5 @@ async def fetch_authors_for_works(works: list[dict], batch_id: int) -> list[dict
     flat = list(filter(lambda val: isinstance(val, dict), _.flatten(
         map(lambda w: [a for a in w["info"]["authors"]["author"]] if "authors" in w["info"] else [],
             works))))
-    # TODO extract
     authors_test_data.inject(batch_id, "dblp_authors.json", flat)
     return flat

@@ -144,8 +144,6 @@ class TopResearcherWorksCount(Chart):
         for researcher in researchers:
             points.append([researcher.full_name, {"value": researcher.openalex_meta["works_count"],
                                                   "$nexus": {"type": EntityType.RESEARCHER, "id": researcher.uuid}}])
-        #     TODO limit could be dynamic
-        # TODO maybe set color?
         points = list(reversed(sorted(points, key=lambda row: row[-1]["value"])))[:20]
         result.add("researchers", Series(data=points, entity_type=EntityType.RESEARCHER))
         return result

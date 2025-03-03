@@ -1,0 +1,2 @@
+#!/bin/sh
+sleep 10 && npm run start --host 0.0.0.0 --port 3000

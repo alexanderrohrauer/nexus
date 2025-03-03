@@ -47,7 +47,6 @@ export function Overview({
             <div className="text-base font-medium text-foreground">
               {pageName}
             </div>
-            {/*  TODO implement sorts*/}
           </div>
           <div className="flex space-x-2">
             <Input

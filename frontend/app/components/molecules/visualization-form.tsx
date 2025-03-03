@@ -31,7 +31,6 @@ export function VisualizationForm(props: VisualizationFormProps) {
   });
   return (
     <Form className="space-y-3">
-      {/*TODO maybe create a separate component for this div...*/}
       <div>
         <Label htmlFor="title">Title</Label>
         <InputField name="title" placeholder="Title" required />

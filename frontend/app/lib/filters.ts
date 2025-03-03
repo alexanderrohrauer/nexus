@@ -10,7 +10,6 @@ const resolveFilter = (name: string) => () => filters[name];
 export const INSTITUTION_FIELDS = registerFilter("institution", [
   { name: "uuid", label: "ID", type: "institution" },
   { name: "homepage_url", label: "Homepage URL", type: "string" },
-  // TODO eventually fetch all available languages some day
   {
     name: "international_names",
     label: "International names",
@@ -29,7 +28,6 @@ export const INSTITUTION_FIELDS = registerFilter("institution", [
       { name: "es", label: "Spanish", type: "string" },
     ],
   },
-  //   TODO when using UUIDs, use type "institutions"
   {
     name: "parent_institutions_ids",
     label: "Parent institutions (OpenAlex ID)",
@@ -131,7 +129,6 @@ export const RESEARCHER_FIELDS = registerFilter("researcher", [
   },
   { name: "full_name", label: "Full name", type: "string" },
   { name: "alternative_names", label: "Alternative names", type: "string" },
-  //   TODO maybe implement backref for affiliations
   {
     name: "affiliations",
     label: "Affiliations",

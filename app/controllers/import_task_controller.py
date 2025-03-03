@@ -21,7 +21,6 @@ router = APIRouter(
 logger = logging.getLogger("uvicorn.error")
 
 
-# TODO refactor into services
 @router.get("")
 def get_import_task():
     jobs: list[Job] = list(filter(lambda job: job.id in ImportJobId._value2member_map_, scheduler.get_jobs()))
@@ -117,7 +116,6 @@ async def deduplication():
     logger.info("Deduplication finished.")
 
 
-# TODO maybe extract to job too
 @router.post("/run-duplicate-detection")
 async def run_duplicate_detection(background_tasks: BackgroundTasks):
     background_tasks.add_task(deduplication)
@@ -131,14 +129,11 @@ async def deduplication_elimination():
 
     await Institution.find(Institution.marked_for_removal == True).delete()
     await Researcher.find(Researcher.marked_for_removal == True).delete()
-    # TODO cleanup if possible if researcher.affiliations is not None:
-    #     ids = [a.ref.id for a in researcher.affiliations]
-    #     await Affiliation.find(In(Affiliation.id, ids)).delete()
     await Work.find(Work.marked_for_removal == True).delete()
 
     logger.info("Deduplication elimination finished.")
 
 
-@router.post("/run-deduplication-elimination")
+@router.post("/run-duplicate-elimination")
 async def run_deduplication_elimination(background_tasks: BackgroundTasks):
     background_tasks.add_task(deduplication_elimination)

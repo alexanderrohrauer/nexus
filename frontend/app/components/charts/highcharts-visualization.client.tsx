@@ -3,7 +3,6 @@ import type {
   SchemaVisualization,
   SchemaVisualizationData,
 } from "~/lib/api/types";
-// TODO maybe lazy loading
 import "highcharts/modules/accessibility";
 import "highcharts/highcharts-more";
 import "highcharts/modules/mouse-wheel-zoom";
@@ -19,7 +18,6 @@ interface HighchartsVisualizationProps {
   response: SchemaVisualizationData;
 }
 
-// TODO maybe fix resize window some day...
 export const HighchartsVisualization = React.forwardRef(function (
   props: HighchartsVisualizationProps,
   ref: React.ForwardedRef<HTMLDivElement>,

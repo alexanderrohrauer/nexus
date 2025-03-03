@@ -40,7 +40,6 @@ export function AddVisualizationDialog(props: AddVisualizationDialogProps) {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const toast = useToast();
 
-  // TODO error handler
   const addMutation = useMutation({
     mutationFn: (data: SchemaCreateVisualizationRequest) =>
       client.POST("/dashboards/{uuid}/visualizations", {

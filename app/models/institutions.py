@@ -27,7 +27,6 @@ class InstitutionExternalId(BaseModel):
         return self.openalex_match(external_id) or self.ror_match(external_id)
 
 
-# TODO maybe do here also Optional everywhere...
 class Institution(EditableDocument, SNMEntity):
     external_id: InstitutionExternalId
     name: str
@@ -41,7 +40,6 @@ class Institution(EditableDocument, SNMEntity):
                                                                                                       description="Long-Lat")
     homepage_url: Optional[HttpUrl] = None
     image_url: Optional[HttpUrl] = None
-    # TODO maybe do UUIDs some day:
     parent_institutions_ids: list[str]
     type: Optional[str] = None
     topic_keywords: list[str]
@@ -52,7 +50,6 @@ class Institution(EditableDocument, SNMEntity):
 
     @property
     def normalized_name(self): 
-        # TODO normalize eventually
         return self.name.lower()
 
     class Settings:

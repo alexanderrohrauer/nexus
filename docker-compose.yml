@@ -4,7 +4,6 @@ volumes:
   mongo:
 
 services:
-
   mongo:
     image: mongo
     restart: always
@@ -12,3 +11,27 @@ services:
       - "27017:27017"
     volumes:
       - mongo:/data/db
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      EVALUATION_MODE: false
+      DEFAULT_BATCH_SIZE: 20
+      OPENALEX_BATCH_SIZE: 20
+      DB: nexus_final
+      OPTIMIZED_INSERT: true
+      MONGO_CACHE_MINUTES: 60
+      MONGO_CACHE_ENABLED: true
+      EVALUATION_PATH: ""
+      DB_CONNECTION_STRING: "mongodb://mongo:27017"
+    ports:
+      - "8000:8000"
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      BACKEND_URL: http://backend:8000
+    ports:
+      - "3000:3000"

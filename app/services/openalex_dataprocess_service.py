@@ -18,7 +18,6 @@ def restructure_works(works: list[dict], authors: list[Researcher]):
     for work in works:
         if work["title"] is not None:
             keywords = [kw["display_name"] for kw in work["keywords"]]
-            # TODO implement a merger logic
             author_links = []
             for author in work["authorships"]:
                 author_id = parse_openalex_id(author["author"]["id"])
@@ -100,9 +99,7 @@ def restructure_institutions(institutions: list[dict]):
                 "longitude"] else None,
             homepage_url=institution["homepage_url"],
             image_url=institution["image_url"],
-            # TODO maybe do UUIDs some day:
             parent_institutions_ids=[parse_openalex_id(url) for url in institution["lineage"]],
-            # TODO maybe convert to enum one day
             type=institution["type"],
             topic_keywords=[t["display_name"] for t in institution["topics"]],
             openalex_meta=institution

@@ -59,7 +59,6 @@ class Researcher(EditableDocument, SNMEntity):
 
     @property
     def normalized_full_name(self):
-        # TODO eventually normalize
         return self.full_name.lower()
 
     class Settings:

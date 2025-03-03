@@ -12,7 +12,6 @@ interface EChartsVisualizationProps {
   response: SchemaVisualizationData;
 }
 
-// TODO maybe fix resize window some day...
 export const EChartsVisualization = React.forwardRef(function (
   props: EChartsVisualizationProps,
   ref: React.ForwardedRef<HTMLDivElement>,

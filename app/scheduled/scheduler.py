@@ -6,8 +6,7 @@ from app.settings import get_settings
 settings = get_settings()
 
 jobstores = {
-    # TODO configure
-    "default": MongoDBJobStore(settings.db, "jobs")
+    "default": MongoDBJobStore(settings.db, "jobs", host=settings.db_connection_string)
 }
-# TODO implement UTC one day
+
 scheduler = AsyncIOScheduler(jobstores=jobstores)
