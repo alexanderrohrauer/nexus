@@ -5,5 +5,6 @@ frontend/.cache
 frontend/build
 frontend/.env
 /data/
-*.sqlite
+app/*.sqlite
+evaluation/**/*.sqlite
 *.env
